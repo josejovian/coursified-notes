@@ -205,25 +205,74 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 		[completedPages, loading, page, renderAnswerBox, renderCustomElement]
 	);
 
+	const handleTransformBlockQuotes = useCallback(() => {
+		const blockquotes = document.querySelectorAll(
+			".ConditionalBlockQuotes"
+		);
+
+		blockquotes.forEach((bq) => {
+			bq.innerHTML = bq.innerHTML.replace("#submitted#", "");
+		});
+	}, []);
+
+	const handleCheckForCodeInvokedElements = useCallback((element: any) => {
+		return element.toString().match(/\[[^\]]*\]/g);
+	}, []);
+
+	const handleCheckForConditionalBlockquotes = useCallback((element: any) => {
+		return element.some((str: any) => {
+			if (typeof str === "object") {
+				return str.props.children.some((x: string) =>
+					x.match(/\#submitted\#/)
+				);
+			}
+			return str.match(/\#submitted\#/);
+		});
+	}, []);
+
 	useEffect(() => {
 		handleConvertCodeToComponents(true);
-	}, [page, handleConvertCodeToComponents]);
+		handleTransformBlockQuotes();
+	}, [page, handleConvertCodeToComponents, handleTransformBlockQuotes]);
 
 	const renderChapterContents = useMemo(
 		() => (
 			<div className="flex w-full h-full overflow-y-scroll">
 				<article
 					id="CourseMaterial_contents"
-					className="CourseMaterial_contents h-full pt-32 p-adapt-sm"
+					className="h-full pt-32 p-adapt-sm"
 				>
 					<ReactMarkdown
-						className="pb-32"
+						className="CourseMaterial_contents pb-32"
 						components={{
 							code: ({ node, children, ...props }) => {
-								return (
+								return handleCheckForCodeInvokedElements(
+									children
+								) ? (
 									<span className="CustomMaterialInvoker hidden">
 										{children}
 									</span>
+								) : (
+									<code>{children}</code>
+								);
+							},
+							blockquote: ({ node, children, ...props }) => {
+								const conditionExists =
+									handleCheckForConditionalBlockquotes(
+										children
+									);
+
+								return conditionExists ? (
+									<blockquote
+										className={clsx(
+											"ConditionalBlockQuotes",
+											!submitted && "hidden"
+										)}
+									>
+										{children}
+									</blockquote>
+								) : (
+									<blockquote>{children}</blockquote>
 								);
 							},
 						}}
@@ -235,8 +284,22 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 				</article>
 			</div>
 		),
-		[code, page]
+		[
+			code,
+			page,
+			handleCheckForCodeInvokedElements,
+			handleCheckForConditionalBlockquotes,
+			submitted,
+		]
 	);
+
+	const handlePreviousPage = useCallback(() => {
+		if (page > 0) setPage((prev) => prev - 1);
+	}, [page]);
+
+	const handleNextPage = useCallback(() => {
+		if (page < maxPage - 1) setPage((prev) => prev + 1);
+	}, [page, maxPage]);
 
 	const renderPageControls = useMemo(
 		() => (
@@ -249,9 +312,7 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 				<Button
 					color="secondary"
 					size="l"
-					onClick={
-						page > 0 ? () => setPage((prev) => prev - 1) : undefined
-					}
+					onClick={handlePreviousPage}
 					disabled={page <= 0}
 				>
 					Back
@@ -262,11 +323,7 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 				{solved !== 0 ? (
 					<Button
 						size="l"
-						onClick={
-							page < maxPage - 1
-								? () => setPage((prev) => prev + 1)
-								: undefined
-						}
+						onClick={handleNextPage}
 						disabled={page >= maxPage - 1}
 					>
 						Next
@@ -285,7 +342,15 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 				)}
 			</div>
 		),
-		[accept, answer, maxPage, page, solved]
+		[
+			accept,
+			answer,
+			maxPage,
+			page,
+			solved,
+			handleNextPage,
+			handlePreviousPage,
+		]
 	);
 
 	return (
@@ -338,7 +403,7 @@ export const getStaticPaths = async () => {
 	);
 
 	return {
-		paths: strings.flat(9999),
+		paths: strings.flat(4),
 		fallback: false,
 	};
 };

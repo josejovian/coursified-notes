@@ -102,26 +102,27 @@
 	.CourseMaterial {
 		min-height: 100vh;
 	}
-	.CourseMaterial_contents h1 {
+	.CourseMaterial_contents > h1 {
 		@apply mb-8 text-4xl;
 	}
-	.CourseMaterial_contents h2 {
+	.CourseMaterial_contents > h2 {
 		@apply mb-4 text-2xl;
 	}
-	.CourseMaterial_contents p {
+	.CourseMaterial_contents > p {
 		@apply mb-8 leading-10;
 		font-size: 17px;
 	}
-	.CourseMaterial_contents table {
+	.CourseMaterial_contents > table {
 		@apply mb-8;
 	}
-	.CourseMaterial_contents table,
-	th,
-	td {
+	.CourseMaterial_contents :is(table, th, td) {
 		@apply p-2 border-2 border-secondary-2;
 	}
 	.CourseMaterial_contents th {
 		@apply p-2 border-2 bg-secondary-1;
+	}
+	.CourseMaterial_contents > blockquote {
+		@apply my-8 pl-16 pr-4 py-2 bg-secondary-2;
 	}
 	.GraphContainer {
 		@apply flex w-full justify-center pb-8;
