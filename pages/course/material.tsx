@@ -67,10 +67,7 @@ const CourseMaterial = ({ code }: CourseMaterialProps) => {
 				parentElement.nextSibling
 			);
 
-			ReactDOM.render(
-				ReactDOM.createPortal(targetElement, vessel, `${group}-${id}`),
-				document.createElement("div")
-			);
+			ReactDOM.render(targetElement, vessel);
 		},
 		[]
 	);
@@ -106,7 +103,7 @@ const CourseMaterial = ({ code }: CourseMaterialProps) => {
 			Object.values(CUSTOM_MATERIAL).forEach((group) => {
 				const previousRenders = document.querySelectorAll(`.${group}`);
 				previousRenders.forEach((element) => {
-					ReactDOM.unmountComponentAtNode(element);
+					// ReactDOM.unmountComponentAtNode(element);
 					element.parentElement?.removeChild(element);
 				});
 			});
