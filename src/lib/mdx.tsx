@@ -14,9 +14,25 @@ async function readProject(id: string) {
 	return result;
 }
 
-async function readllCourses() {
+async function readAllCourses() {
 	const result = await readdirSync(
 		join(process.cwd(), BASE_MATERIALS_DIRECTORY),
+		"utf8"
+	);
+	return result;
+}
+
+async function readAllSections(course: string) {
+	const result = await readdirSync(
+		join(process.cwd(), `${BASE_MATERIALS_DIRECTORY}/${course}`),
+		"utf8"
+	);
+	return result;
+}
+
+async function readAllChapters(course: string, section: string) {
+	const result = await readdirSync(
+		join(process.cwd(), `${BASE_MATERIALS_DIRECTORY}/${course}/${section}`),
 		"utf8"
 	);
 	return result;
@@ -95,6 +111,9 @@ async function readChapters(course: String) {
 module.exports = {
 	readProject,
 	readChapter,
+	readAllChapters,
+	readAllCourses,
+	readAllSections,
 	// readProjects,
 	// getProject,
 	// getProjects,

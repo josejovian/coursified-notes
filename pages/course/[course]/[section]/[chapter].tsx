@@ -36,7 +36,7 @@ interface CourseMaterialProps {
 	code: any;
 }
 
-const CourseMaterial = ({ code }: CourseMaterialProps) => {
+const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 	const { title, requirements } = DUMMY;
 	const [page, setPage] = useState(0);
 	const [solved, setSolved] = useState(-1);
@@ -306,34 +306,51 @@ const CourseMaterial = ({ code }: CourseMaterialProps) => {
 	);
 };
 
-// export const getStaticPaths = async () => {
-// 	const { readChapters } = require("../../src/lib/mdx.tsx");
+export const getStaticPaths = async () => {
+	const {
+		readAllChapters,
+		readAllSections,
+		readAllCourses,
+	} = require("../../../../src/lib/mdx.tsx");
+	const courses: string[] = await readAllCourses();
 
-// 	const chapters = await readChapters();
-
-// 	return {
-// 		paths: chapters.map((project: string) => ({
-// 			params: {
-// 				id: project.replace(".mdx", ""),
-// 			},
-// 		})),
-// 		fallback: false,
-// 	};
-// };
-
-export const getStaticProps = async (req: any) => {
-	// const { id } = req.params;
-	const { readChapter } = require("../../src/lib/mdx.tsx");
-
-	const projectMD = await readChapter(
-		"calculus",
-		"limits",
-		"definition-of-limit"
+	const strings = await Promise.all(
+		courses.map(async (course) => {
+			const sections: string[] = await readAllSections(course);
+			return await Promise.all(
+				sections.map(async (section) => {
+					const chapters: string[] = await readAllChapters(
+						course,
+						section
+					);
+					return await Promise.all(
+						chapters.map((chapter) => ({
+							params: {
+								course: course,
+								section: section,
+								chapter: chapter.replace(".mdx", ""),
+							},
+						}))
+					);
+				})
+			);
+		})
 	);
 
 	return {
+		paths: strings.flat(9999),
+		fallback: false,
+	};
+};
+
+export const getStaticProps = async (req: any) => {
+	const { course, section, chapter } = req.params;
+	const { readChapter } = require("../../../../src/lib/mdx.tsx");
+
+	const projectMD = await readChapter(course, section, chapter);
+
+	return {
 		props: { code: projectMD },
-		revalidate: 300,
 	};
 };
 
