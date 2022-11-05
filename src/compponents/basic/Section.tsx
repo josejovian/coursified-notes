@@ -3,11 +3,11 @@ import { Fragment, useCallback, useMemo, useState } from "react";
 import CourseType, {
 	ChapterType,
 	RequirementType,
-	REQUIREMENT_TYPES,
+	REQUIREMENT_MESSAGE,
 	SectionType,
 } from "@/src/type/Course";
 import { BsCheckSquareFill, BsChevronLeft, BsSquare } from "react-icons/bs";
-import ProgressVertical from "@/src/compponents/basic/ProgressVertical/ProgressVertical";
+import ProgressVertical from "@/src/compponents/courses/ProgressVertical/ProgressVertical";
 
 const DUMMY_CHAPTERS: SectionType[] = [
 	{
@@ -159,7 +159,7 @@ export default function Section({ section, caption, index }: SectionProps) {
 									)}
 								</span>
 								<span className="text-gray-600 text-sm">
-									{REQUIREMENT_TYPES[requirement.category]}
+									{REQUIREMENT_MESSAGE[requirement.category]}
 								</span>
 							</li>
 						))}

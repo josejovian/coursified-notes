@@ -15,31 +15,32 @@
 	*:not(:is(.base, .mord, .katex *)) {
 		font-family: "Inter";
 	}
-	:is(button, input) {
+
+	:is(button) {
 		@apply focus:outline outline-offset-2 outline-2;
 	}
 	.h0 {
-		@apply text-3xl font-bold md:text-5xl;
+		@apply text-3xl md:text-5xl;
 	}
 
 	h1,
 	.h1 {
-		@apply text-2xl font-bold md:text-4xl;
+		@apply text-2xl md:text-4xl;
 	}
 
 	h2,
 	.h2 {
-		@apply text-xl font-bold md:text-3xl;
+		@apply text-xl md:text-3xl;
 	}
 
 	h3,
 	.h3 {
-		@apply text-lg font-bold md:text-2xl;
+		@apply text-lg md:text-2xl;
 	}
 
 	h4,
 	.h4 {
-		@apply text-base font-bold md:text-lg;
+		@apply text-base md:text-lg;
 	}
 
 	body,
@@ -49,6 +50,10 @@
 
 	.w-exclude {
 		width: calc(100% - 16px);
+	}
+
+	.p-adapt-sm {
+		@apply px-16 sm:px-16 md:px-32 lg:px-64 xl:px-96 2xl:px-96;
 	}
 }
 @tailwind base;
@@ -93,6 +98,33 @@
 	}
 	.Course_nextProgress {
 		left: 0.8rem;
+	}
+	.CourseMaterial {
+		min-height: 100vh;
+	}
+	.CourseMaterial_contents h1 {
+		@apply mb-8 text-4xl;
+	}
+	.CourseMaterial_contents h2 {
+		@apply mb-4 text-2xl;
+	}
+	.CourseMaterial_contents p {
+		@apply mb-8 leading-10;
+		font-size: 17px;
+	}
+	.CourseMaterial_contents table {
+		@apply mb-8;
+	}
+	.CourseMaterial_contents table,
+	th,
+	td {
+		@apply p-2 border-2 border-secondary-2;
+	}
+	.CourseMaterial_contents th {
+		@apply p-2 border-2 bg-secondary-1;
+	}
+	.GraphContainer {
+		@apply flex w-full justify-center pb-8;
 	}
 }
 @tailwind components;

@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { ReactNode } from "react";
-import ToggleLink from "../ToggleLink";
+import ToggleLink from "../../basic/ToggleLink";
 
 interface ProgressMilestoneProps {
 	indexText: string;

@@ -1,5 +1,4 @@
 import Button from "@/src/compponents/basic/Button";
-import { SizeType, SIZE_CLASS } from "@/src/style/Sizes";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";

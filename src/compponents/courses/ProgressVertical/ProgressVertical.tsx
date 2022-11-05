@@ -245,7 +245,7 @@ export default function ProgressVertical({
 					index < progress &&
 					step >= floorIndex[adjustedIndex][1];
 
-				function gradientStyle(value: number) {
+				function GRADIENT_STYLE(value: number) {
 					return `linear-gradient(
 						180deg,
 						${COMPLETE_COLOR} ${Math.max(value * 2 - 2, 0)}%,
@@ -260,7 +260,7 @@ export default function ProgressVertical({
 								(step - floorIndex[adjustedIndex][0]) /
 								(floorIndex[adjustedIndex][1] -
 									floorIndex[adjustedIndex][0]);
-							return gradientStyle(circleProgress * 100);
+							return GRADIENT_STYLE(circleProgress * 100);
 						}
 						return COMPLETE_COLOR;
 					}
@@ -276,7 +276,7 @@ export default function ProgressVertical({
 									(step - floorIndex[adjustedIndex + 1][0]) /
 									(floorIndex[adjustedIndex + 1][1] -
 										floorIndex[adjustedIndex + 1][0]);
-								return gradientStyle(lineProgress * 100);
+								return GRADIENT_STYLE(lineProgress * 100);
 							}
 							return INCOMPLETE_COLOR;
 						}

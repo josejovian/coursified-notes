@@ -1,16 +1,34 @@
-import { ColorType, COLOR_CLASS } from "@/src/style/Colors";
-import { SizeType, SIZE_CLASS } from "@/src/style/Sizes";
+import { ButtonVariantType } from "@/src/style/Variants";
+import { ColorType } from "@/src/style/Colors";
+import { SizeType } from "@/src/style/Sizes";
 import clsx from "clsx";
-import { Fragment, HTMLProps, ReactNode, useMemo } from "react";
+import {
+	Fragment,
+	HTMLProps,
+	ReactNode,
+	useMemo,
+	DetailedHTMLProps,
+	ButtonHTMLAttributes,
+} from "react";
 import { BiLoaderAlt } from "react-icons/bi";
+import { BUTTON_COLOR_CLASS } from "@/src/style/Colors";
+import { BUTTON_SIZE_CLASS } from "@/src/style/Sizes";
 
-interface ButtonProps extends Omit<HTMLProps<HTMLButtonElement>, "size"> {
+interface ButtonProps
+	extends Omit<
+		DetailedHTMLProps<
+			ButtonHTMLAttributes<HTMLButtonElement>,
+			HTMLButtonElement
+		>,
+		"size"
+	> {
 	loading?: boolean;
 	disabled?: boolean;
 	left?: ReactNode;
 	right?: ReactNode;
 	color?: ColorType;
 	size?: SizeType;
+	variant?: ButtonVariantType;
 }
 
 export default function Button({
@@ -21,6 +39,8 @@ export default function Button({
 	right,
 	color = "primary",
 	size = "m",
+	variant = "solid",
+	...props
 }: ButtonProps) {
 	const renderContent = useMemo(() => {
 		if (loading)
@@ -43,12 +63,13 @@ export default function Button({
 			className={clsx(
 				"px-4 flex items-center outline-transparent transition-colors",
 				"text-white rounded-md",
-				COLOR_CLASS[color],
-				SIZE_CLASS[size],
+				BUTTON_COLOR_CLASS(color, variant),
+				BUTTON_SIZE_CLASS[size],
 				(left || right) && "gap-2",
 				disabled ? ["cursor-not-allowed"] : "hover:shadow-md"
 			)}
 			disabled={disabled}
+			{...props}
 		>
 			{renderContent}
 		</button>

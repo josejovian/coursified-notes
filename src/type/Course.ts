@@ -1,9 +1,13 @@
-export const REQUIREMENT_TYPES = {
+const REQUIREMENT_TYPES = ["read", "practice"];
+
+export const REQUIREMENT_MESSAGE: {
+	[K in typeof REQUIREMENT_TYPES[number]]: string;
+} = {
 	read: "Read the material",
 	practice: "Solve all practice problems",
 };
 
-export type RequirementCategoryType = keyof typeof REQUIREMENT_TYPES;
+export type RequirementCategoryType = typeof REQUIREMENT_TYPES[number];
 
 export interface RequirementType {
 	category: RequirementCategoryType;
@@ -12,6 +16,7 @@ export interface RequirementType {
 }
 
 export interface ChapterType {
+	id?: string;
 	title: string;
 	requirements?: RequirementType[];
 	completed?: boolean;
