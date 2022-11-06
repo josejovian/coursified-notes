@@ -77,3 +77,11 @@ export const INPUT_COLOR_CLASS: { [key in ColorType]: string } = {
 	warning: "focus:outline-warning-4",
 	danger: "focus:outline-danger-4",
 };
+
+export const BLOCKQUOTE_COLOR_CLASS: { [key in ColorType]: string } = {
+	primary: "border-primary-6 bg-primary-2",
+	secondary: "border-secondary-6 bg-secondary-2",
+	success: "border-success-6 bg-success-2",
+	warning: "border-warning-6 bg-warning-2",
+	danger: "border-danger-6 bg-danger-2",
+};

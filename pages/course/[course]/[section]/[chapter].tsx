@@ -26,6 +26,7 @@ import remarkGfm from "remark-gfm";
 import { ReactElement } from "react-markdown/lib/react-markdown";
 import { CUSTOM_MATERIAL } from "@/src/type/Material";
 import Input from "@/src/compponents/basic/Input";
+import Blockquote from "@/src/compponents/basic/Quote";
 
 const DUMMY: ChapterType = {
 	title: "Definition of Limit",
@@ -263,16 +264,17 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 									);
 
 								return conditionExists ? (
-									<blockquote
+									<Blockquote
 										className={clsx(
 											"ConditionalBlockQuotes",
 											!submitted && "hidden"
 										)}
+										color="success"
 									>
 										{children}
-									</blockquote>
+									</Blockquote>
 								) : (
-									<blockquote>{children}</blockquote>
+									<Blockquote>{children}</Blockquote>
 								);
 							},
 						}}

@@ -121,9 +121,6 @@
 	.CourseMaterial_contents th {
 		@apply p-2 border-2 bg-secondary-1;
 	}
-	.CourseMaterial_contents > blockquote {
-		@apply my-8 pl-16 pr-4 py-2 bg-secondary-2;
-	}
 	.GraphContainer {
 		@apply flex w-full justify-center pb-8;
 	}
