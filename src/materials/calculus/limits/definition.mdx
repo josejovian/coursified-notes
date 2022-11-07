@@ -2,11 +2,11 @@
 
 ## Precise Definition of Limit
 
-Let $f$ be a function defined on an open interval containing $a$, with the possible exception of a itself (the function f does not need to be defined on a), then $\lim_{x\rightarrow a} f(x)=L$ if for every number $\epsilon > 0$, exists a number $\delta > 0$ such that: $0 < |x - a| < \delta$ implies that $|f(x) - L| < \epsilon$.
+Let $f$ be a function defined on an open interval containing $a$, with the possible exception of a itself (the function f does not need to be defined on a), then $\lim\limits_{x\rightarrow a} f(x)=L$ if for every number $\epsilon > 0$, exists a number $\delta > 0$ such that: $0 < |x - a| < \delta$ implies that $|f(x) - L| < \epsilon$.
 
 ## General Definition of Limit
 
-Let $f$ be a function defined on an open interval containing $a$, with the possible exception of $a$ itself (the function $f$ does not need to be defined on $a$), then $\lim_{x\rightarrow a} f(x)=L$ if $f(x)$ can be made as close to $L$ by making $x$ to be sufficiently close to $a$, from both right and left side: $\lim_{x\rightarrow a^+} f(x)=\lim_{x\rightarrow a^-} f(x)=L$.
+Let $f$ be a function defined on an open interval containing $a$, with the possible exception of $a$ itself (the function $f$ does not need to be defined on $a$), then $\lim\limits_{x\rightarrow a} f(x)=L$ if $f(x)$ can be made as close to $L$ by making $x$ to be sufficiently close to $a$, from both right and left side: $\lim\limits_{x\rightarrow a^+} f(x)=\lim\limits_{x\rightarrow a^-} f(x)=L$.
 
 ===
 
@@ -18,7 +18,7 @@ If we set $x = -1$, we will have $f(-1)=1$. If we set $x = -0.1$, we will have $
 
 As we can see, if we go from anywhere on the left side to $x = 0$, we can tell that as $x$ approaches $0$ from the left side, the value of $f(x)$ will eventually approach $0$. The same also happens if we look from the right side, that is, as $x$ approaches $0$ from the right side, the value $f(x)$ will also eventually approach $0$.
 
-In this case, we can say that the limit of $f(x)$ as $x$ approaches $0$, is $0$. In other words, $\lim_{x\rightarrow 0} (x^2) = 0$. Note that we do not necessarily always find the limit by substituting the $x$ directly to the function like in this case.
+In this case, we can say that the limit of $f(x)$ as $x$ approaches $0$, is $0$. In other words, $\lim\limits_{x\rightarrow 0} (x^2) = 0$. Note that we do not necessarily always find the limit by substituting the $x$ directly to the function like in this case.
 
 ===
 
@@ -26,7 +26,7 @@ In this case, we can say that the limit of $f(x)$ as $x$ approaches $0$, is $0$.
 
 `[graph]function:1/x`
 
-Sometimes, we may get something like the above $g(x) = \frac{1}{x}$. What would be the value of $\lim_{x\rightarrow 0} \frac{1}{x}$? That's right, it doesn't exist. If we recall the definiton of limit, we can clearly see that if we try approaching $x = 0$ from the right side, $g(x)$ will eventually approach $-\infty$, whereas approaching $x = 0$ from the left side, $g(x)$ will eventually approach $\infty$. Therefore, it is true that $\lim_{x\rightarrow 0^-} \frac{1}{x} = -\infty$ and $\lim_{x\rightarrow 0^+} \frac{1}{x} = \infty$.
+Sometimes, we may get something like the above $g(x) = \frac{1}{x}$. What would be the value of $\lim\limits_{x\rightarrow 0} \frac{1}{x}$? That's right, it doesn't exist. If we recall the definiton of limit, we can clearly see that if we try approaching $x = 0$ from the right side, $g(x)$ will eventually approach $-\infty$, whereas approaching $x = 0$ from the left side, $g(x)$ will eventually approach $\infty$. Therefore, it is true that $\lim\limits_{x\rightarrow 0^-} \frac{1}{x} = -\infty$ and $\lim\limits_{x\rightarrow 0^+} \frac{1}{x} = \infty$.
 
 ===
 
@@ -34,11 +34,11 @@ Sometimes, we may get something like the above $g(x) = \frac{1}{x}$. What would 
 
 `[graph]function:1/[x]`
 
-This case is a little bit deifferent than the last one. This time, we have $h(x) = \frac{1}{|x|}$ . As you may have guessed, this one function does have a limit as $x$ approaches $0$ because the limit as $x$ approaches $0$ from the right and from the left is the same. Therefore, we can say that $\lim_{x\rightarrow 0} \frac{1}{|x|} = \infty$
+This case is a little bit deifferent than the last one. This time, we have $h(x) = \frac{1}{|x|}$ . As you may have guessed, this one function does have a limit as $x$ approaches $0$ because the limit as $x$ approaches $0$ from the right and from the left is the same. Therefore, we can say that $\lim\limits_{x\rightarrow 0} \frac{1}{|x|} = \infty$
 
 ===
 
-# Practice: Determining Limits
+# ✏️ Practice: Determining Limits
 
 Suppose we have a function $f(x)$ that we do not exactly know of, but we only have the following information;
 
@@ -46,8 +46,8 @@ Suppose we have a function $f(x)$ that we do not exactly know of, but we only ha
 | ---- | ---- | ----- | ------ | ------ | ----- | ---- |
 | f(x) | 5.11 | 5.09  | 5.005  | 5.006  | 5.01  | 5.12 |
 
-What integer would be the most reasonable estimate for $\lim_{x\rightarrow -2} f(x)$?
+What integer would be the most reasonable estimate for $\lim\limits_{x\rightarrow -2} f(x)$?
 
 `[input]5`
 
-> #submitted# **That's right!** From the left ($x=-2.1$ to $x=-2.001$), the value of $f(x)$ approaches 5. Likewise, from the right ($x=-1.8$ to $x=-1.998$), the value of $f(x)$ also approaches 5. The most reasonable guess for $\lim_{x\rightarrow -2} f(x)$ is $5$.
+> #explanation# **That's right!** From the left ($x=-2.1$ to $x=-2.001$), the value of $f(x)$ approaches $5$. Likewise, from the right ($x=-1.8$ to $x=-1.998$), the value of $f(x)$ also approaches $5$. The most reasonable guess for $\lim\limits_{x\rightarrow -2} f(x)$ is $5$.
