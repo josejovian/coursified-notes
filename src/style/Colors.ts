@@ -79,9 +79,9 @@ export const INPUT_COLOR_CLASS: { [key in ColorType]: string } = {
 };
 
 export const BLOCKQUOTE_COLOR_CLASS: { [key in ColorType]: string } = {
-	primary: "border-primary-6 bg-primary-2",
-	secondary: "border-secondary-6 bg-secondary-2",
-	success: "border-success-6 bg-success-2",
-	warning: "border-warning-6 bg-warning-2",
-	danger: "border-danger-6 bg-danger-2",
+	primary: "border-primary-6 bg-primary-2 text-primary-9",
+	secondary: "border-secondary-6 bg-secondary-2 text-secondary-9",
+	success: "border-success-6 bg-success-2 text-success-9",
+	warning: "border-warning-6 bg-warning-2 text-warning-9",
+	danger: "border-danger-6 bg-danger-2 text-danger-9",
 };

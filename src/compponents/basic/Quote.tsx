@@ -40,9 +40,10 @@ export default function Blockquote({
 	return (
 		<blockquote
 			className={clsx(
-				className,
-				"my-8 pl-16 pr-4 py-2 border-0 border-l-4 leading-10",
-				BLOCKQUOTE_COLOR_CLASS[color]
+				"min-w-0 w-fit my-8 pl-16 pr-8 py-2",
+				"border-0 border-l-4 leading-10",
+				BLOCKQUOTE_COLOR_CLASS[color],
+				className
 			)}
 			{...props}
 		>
