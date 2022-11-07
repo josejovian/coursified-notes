@@ -11,7 +11,11 @@ import {
 } from "react";
 import Section from "@/src/compponents/basic/Section";
 import SlantedBackgroundTemplate from "@/src/compponents/template/SlantedBackground";
-import CourseType, { ChapterType, SectionType } from "@/src/type/Course";
+import CourseType, {
+	ChapterAddressType,
+	ChapterType,
+	SectionType,
+} from "@/src/type/Course";
 import ReactMarkdown from "react-markdown";
 import RemarkMath from "remark-math";
 import RehypeKatex from "rehype-katex";
@@ -27,6 +31,7 @@ import { ReactElement } from "react-markdown/lib/react-markdown";
 import { CUSTOM_MATERIAL } from "@/src/type/Material";
 import Input from "@/src/compponents/basic/Input";
 import Blockquote from "@/src/compponents/basic/Quote";
+import { checkChapterProgress, storeChapterProgress } from "@/src/utils/course";
 
 const DUMMY: ChapterType = {
 	title: "Definition of Limit",
@@ -35,18 +40,53 @@ const DUMMY: ChapterType = {
 
 interface CourseMaterialProps {
 	code: any;
+	params: ChapterAddressType;
 }
 
-const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
+const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 	const { title, requirements } = DUMMY;
 	const [page, setPage] = useState(0);
 	const [solved, setSolved] = useState(-1);
-	const [completedPages, setCompletedPages] = useState<number[]>([]);
 	const [maxPage, setMaxPage] = useState(0);
 	const [loading, setLoading] = useState(true);
 	const [answer, setAnswer] = useState<string | number>("");
 	const [accept, setAccept] = useState<string | number>("");
 	const [submitted, setSubmmited] = useState(false);
+
+	const chapterAddress = useMemo(
+		() => ({
+			...params,
+			page,
+		}),
+		[page, params]
+	);
+
+	const handleCheckAnswer = useCallback(
+		(input: string | number) => {
+			if (
+				accept === input ||
+				(typeof accept === "string" &&
+					typeof input === "string" &&
+					accept.toLowerCase() === input.toLowerCase())
+			) {
+				storeChapterProgress(chapterAddress, input);
+				return true;
+			}
+
+			return false;
+		},
+		[accept, chapterAddress]
+	);
+
+	const handleGetExistingAnswerIfAny = useCallback(() => {
+		const existingAnswer = checkChapterProgress(chapterAddress);
+		
+		if (existingAnswer && handleCheckAnswer(existingAnswer)) {
+			setAnswer(accept);
+			setSubmmited(true);
+			setSolved(1);
+		}
+	}, [chapterAddress, handleCheckAnswer, accept]);
 
 	useEffect(() => {
 		setMaxPage(code.split("===").length);
@@ -74,23 +114,26 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 	);
 
 	const userAnswerStatus = useMemo(() => {
-		if (submitted) return answer === accept ? "success" : "error";
+		if (submitted) return handleCheckAnswer(answer) ? "success" : "error";
 		return undefined;
-	}, [answer, accept, submitted]);
+	}, [submitted, answer, handleCheckAnswer]);
 
 	const renderAnswerBox = useMemo(
 		() => (
 			<Input
 				id="InputBox"
 				onBlur={(e) => {
-					setSubmmited(false);
-					setAnswer(e.target.value);
+					if (answer !== accept) {
+						setSubmmited(false);
+						setAnswer(e.target.value);
+					}
 				}}
 				defaultValue={answer}
+				disabled={solved === 1}
 				state={userAnswerStatus}
 			/>
 		),
-		[answer, userAnswerStatus]
+		[accept, answer, userAnswerStatus, solved]
 	);
 
 	const handleConvertCodeToComponents = useCallback(
@@ -194,25 +237,23 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 			});
 
 			setLoading(false);
-			if (completedPages.includes(page)) {
-				setSolved(1);
-			}
+			// if (completedPages.includes(page)) {
+			// 	setSolved(1);
+			// }
 			if (inputElementsRendered > 0) {
 				setSolved(0);
 			} else {
 				setSolved(-1);
 			}
 		},
-		[completedPages, loading, page, renderAnswerBox, renderCustomElement]
+		[loading, renderAnswerBox, renderCustomElement]
 	);
 
 	const handleTransformBlockQuotes = useCallback(() => {
-		const blockquotes = document.querySelectorAll(
-			".ConditionalBlockQuotes"
-		);
+		const blockquotes = document.querySelectorAll("blockquote");
 
 		blockquotes.forEach((bq) => {
-			bq.innerHTML = bq.innerHTML.replace("#submitted#", "");
+			bq.innerHTML = bq.innerHTML.replace(/\#[^\#]*\#/g, "");
 		});
 	}, []);
 
@@ -220,25 +261,37 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 		return element.toString().match(/\[[^\]]*\]/g);
 	}, []);
 
-	const handleCheckForConditionalBlockquotes = useCallback((element: any) => {
-		return element.some((str: any) => {
-			if (typeof str === "object") {
-				return str.props.children.some((x: string) =>
-					x.match(/\#submitted\#/)
-				);
-			}
-			return str.match(/\#submitted\#/);
-		});
-	}, []);
+	const handleCheckForSpecialBlockquote = useCallback(
+		(element: any, type: "formula" | "explanation") => {
+			const regex =
+				type === "formula" ? /\#formula\#/ : /\#explanation\#/;
+
+			return element.some((str: any) => {
+				if (typeof str === "object") {
+					return str.props.children.some((x: any) =>
+						typeof x === "string" ? x.match(regex) : false
+					);
+				}
+				return str.match(regex);
+			});
+		},
+		[]
+	);
 
 	useEffect(() => {
 		handleConvertCodeToComponents(true);
 		handleTransformBlockQuotes();
-	}, [page, handleConvertCodeToComponents, handleTransformBlockQuotes]);
+		handleGetExistingAnswerIfAny();
+	}, [
+		page,
+		handleConvertCodeToComponents,
+		handleTransformBlockQuotes,
+		handleGetExistingAnswerIfAny,
+	]);
 
 	const renderChapterContents = useMemo(
 		() => (
-			<div className="flex w-full h-full overflow-y-scroll">
+			<div className="flex w-full h-full overflow-x-hidden overflow-y-scroll">
 				<article
 					id="CourseMaterial_contents"
 					className="h-full pt-32 p-adapt-sm"
@@ -258,24 +311,37 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 								);
 							},
 							blockquote: ({ node, children, ...props }) => {
-								const conditionExists =
-									handleCheckForConditionalBlockquotes(
-										children
+								if (
+									handleCheckForSpecialBlockquote(
+										children,
+										"explanation"
+									)
+								)
+									return (
+										<Blockquote
+											className={clsx(
+												userAnswerStatus !==
+													"success" && "hidden"
+											)}
+											color="success"
+										>
+											{children}
+										</Blockquote>
 									);
 
-								return conditionExists ? (
-									<Blockquote
-										className={clsx(
-											"ConditionalBlockQuotes",
-											!submitted && "hidden"
-										)}
-										color="success"
-									>
-										{children}
-									</Blockquote>
-								) : (
-									<Blockquote>{children}</Blockquote>
-								);
+								if (
+									handleCheckForSpecialBlockquote(
+										children,
+										"formula"
+									)
+								)
+									return (
+										<Blockquote className="!pl-8">
+											{children}
+										</Blockquote>
+									);
+
+								return <Blockquote>{children}</Blockquote>;
 							},
 						}}
 						remarkPlugins={[RemarkMath, remarkGfm]}
@@ -290,18 +356,27 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 			code,
 			page,
 			handleCheckForCodeInvokedElements,
-			handleCheckForConditionalBlockquotes,
-			submitted,
+			handleCheckForSpecialBlockquote,
+			userAnswerStatus,
 		]
 	);
 
+	const handleCleanUpStates = useCallback(() => {
+		setAccept("");
+		setSolved(-1);
+		setSubmmited(false);
+		setAnswer("");
+	}, []);
+
 	const handlePreviousPage = useCallback(() => {
+		handleCleanUpStates();
 		if (page > 0) setPage((prev) => prev - 1);
-	}, [page]);
+	}, [handleCleanUpStates, page]);
 
 	const handleNextPage = useCallback(() => {
+		handleCleanUpStates();
 		if (page < maxPage - 1) setPage((prev) => prev + 1);
-	}, [page, maxPage]);
+	}, [handleCleanUpStates, page, maxPage]);
 
 	const renderPageControls = useMemo(
 		() => (
@@ -335,7 +410,7 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 						size="l"
 						onClick={() => {
 							setSubmmited(true);
-							if (accept === answer) alert("CORRECT!");
+							handleCheckAnswer(answer);
 						}}
 						disabled={answer === ""}
 					>
@@ -345,12 +420,12 @@ const CourseMaterial = ({ code = "" }: CourseMaterialProps) => {
 			</div>
 		),
 		[
-			accept,
 			answer,
-			maxPage,
 			page,
+			maxPage,
 			solved,
 			handleNextPage,
+			handleCheckAnswer,
 			handlePreviousPage,
 		]
 	);
@@ -414,10 +489,11 @@ export const getStaticProps = async (req: any) => {
 	const { course, section, chapter } = req.params;
 	const { readChapter } = require("../../../../src/lib/mdx.tsx");
 
+	const params = { course, section, chapter };
 	const projectMD = await readChapter(course, section, chapter);
 
 	return {
-		props: { code: projectMD },
+		props: { code: projectMD, params: params },
 	};
 };
 

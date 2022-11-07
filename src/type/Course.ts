@@ -33,3 +33,10 @@ export default interface CourseType {
 	description: string;
 	sections: SectionType[];
 }
+
+export interface ChapterAddressType {
+	course: string;
+	section: string;
+	chapter: string;
+	page?: number;
+}
