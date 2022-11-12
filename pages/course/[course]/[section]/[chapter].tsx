@@ -1,21 +1,5 @@
-import type { NextPage } from "next";
-import {
-	Fragment,
-	useMemo,
-	useState,
-	useEffect,
-	useCallback,
-	useRef,
-	ReactNode,
-	createElement,
-} from "react";
-import Section from "@/src/compponents/basic/Section";
-import SlantedBackgroundTemplate from "@/src/compponents/template/SlantedBackground";
-import CourseType, {
-	ChapterAddressType,
-	ChapterType,
-	SectionType,
-} from "@/src/type/Course";
+import { useMemo, useState, useEffect, useCallback, useRef } from "react";
+import { ChapterAddressType, ChapterType } from "@/src/type/Course";
 import ReactMarkdown from "react-markdown";
 import RemarkMath from "remark-math";
 import RehypeKatex from "rehype-katex";
@@ -24,14 +8,19 @@ import Graph from "@/src/compponents/materials/Graph";
 import evaluateMath from "@/src/utils/evaluateMath";
 import * as ReactDOM from "react-dom";
 import clsx from "clsx";
-import { BsChevronDoubleLeft, BsChevronDoubleRight } from "react-icons/bs";
 import { MathFunction, MathPoint } from "@/src/type/Math";
 import remarkGfm from "remark-gfm";
 import { ReactElement } from "react-markdown/lib/react-markdown";
 import { CUSTOM_MATERIAL } from "@/src/type/Material";
 import Input from "@/src/compponents/basic/Input";
 import Blockquote from "@/src/compponents/basic/Quote";
-import { checkChapterProgress, storeChapterProgress } from "@/src/utils/course";
+import {
+	checkChapterProgress,
+	getPracticeAnswer,
+	getPracticeId,
+	regexPracticeInput,
+	storeChapterProgress,
+} from "@/src/utils/course";
 
 const DUMMY: ChapterType = {
 	title: "Definition of Limit",
@@ -44,14 +33,16 @@ interface CourseMaterialProps {
 }
 
 const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
-	const { title, requirements } = DUMMY;
 	const [page, setPage] = useState(0);
 	const [solved, setSolved] = useState(-1);
 	const [maxPage, setMaxPage] = useState(0);
 	const [loading, setLoading] = useState(true);
-	const [answer, setAnswer] = useState<string | number>("");
-	const [accept, setAccept] = useState<string | number>("");
+	const [answer, setAnswer] = useState<{ [key: string]: string }>({});
+	const [accept, setAccept] = useState<{ [key: string]: string }>({});
 	const [submitted, setSubmmited] = useState(false);
+	const answerInputBoxParentElement = useRef<
+		{ parentElement: HTMLElement; string: string }[]
+	>([]);
 
 	const chapterAddress = useMemo(
 		() => ({
@@ -61,32 +52,75 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 		[page, params]
 	);
 
+	const chapterPracticeAddress = useMemo(
+		() => ({
+			...params,
+			chapter: `${params.chapter}@practices`,
+			page: undefined,
+		}),
+		[params]
+	);
+
 	const handleCheckAnswer = useCallback(
-		(input: string | number) => {
+		(userAnswer: string, practiceId: string) => {
+			const exactAnswer: string = accept[practiceId];
 			if (
-				accept === input ||
-				(typeof accept === "string" &&
-					typeof input === "string" &&
-					accept.toLowerCase() === input.toLowerCase())
+				exactAnswer &&
+				(exactAnswer === userAnswer ||
+					String(exactAnswer) === String(userAnswer) ||
+					exactAnswer.toLowerCase() === userAnswer.toLowerCase())
 			) {
-				storeChapterProgress(chapterAddress, input);
+				const existingData =
+					checkChapterProgress(chapterPracticeAddress) ?? {};
+				storeChapterProgress(chapterPracticeAddress, {
+					...existingData,
+					[practiceId]: userAnswer,
+				});
 				return true;
 			}
 
 			return false;
 		},
-		[accept, chapterAddress]
+		[accept, chapterPracticeAddress]
 	);
 
 	const handleGetExistingAnswerIfAny = useCallback(() => {
-		const existingAnswer = checkChapterProgress(chapterAddress);
-		
-		if (existingAnswer && handleCheckAnswer(existingAnswer)) {
-			setAnswer(accept);
+		const existingAnswers = checkChapterProgress(chapterPracticeAddress);
+
+		const practiceIds = Object.keys(accept);
+
+		if (practiceIds.length === 0) return;
+
+		let currentAnswers = {};
+		let allAnswersAreCorrect = true;
+		practiceIds.forEach((practiceId: string) => {
+			if (
+				existingAnswers &&
+				existingAnswers[practiceId] &&
+				handleCheckAnswer(existingAnswers[practiceId], practiceId)
+			) {
+				const specificAnswer = existingAnswers[practiceId];
+				if (specificAnswer) {
+					currentAnswers = {
+						...currentAnswers,
+						[practiceId]: specificAnswer,
+					};
+				}
+			} else {
+				allAnswersAreCorrect = false;
+			}
+		});
+
+		if (
+			allAnswersAreCorrect &&
+			Object.keys(currentAnswers).length === practiceIds.length &&
+			practiceIds.length > 0
+		) {
+			setAnswer(currentAnswers);
 			setSubmmited(true);
 			setSolved(1);
 		}
-	}, [chapterAddress, handleCheckAnswer, accept]);
+	}, [chapterPracticeAddress, accept, handleCheckAnswer]);
 
 	useEffect(() => {
 		setMaxPage(code.split("===").length);
@@ -113,141 +147,187 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 		[]
 	);
 
-	const userAnswerStatus = useMemo(() => {
-		if (submitted) return handleCheckAnswer(answer) ? "success" : "error";
-		return undefined;
-	}, [submitted, answer, handleCheckAnswer]);
+	const userAnswerStatus = useCallback(
+		(practiceId: string) => {
+			if (answer[practiceId])
+				return handleCheckAnswer(answer[practiceId], practiceId)
+					? "success"
+					: "error";
+			return undefined;
+		},
+		[answer, handleCheckAnswer]
+	);
 
-	const renderAnswerBox = useMemo(
-		() => (
+	const renderAnswerBox = useCallback(
+		(practiceId: string) => (
 			<Input
-				id="InputBox"
+				key={`InputBox-${practiceId}`}
+				id={`InputBox-${practiceId}`}
+				className="InputBox"
 				onBlur={(e) => {
 					if (answer !== accept) {
 						setSubmmited(false);
-						setAnswer(e.target.value);
+						setAnswer((prev) => ({
+							...prev,
+							[practiceId]: e.target.value,
+						}));
 					}
 				}}
-				defaultValue={answer}
-				disabled={solved === 1}
-				state={userAnswerStatus}
+				defaultValue={answer[practiceId]}
+				disabled={
+					solved === 1 || userAnswerStatus(practiceId) === "success"
+				}
+				state={submitted ? userAnswerStatus(practiceId) : undefined}
 			/>
 		),
-		[accept, answer, userAnswerStatus, solved]
+		[answer, solved, userAnswerStatus, submitted, accept]
 	);
 
-	const handleConvertCodeToComponents = useCallback(
-		(bypass: boolean = false) => {
-			if (!loading && !bypass) return;
+	const handleRemoveCustomComponents = useCallback((className: string) => {
+		const previousRenders = document.querySelectorAll(`.${className}`);
+		previousRenders.forEach((element) => {
+			//TODO: Something MIGHT be wrong with this unmount method.
+			element.parentElement?.removeChild(element);
+		});
+	}, []);
 
-			const container = document.getElementById(
-				"CourseMaterial_contents"
-			);
-
-			Object.values(CUSTOM_MATERIAL).forEach((group) => {
-				const previousRenders = document.querySelectorAll(`.${group}`);
-				previousRenders.forEach((element) => {
-					// ReactDOM.unmountComponentAtNode(element);
-					element.parentElement?.removeChild(element);
-				});
-			});
-
-			const elements = document.querySelectorAll(
-				"#CourseMaterial_contents .CustomMaterialInvoker"
-			);
-
-			let inputElementsRendered = 0;
-
-			elements.forEach((element) => {
-				const string = element.innerHTML;
-				const parentElement = element.parentElement;
-
-				let mathFuncs: MathFunction[] = [];
-				let mathPoints: MathPoint[] = [];
-
-				if (
-					container &&
-					parentElement &&
-					string.startsWith("[graph]")
-				) {
-					const params = string.replace("[graph]", "").split("_");
-					params.forEach((param) => {
-						if (param.startsWith("function:")) {
-							const funcs = param
-								.replace("function:", "")
-								.split(",");
-							mathFuncs = funcs.map((func: string) => {
-								return (x: number) => {
-									const value = evaluateMath(
-										func.replace(/x/g, `(${x})`)
-									);
-									return value;
-								};
-							});
-						} else if (param.startsWith("point:")) {
-							const points = param
-								.replace("point:", "")
-								.split("/");
-							points.forEach((point) => {
-								const parse = point.split("-");
-								if (parse.length === 2) {
-									const variant = parse[1];
-									const coords = parse[0]
-										.split(",")
-										.map((x) => Number(x));
-									const [y, x] = coords;
-									if (coords.length === 2) {
-										mathPoints.push({
-											points: [y, x],
-											variant: variant ?? "solid",
-										});
-									}
-								}
-							});
-						}
-					});
-
-					if (mathFuncs.length > 0 || mathPoints.length > 0) {
-						renderCustomElement(
-							parentElement,
-							<Graph
-								id={string}
-								mathFunctions={mathFuncs}
-								mathPoints={mathPoints}
-							/>,
-							CUSTOM_MATERIAL["graph"],
-							string
-						);
-					}
-				}
-				if (
-					container &&
-					parentElement &&
-					string.startsWith("[input]")
-				) {
-					setAccept(string.replace("[input]", ""));
+	const handleRenderAnswerBoxes = useCallback(() => {
+		answerInputBoxParentElement.current.forEach(
+			({ parentElement, string }) => {
+				const currentId = getPracticeId(string);
+				if (currentId) {
+					handleRemoveCustomComponents("InputBox");
 					renderCustomElement(
 						parentElement,
-						renderAnswerBox,
+						renderAnswerBox(currentId),
 						CUSTOM_MATERIAL["input"],
 						string
 					);
+				}
+			}
+		);
+	}, [handleRemoveCustomComponents, renderAnswerBox, renderCustomElement]);
+
+	const handleConvertCodeToComponents = useCallback(() => {
+		if (!loading) return;
+
+		const container = document.getElementById("CourseMaterial_contents");
+
+		Object.values(CUSTOM_MATERIAL).forEach((group) => {
+			handleRemoveCustomComponents(group);
+		});
+
+		const elements = document.querySelectorAll(
+			"#CourseMaterial_contents .CustomMaterialInvoker"
+		);
+
+		let inputElementsRendered = 0;
+
+		let answerKeys = {};
+
+		elements.forEach((element, index) => {
+			const string = element.innerHTML;
+			const parentElement = element.parentElement;
+
+			let mathFuncs: MathFunction[] = [];
+			let mathPoints: MathPoint[] = [];
+
+			if (container && parentElement && string.startsWith("[graph]")) {
+				const params = string.replace("[graph]", "").split("_");
+				params.forEach((param) => {
+					if (param.startsWith("function:")) {
+						const funcs = param.replace("function:", "").split(",");
+						mathFuncs = funcs.map((func: string) => {
+							return (x: number) => {
+								const value = evaluateMath(
+									func.replace(/x/g, `(${x})`)
+								);
+								return value;
+							};
+						});
+					} else if (param.startsWith("point:")) {
+						const points = param.replace("point:", "").split("/");
+						points.forEach((point) => {
+							const parse = point.split("-");
+							if (parse.length === 2) {
+								const variant = parse[1];
+								const coords = parse[0]
+									.split(",")
+									.map((x) => Number(x));
+								const [y, x] = coords;
+								if (coords.length === 2) {
+									mathPoints.push({
+										points: [y, x],
+										variant: variant ?? "solid",
+									});
+								}
+							}
+						});
+					}
+				});
+
+				if (mathFuncs.length > 0 || mathPoints.length > 0) {
+					renderCustomElement(
+						parentElement,
+						<Graph
+							id={string}
+							mathFunctions={mathFuncs}
+							mathPoints={mathPoints}
+						/>,
+						CUSTOM_MATERIAL["graph"],
+						string
+					);
+				}
+			}
+			if (
+				container &&
+				parentElement &&
+				string.match(regexPracticeInput)
+			) {
+				const [currentId, currentAnswer] = [
+					getPracticeId(string),
+					getPracticeAnswer(string),
+				];
+
+				if (currentId && currentAnswer) {
+					answerKeys = {
+						...answerKeys,
+						[currentId]: currentAnswer,
+					};
+
+					answerInputBoxParentElement.current = [
+						...answerInputBoxParentElement.current,
+						{
+							parentElement,
+							string,
+						},
+					];
+
 					inputElementsRendered++;
 				}
-			});
-
-			setLoading(false);
-			// if (completedPages.includes(page)) {
-			// 	setSolved(1);
-			// }
-			if (inputElementsRendered > 0) {
-				setSolved(0);
-			} else {
-				setSolved(-1);
 			}
-		},
-		[loading, renderAnswerBox, renderCustomElement]
-	);
+		});
+
+		if (inputElementsRendered > 0 && Object.values(answerKeys).length > 0) {
+			setSolved(0);
+			setAccept((prev) => ({
+				...prev,
+				...answerKeys,
+			}));
+			handleRenderAnswerBoxes();
+		} else {
+			setSolved(-1);
+		}
+	}, [
+		loading,
+		handleRemoveCustomComponents,
+		renderCustomElement,
+		handleRenderAnswerBoxes,
+	]);
+
+	useEffect(() => {
+		handleRenderAnswerBoxes();
+	}, [accept, answer, solved, userAnswerStatus, handleRenderAnswerBoxes]);
 
 	const handleTransformBlockQuotes = useCallback(() => {
 		const blockquotes = document.querySelectorAll("blockquote");
@@ -278,16 +358,24 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 		[]
 	);
 
+	const handlePrepareNewPage = useCallback(() => {
+		if (loading) {
+			handleConvertCodeToComponents();
+			setLoading(false);
+		}
+	}, [handleConvertCodeToComponents, loading]);
+
 	useEffect(() => {
-		handleConvertCodeToComponents(true);
-		handleTransformBlockQuotes();
+		handlePrepareNewPage();
+	}, [page, handlePrepareNewPage]);
+
+	useEffect(() => {
 		handleGetExistingAnswerIfAny();
-	}, [
-		page,
-		handleConvertCodeToComponents,
-		handleTransformBlockQuotes,
-		handleGetExistingAnswerIfAny,
-	]);
+	}, [accept, handleGetExistingAnswerIfAny, handleTransformBlockQuotes]);
+
+	useEffect(() => {
+		handleTransformBlockQuotes();
+	}, [accept, answer, handleTransformBlockQuotes]);
 
 	const renderChapterContents = useMemo(
 		() => (
@@ -320,8 +408,7 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 									return (
 										<Blockquote
 											className={clsx(
-												userAnswerStatus !==
-													"success" && "hidden"
+												solved !== 1 && "hidden"
 											)}
 											color="success"
 										>
@@ -357,15 +444,16 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 			page,
 			handleCheckForCodeInvokedElements,
 			handleCheckForSpecialBlockquote,
-			userAnswerStatus,
+			solved,
 		]
 	);
 
 	const handleCleanUpStates = useCallback(() => {
-		setAccept("");
+		setAccept({});
 		setSolved(-1);
 		setSubmmited(false);
-		setAnswer("");
+		setAnswer({});
+		setLoading(true);
 	}, []);
 
 	const handlePreviousPage = useCallback(() => {
@@ -375,8 +463,11 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 
 	const handleNextPage = useCallback(() => {
 		handleCleanUpStates();
-		if (page < maxPage - 1) setPage((prev) => prev + 1);
-	}, [handleCleanUpStates, page, maxPage]);
+		if (page < maxPage - 1) {
+			if (solved !== 0) storeChapterProgress(chapterAddress, true);
+			setPage((prev) => prev + 1);
+		}
+	}, [handleCleanUpStates, page, maxPage, solved, chapterAddress]);
 
 	const renderPageControls = useMemo(
 		() => (
@@ -410,9 +501,25 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 						size="l"
 						onClick={() => {
 							setSubmmited(true);
-							handleCheckAnswer(answer);
+							if (
+								Object.values(answer).length ===
+								Object.values(accept).length
+							) {
+								const correct = !Object.entries(answer).some(
+									([key, answer]) => {
+										return !handleCheckAnswer(answer, key);
+									}
+								);
+
+								if (correct) setSolved(1);
+							}
 						}}
-						disabled={answer === ""}
+						disabled={
+							Object.values(answer).length !==
+								Object.values(accept).length ||
+							Object.values(answer).filter((x) => x === "")
+								.length > 1
+						}
 					>
 						Check
 					</Button>
@@ -420,13 +527,14 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 			</div>
 		),
 		[
-			answer,
+			handlePreviousPage,
 			page,
 			maxPage,
 			solved,
 			handleNextPage,
+			answer,
+			accept,
 			handleCheckAnswer,
-			handlePreviousPage,
 		]
 	);
 
@@ -460,21 +568,23 @@ export const getStaticPaths = async () => {
 		courses.map(async (course) => {
 			const sections: string[] = await readAllSections(course);
 			return await Promise.all(
-				sections.map(async (section) => {
-					const chapters: string[] = await readAllChapters(
-						course,
-						section
-					);
-					return await Promise.all(
-						chapters.map((chapter) => ({
-							params: {
-								course: course,
-								section: section,
-								chapter: chapter.replace(".mdx", ""),
-							},
-						}))
-					);
-				})
+				sections
+					.filter((x) => !x.includes(".json"))
+					.map(async (section) => {
+						const chapters: string[] = await readAllChapters(
+							course,
+							section
+						);
+						return await Promise.all(
+							chapters.map((chapter) => ({
+								params: {
+									course: course,
+									section: section,
+									chapter: chapter.replace(".mdx", ""),
+								},
+							}))
+						);
+					})
 			);
 		})
 	);

@@ -2,13 +2,12 @@ import clsx from "clsx";
 import { Fragment, useCallback, useMemo, useState } from "react";
 import CourseType, {
 	ChapterType,
+	RequirementCategoryType,
 	RequirementType,
-	REQUIREMENT_MESSAGE,
 	SectionType,
 } from "@/src/type/Course";
 import { BsCheckSquareFill, BsChevronLeft, BsSquare } from "react-icons/bs";
 import ProgressVertical from "@/src/compponents/courses/ProgressVertical/ProgressVertical";
-
 const DUMMY_CHAPTERS: SectionType[] = [
 	{
 		title: "Limits",
@@ -134,6 +133,22 @@ export default function Section({ section, caption, index }: SectionProps) {
 		[handleCheckChapterIsComplete]
 	);
 
+	const handleGetRequirementMessage = useCallback(
+		(type: RequirementCategoryType, params?: any | undefined) => {
+			switch (type) {
+				case "read":
+					return "Read the material";
+				case "practice":
+					return `Solve ${params.number} practice problem${
+						params.number > 1 ? "s" : ""
+					}`;
+				default:
+					return "";
+			}
+		},
+		[]
+	);
+
 	const renderChapterRequirements = useCallback(
 		(section: string, requirements: RequirementType[]) => {
 			return (
@@ -159,7 +174,10 @@ export default function Section({ section, caption, index }: SectionProps) {
 									)}
 								</span>
 								<span className="text-gray-600 text-sm">
-									{REQUIREMENT_MESSAGE[requirement.category]}
+									{handleGetRequirementMessage(
+										requirement.category,
+										requirement.params
+									)}
 								</span>
 							</li>
 						))}
@@ -167,7 +185,7 @@ export default function Section({ section, caption, index }: SectionProps) {
 				</Fragment>
 			);
 		},
-		[]
+		[handleGetRequirementMessage]
 	);
 
 	return (
@@ -205,14 +223,13 @@ export default function Section({ section, caption, index }: SectionProps) {
 				<div className="px-8 pb-8">
 					<ProgressVertical
 						title={title}
-						milestones={chapters.map((chapter) => chapter.title)}
-						indexTemplate={(idx) => `Chapter ${index}.${idx}`}
-						captions={chapters.map((chapter) =>
-							renderChapterRequirements(
-								chapter.title,
-								chapter.requirements ?? []
-							)
+						milestones={chapters.map(
+							(chapter) => `${chapter.title}`
 						)}
+						indexTemplate={(idx) => `Chapter ${index}.${idx}`}
+						captions={chapters.map((chapter) => (
+							<>40% Completed</>
+						))}
 						progress={lastFinishedChapter}
 						stylings={chapters.map((chapter, idx) =>
 							handleGetStylingForChapter(chapters, idx)

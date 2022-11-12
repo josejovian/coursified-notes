@@ -1,45 +1,45 @@
 # Properties of Limits
-  
+
 > #formula# $\lim\limits_{x\rightarrow a} c = c$
 
 **The limit of a constant function is the constant itself.** At any point $x$, the function will be always equal to the constant, so finding the limit of this function as $x$ approaches any point would result the same, that is, the constant itself.
 
 ---
-  
+
 > #formula# $\lim\limits_{x\rightarrow a} x = a$
 
-Similar to the previous one, this is self-explanatory. 
+Similar to the previous one, this is self-explanatory.
 
 ---
-  
+
 > #formula# $\lim\limits_{x\rightarrow a} c \times f(x) = c \lim\limits_{x\rightarrow a} f(x)$
 
 The limit of a function **multiplied by a constant** is equal to the constant multiplied by the limit of a function.
 
 ---
-  
-> #formula# $\lim\limits_{x\rightarrow a} \left [f(x) \pm g(x) \right] =\lim\limits_{x\rightarrow a} f(x) \pm \lim\limits_{x\rightarrow a} g(x) $
+
+> #formula# $\lim\limits*{x\rightarrow a} \left [f(x) \pm g(x) \right] =\lim\limits*{x\rightarrow a} f(x) \pm \lim\limits\_{x\rightarrow a} g(x) $
 
 The **sum or difference** of the limit of two functions is equal when **adding or subtracting** them individually.
 
 ---
-  
-> #formula# $\lim\limits_{x\rightarrow a} f(x)g(x) =\lim\limits_{x\rightarrow a} f(x) \times \lim\limits_{x\rightarrow a} g(x) $  
-> 
-> $\lim\limits_{x\rightarrow a} \frac{f(x)}{g(x)} = \large \frac{\lim\limits_{x\rightarrow a} f(x)}{\lim\limits_{x\rightarrow a} g(x)}, \normalsize \text{where } g(x) \neq 0 $
+
+> #formula# $\lim\limits*{x\rightarrow a} f(x)g(x) =\lim\limits*{x\rightarrow a} f(x) \times \lim\limits\_{x\rightarrow a} g(x) $
+>
+> $\lim\limits*{x\rightarrow a} \frac{f(x)}{g(x)} = \large \frac{\lim\limits*{x\rightarrow a} f(x)}{\lim\limits\_{x\rightarrow a} g(x)}, \normalsize \text{where } g(x) \neq 0 $
 
 The **product or quotient** of the limit of two functions is equal when **multiplying or dividing** them individually.
 
 ---
-  
+
 > #formula# $\lim\limits_{x\rightarrow a} \left [ f(x) \right ]^n = \left [ \lim\limits_{x\rightarrow a} f(x) \right ]^n$
 
 Given that $n$ is any real number, including fractions, the limit of **(the function $f$ to the power of $n$)** is equal to **(the limit of the function $f$)** to the power of $n$. Due to the previous law or property, this one should be self-explanatory.
 
 ---
-  
+
 > #formula# $\lim\limits_{x\rightarrow 0} \frac{1}{|x|} = \infty$
-> 
+>
 > $\lim\limits_{x\rightarrow \infty} \frac{1}{x} = 0$
 
 These are some other basic limits that may help you in calculating limits.
@@ -76,7 +76,6 @@ $$
 \end{align*}
 $$
 
-
 ===
 
 # Properties of Limits: Tricky Example #1
@@ -85,13 +84,15 @@ $$
 > Evaluate $\lim\limits_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1}  = ...$
 
 When you plug in $x=1$ into the function, you get...
+
 $$
 \begin{align*}
 \lim_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1} &= \lim_{x\rightarrow 1} \frac{1-5+4}{1-1}\\
  &= \frac{0}{0}\\
 \end{align*}
 $$
-...this! Well, this is not how we are supposed to solve this. Instead, this just means that there is a common factor between the numerator and denominator that we can cancel from both sides. In this case, it is $(x - 1)$. 
+
+...this! Well, this is not how we are supposed to solve this. Instead, this just means that there is a common factor between the numerator and denominator that we can cancel from both sides. In this case, it is $(x - 1)$.
 
 $$
 \begin{align*}
@@ -124,7 +125,7 @@ $$
 \end{align*}
 $$
 
-You may have found one step rather confusing, that is, when we **divide both numerator and denominator with $x$**. The reason we do this is that we're dealing with $\infty$. How would we exactly calculate $\frac{\infty - 25}{\infty + \infty}$, if we were to immediately substitute the $x$ value? That is why, we need a trick like the above, so that we do not reach an indeterminate form. 
+You may have found one step rather confusing, that is, when we **divide both numerator and denominator with $x$**. The reason we do this is that we're dealing with $\infty$. How would we exactly calculate $\frac{\infty - 25}{\infty + \infty}$, if we were to immediately substitute the $x$ value? That is why, we need a trick like the above, so that we do not reach an indeterminate form.
 
 Dividing both sides with $x$ for this specific case will help us evaluate the limit, because we know that $\lim\limits_{x\rightarrow a} c \times f(x) = c \lim\limits_{x\rightarrow a} f(x)$ and $\lim\limits_{x\rightarrow \infty} \frac{1}{x} = 0$. Combining these both properties, we know that we will end up with $\frac{14}{2}$.
 
@@ -146,7 +147,7 @@ $$
 &= \lim_{x\rightarrow 1} \frac{4x^2-x-3}{(x-1)(2x+\sqrt{x + 3})}\\
 &= \lim_{x\rightarrow 1} \frac{(x-1)(4x+3)}{(x-1)(2x+\sqrt{x + 3})}\\
 &= \frac{7}{4}\\
-\end{align*} 
+\end{align*}
 $$
 
 We can see that once we rationalize the numerator, we are fortunate enough to see a common factor, that we can cancel out. This is an unqiue example that we solved using more than one tricks.
@@ -166,8 +167,8 @@ $$
 \lim_{x\rightarrow -4^-} f(x)
 &= \lim_{x\rightarrow -4^-} x + 4\\
 &= 0\\
-\end{align*} 
-$$  
+\end{align*}
+$$
 
 Now, to the right side:
 
@@ -177,16 +178,17 @@ $$
 &= \lim\limits_{x\rightarrow -4^+} x^2+5x+4\\
 &= \lim\limits_{x\rightarrow -4^+} (-4)^2+(5\times (-4))-4\\
 &= 0\\
-\end{align*} 
+\end{align*}
 $$
 
 Since both sides are equal, we can conclude that:
+
 $$
 \begin{align*}
 \lim\limits_{x\rightarrow -4} f(x)
 &= \lim\limits_{x\rightarrow -4^-} f(x) = \lim\limits_{x\rightarrow -4^+} f(x)\\
 &= 0\\
-\end{align*} 
+\end{align*}
 $$
 
 We can also see that if one of the limits had different values, then $f(x)$ would not have a limit at that point ($x = -4$).
@@ -198,9 +200,10 @@ We can also see that if one of the limits had different values, then $f(x)$ woul
 Evaluate $\lim\limits_{x\rightarrow 4} \frac{8 - \sqrt{x^3}}{\sqrt{x} - 2}  = ...$.  
 If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
 
-`[input]-12`
+`[input;compute-limit-easy-1]-12`
 
 > #explanation# **Correct!** This is just another example of limit that we can solve with factorization. Tbe square root might get in our way, but let us create a new variable $v$, such that $v = \sqrt{x}$. Since we're converting from one to another variable, the $x$ we're approaching in the limit also changes accordingly. Even if you do not subsitute, **the result will stay the same**.
+>
 > $$
 > \begin{align*}
 > \lim_{x\rightarrow 4} \frac{8 - \sqrt{x^3}}{\sqrt{x} - 2} &= \lim_{v\rightarrow 2} \frac{8 - v^3}{v - 2} \\
@@ -219,10 +222,11 @@ If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
 Evaluate $\lim\limits_{x\rightarrow \infty }(\sqrt{9x^2+6x-3}-3x-4) $.  
 If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
 
-`[input]-3`
+`[input;compute-limit-easy-2]-3`
 
-> #explanation# **Correct!** This is just another example of limit that we can solve with rationalization. However, you may find this one a little bit trickier than the example because you have to manipulate $-3x-4$ part of the equation into its root form, but that is it, the steps remain the same.  
-> $$ 
+> #explanation# **Correct!** This is just another example of limit that we can solve with rationalization. However, you may find this one a little bit trickier than the example because you have to manipulate $-3x-4$ part of the equation into its root form, but that is it, the steps remain the same.
+>
+> $$
 > \begin{align*}
 > \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-3x-4]  &= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-(3x+4)] \\
 > &= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-\sqrt{(3x+4)^2}] \\
@@ -234,8 +238,9 @@ If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
 > &= \frac{-18}{6} \\
 > &= -3 \\
 > \end{align*}
-> $$   
-> 
+> $$
+>
 > You may find these steps a little bit repetetive, so here is a little trick:
+>
 > > #formula# Given $f(x) = \sqrt{ax^2 + bx + c} - \sqrt{px^2 + qx + r}$,  
-> > then, $\lim_{x\rightarrow \infty} f(x) = \begin{cases} \infty & \text{ if } a > p \\ \frac{b-q}{2\sqrt{a}} & \text{ if } a = p \\ -\infty & \text{ if } a < p \\ \end{cases}$  
+> > then, $\lim_{x\rightarrow \infty} f(x) = \begin{cases} \infty & \text{ if } a > p \\ \frac{b-q}{2\sqrt{a}} & \text{ if } a = p \\ -\infty & \text{ if } a < p \\ \end{cases}$

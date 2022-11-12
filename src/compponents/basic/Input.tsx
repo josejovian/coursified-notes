@@ -1,15 +1,7 @@
 import { ColorType, INPUT_COLOR_CLASS } from "@/src/style/Colors";
 import { SizeType } from "@/src/style/Sizes";
 import clsx from "clsx";
-import {
-	Fragment,
-	HTMLProps,
-	ReactNode,
-	useMemo,
-	DetailedHTMLProps,
-	ButtonHTMLAttributes,
-	useEffect,
-} from "react";
+import { ReactNode, DetailedHTMLProps, ButtonHTMLAttributes } from "react";
 import { INPUT_SIZE_CLASS } from "@/src/style/Sizes";
 
 interface InputProps
@@ -20,6 +12,7 @@ interface InputProps
 		>,
 		"size" | "type"
 	> {
+	className?: string;
 	color?: ColorType;
 	helperText?: string;
 	type?: string;
@@ -31,6 +24,7 @@ interface InputProps
 }
 
 export default function Input({
+	className,
 	color = "primary",
 	helperText,
 	type,
@@ -49,9 +43,11 @@ export default function Input({
 					INPUT_SIZE_CLASS[size],
 					INPUT_COLOR_CLASS[color],
 					state === "error" && "border-danger-4 outline-danger-4",
-					state === "success" && "border-success-4 outline-success-4"
+					state === "success" && "border-success-4 outline-success-4",
+					className
 				)}
 				type={type}
+				disabled={disabled}
 				{...props}
 			/>
 			{helperText && (
