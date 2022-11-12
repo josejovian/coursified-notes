@@ -1,74 +1,13 @@
 import { Fragment, useMemo, useCallback } from "react";
 import Section from "@/src/compponents/basic/Section";
 import SlantedBackgroundTemplate from "@/src/compponents/template/SlantedBackground";
-import CourseType, { SectionType } from "@/src/type/Course";
+import CourseType, {
+	RequirementMap,
+	RequirementType,
+	SectionType,
+} from "@/src/type/Course";
 import { checkChapterProgress } from "@/src/utils/course";
-
-const DUMMY_CHAPTERS: SectionType[] = [
-	{
-		title: "Limits",
-		chapters: [
-			{
-				title: "Definition of Limit",
-				requirements: [{ category: "read", completed: true }],
-			},
-			{
-				title: "Laws of Limit",
-				requirements: [
-					{ category: "read", completed: true },
-					{ category: "practice", completed: true },
-				],
-			},
-			{
-				title: "Limits of Trigonometric Functions",
-				requirements: [{ category: "read" }],
-			},
-			{
-				title: "Limits of Some Functions",
-				requirements: [{ category: "read" }],
-			},
-			{
-				title: "Continuity of a Function",
-				requirements: [{ category: "read" }],
-			},
-			{ title: "Theorems", requirements: [{ category: "read" }] },
-		],
-	},
-	{
-		title: "Derivative",
-		chapters: [
-			{ title: "Definition of Derivative" },
-			{ title: "Laws of Derivation" },
-			{ title: "Derivation of Trigonometric Functions and Its Inverse" },
-			{ title: "Limits of Some Functions" },
-			{ title: "L'Hôpital's Rule" },
-		],
-	},
-	{
-		title: "Applications of Derivative",
-		chapters: [
-			{ title: "Global and Local Extrema of a Function" },
-			{ title: "Increasing and Decreasing of a Function" },
-		],
-		progress: 2,
-	},
-	{
-		title: "Function of Two or More Variables",
-		chapters: [
-			{ title: "Definition" },
-			{ title: "Partial Derivative" },
-			{ title: "Extrema" },
-			{ title: "Gradient" },
-		],
-		progress: 2,
-	},
-];
-
-const DUMMY: CourseType = {
-	title: "Calculus I",
-	description: `The notes I took for my Calculus course in the second semester.`,
-	sections: DUMMY_CHAPTERS,
-};
+import { uncapitalize } from "@/src/utils/capitalize";
 
 interface CourseProps {
 	details: string;
@@ -76,6 +15,7 @@ interface CourseProps {
 
 const Course = ({ details }: CourseProps) => {
 	const {
+		id,
 		title,
 		description,
 		sections = [] as SectionType[],
@@ -99,39 +39,92 @@ const Course = ({ details }: CourseProps) => {
 				return section.chapters.map((chapter) => {
 					let totalSteps = 0;
 					let steps = 0;
-					const { requirements = [], pages } = chapter;
-
-					requirements.forEach((requirement) => {
-						if (requirement.category === "read")
-							totalSteps += requirement.params.number ?? 0;
-					});
+					const { requirements, pages } = chapter;
 
 					if (pages) {
 					}
 
 					const localAddress = {
-						course: title,
-						section: section.title,
-						chapter: chapter.title,
+						course: id,
+						section: section.id ?? uncapitalize(section.title),
+						chapter: chapter.id ?? uncapitalize(chapter.title),
 					};
 
-					return Math.floor((steps * 100) / totalSteps);
+					const localPracticeAddress = {
+						...localAddress,
+						chapter: `${localAddress.chapter}@practice`,
+					};
+
+					let readProgress = 0;
+					let practiceProgress = 0;
+
+					if (typeof window !== "undefined") {
+						const chapterProgress =
+							checkChapterProgress(localAddress);
+						const chapterPracticeProgress =
+							checkChapterProgress(localPracticeAddress);
+
+						if (chapterProgress)
+							readProgress =
+								Object.values(chapterProgress).length;
+
+						if (chapterPracticeProgress)
+							practiceProgress = Object.values(
+								chapterPracticeProgress
+							).length;
+					}
+
+					let requirementsProgresses: RequirementMap = {
+						read: undefined,
+						practice: undefined,
+					};
+
+					if (requirements) {
+						requirementsProgresses = {
+							read: requirements.read
+								? {
+										...requirements.read,
+										params: {
+											...requirements.read.params,
+											progress: readProgress,
+										},
+								  }
+								: undefined,
+							practice: requirements.practice
+								? {
+										...requirements.practice,
+										params: {
+											...requirements.practice.params,
+											progress: practiceProgress,
+										},
+								  }
+								: undefined,
+						};
+					}
+
+					return {
+						percentage: Math.floor((steps * 100) / totalSteps),
+						requirements: requirementsProgresses,
+					};
 				});
 			}
 		);
 
-		console.log(rawSectionChapterProgresses);
-
 		return rawSectionChapterProgresses;
-	}, [sections, title]);
+	}, [id, sections]);
 
 	const completeSections = sections.map(
 		(section: SectionType, index: number) => ({
 			...section,
-			chapters: section.chapters.map((chapter, index2: number) => ({
-				...chapter,
-				percentage: sectionProgresses[index][index2],
-			})),
+			chapters: section.chapters.map((chapter, index2: number) => {
+				const { percentage, requirements } =
+					sectionProgresses[index][index2];
+				return {
+					...chapter,
+					requirements,
+					percentage,
+				};
+			}),
 		})
 	);
 
@@ -180,7 +173,6 @@ export const getStaticProps = async (req: any) => {
 	const { readCourse, getDetailedCourse } = require("../../src/lib/mdx.tsx");
 
 	const details = await getDetailedCourse(course);
-	console.log(details);
 
 	return {
 		props: { details: JSON.stringify(details) },

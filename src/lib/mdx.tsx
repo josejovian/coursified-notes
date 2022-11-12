@@ -3,6 +3,7 @@ import CourseType, {
 	PageType,
 	PracticeType,
 	RequirementCategoryType,
+	RequirementMap,
 	RequirementType,
 	SectionType,
 } from "../type/Course";
@@ -71,6 +72,7 @@ async function readChapter(course: string, section: string, chapter: string) {
 async function getDetailedCourse(course: string) {
 	let result = await readCourse(course);
 	result = JSON.parse(result) as CourseType;
+	result.id = course;
 
 	const sections = await readAllSections(course);
 
@@ -84,6 +86,7 @@ async function getDetailedCourse(course: string) {
 				await readSection(course, section);
 
 			const sectionData: SectionType = {
+				id: section,
 				title: title,
 				chapters: [],
 			};
@@ -131,24 +134,33 @@ async function getDetailedCourse(course: string) {
 						};
 					}, []);
 
-					const requirements: RequirementType[] = [];
+					let requirements: RequirementMap = {
+						read: undefined,
+						practice: undefined,
+					};
 
 					if (completePages.length > 0) {
-						requirements.push({
-							category: "read",
-							params: {
-								number: completePages.length,
+						requirements = {
+							...requirements,
+							read: {
+								category: "read",
+								params: {
+									number: completePages.length,
+								},
 							},
-						});
+						};
 					}
 
 					if (countQuestions > 0) {
-						requirements.push({
-							category: "practice",
-							params: {
-								number: countQuestions,
+						requirements = {
+							...requirements,
+							practice: {
+								category: "practice",
+								params: {
+									number: countQuestions,
+								},
 							},
-						});
+						};
 					}
 
 					return {

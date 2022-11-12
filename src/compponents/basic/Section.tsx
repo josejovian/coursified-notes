@@ -3,62 +3,14 @@ import { Fragment, useCallback, useMemo, useState } from "react";
 import CourseType, {
 	ChapterType,
 	RequirementCategoryType,
+	RequirementMap,
 	RequirementType,
 	SectionType,
 } from "@/src/type/Course";
 import { BsCheckSquareFill, BsChevronLeft, BsSquare } from "react-icons/bs";
 import ProgressVertical from "@/src/compponents/courses/ProgressVertical/ProgressVertical";
-const DUMMY_CHAPTERS: SectionType[] = [
-	{
-		title: "Limits",
-		chapters: [
-			{
-				title: "Definition of Limit",
-				requirements: [{ category: "read", completed: true }],
-			},
-			{
-				title: "Laws of Limit",
-				requirements: [
-					{ category: "read", completed: true },
-					{ category: "practice", completed: true },
-				],
-			},
-			{
-				title: "Limits of Trigonometric Functions",
-				requirements: [{ category: "read" }],
-			},
-			{
-				title: "Limits of Some Functions",
-				requirements: [{ category: "read" }],
-			},
-			{
-				title: "Continuity of a Function",
-				requirements: [{ category: "read" }],
-			},
-			{ title: "Theorems", requirements: [{ category: "read" }] },
-		],
-		progress: 5,
-	},
-	{
-		title: "Derivative",
-		chapters: [
-			{ title: "Definition of Derivative" },
-			{ title: "Laws of Derivation" },
-			{ title: "Derivation of Trigonometric Functions and Its Inverse" },
-			{ title: "Limits of Some Functions" },
-			{ title: "L'Hôpital's Rule" },
-		],
-		progress: 2,
-	},
-];
 
-const DUMMY: CourseType = {
-	title: "Calculus I",
-	description: `The notes I took for my Calculus course in the second semester.`,
-	sections: DUMMY_CHAPTERS,
-};
-
-const CHAPTER_BASE_STYLEN = "transition-colors";
+const CHAPTER_BASE_STYLE = "transition-colors";
 const CHAPTER_LOCKED_STYLE = "bg-secondary-1";
 const CHAPTER_UNLOCKED_STYLE = "bg-warning-1 hover:bg-warning-2";
 const CHAPTER_COMPLETED_STYLE = "bg-success-1 hover:bg-success-2";
@@ -73,6 +25,20 @@ export default function Section({ section, caption, index }: SectionProps) {
 	const { title, chapters } = section;
 
 	const [open, setOpen] = useState(true);
+
+	const handleArraifyRequirements = useCallback(
+		(requirements: RequirementMap | undefined): RequirementType[] => {
+			return requirements
+				? (Object.entries(requirements)
+						.filter((x) => x)
+						.map(([key, value]) => ({
+							...value,
+							category: key,
+						})) as RequirementType[])
+				: [];
+		},
+		[]
+	);
 
 	const handleCheckChapterIsComplete = useCallback(
 		(requirements: RequirementType[] | undefined) => {
@@ -91,13 +57,17 @@ export default function Section({ section, caption, index }: SectionProps) {
 
 		chapters.forEach((chapter, idx) => {
 			if (chapter.requirements) {
-				if (handleCheckChapterIsComplete(chapter.requirements))
+				if (
+					handleCheckChapterIsComplete(
+						handleArraifyRequirements(chapter.requirements)
+					)
+				)
 					lastFinishedChapter = idx + 1;
 			}
 		});
 
 		return lastFinishedChapter;
-	}, [chapters, handleCheckChapterIsComplete]);
+	}, [chapters, handleArraifyRequirements, handleCheckChapterIsComplete]);
 
 	const handleGetStylingForChapter = useCallback(
 		(chapters: ChapterType[], index: number) => {
@@ -105,7 +75,9 @@ export default function Section({ section, caption, index }: SectionProps) {
 				if (chapters[index].requirements) {
 					if (
 						handleCheckChapterIsComplete(
-							chapters[index].requirements
+							handleArraifyRequirements(
+								chapters[index].requirements
+							)
 						)
 					)
 						return CHAPTER_COMPLETED_STYLE;
@@ -116,7 +88,9 @@ export default function Section({ section, caption, index }: SectionProps) {
 					) {
 						if (
 							handleCheckChapterIsComplete(
-								chapters[index - 1].requirements
+								handleArraifyRequirements(
+									chapters[index - 1].requirements
+								)
 							)
 						) {
 							return CHAPTER_UNLOCKED_STYLE;
@@ -128,20 +102,30 @@ export default function Section({ section, caption, index }: SectionProps) {
 
 				return CHAPTER_LOCKED_STYLE;
 			})();
-			return clsx(CHAPTER_BASE_STYLEN, SPECIFIC_STYLE);
+			return clsx(CHAPTER_BASE_STYLE, SPECIFIC_STYLE);
 		},
-		[handleCheckChapterIsComplete]
+		[handleArraifyRequirements, handleCheckChapterIsComplete]
 	);
 
 	const handleGetRequirementMessage = useCallback(
-		(type: RequirementCategoryType, params?: any | undefined) => {
+		(
+			type: RequirementCategoryType | undefined,
+			params?: any | undefined
+		) => {
+			const progress =
+				params.progress &&
+				params.number &&
+				params.number !== params.progress
+					? `(${params.progress}/${params.number}) `
+					: params.number;
+
+			const s = params.number > 1 ? "s" : "";
+
 			switch (type) {
 				case "read":
-					return "Read the material";
+					return `Read ${progress} page${s} of material`;
 				case "practice":
-					return `Solve ${params.number} practice problem${
-						params.number > 1 ? "s" : ""
-					}`;
+					return `Solve ${progress} practice problem${s}`;
 				default:
 					return "";
 			}
@@ -177,7 +161,7 @@ export default function Section({ section, caption, index }: SectionProps) {
 									{handleGetRequirementMessage(
 										requirement.category,
 										requirement.params
-									)}
+									)}{" "}
 								</span>
 							</li>
 						))}
@@ -227,9 +211,14 @@ export default function Section({ section, caption, index }: SectionProps) {
 							(chapter) => `${chapter.title}`
 						)}
 						indexTemplate={(idx) => `Chapter ${index}.${idx}`}
-						captions={chapters.map((chapter) => (
-							<>40% Completed</>
-						))}
+						captions={chapters.map((chapter) =>
+							renderChapterRequirements(
+								chapter.title,
+								handleArraifyRequirements(
+									chapter.requirements
+								) ?? []
+							)
+						)}
 						progress={lastFinishedChapter}
 						stylings={chapters.map((chapter, idx) =>
 							handleGetStylingForChapter(chapters, idx)
@@ -237,10 +226,12 @@ export default function Section({ section, caption, index }: SectionProps) {
 						links={chapters.map((chapter, idx) =>
 							idx === 0 ||
 							handleCheckChapterIsComplete(
-								chapter.requirements
+								handleArraifyRequirements(chapter.requirements)
 							) ||
 							handleCheckChapterIsComplete(
-								chapters[idx - 1].requirements
+								handleArraifyRequirements(
+									chapters[idx - 1].requirements
+								)
 							)
 								? `/${idx}`
 								: "#"
