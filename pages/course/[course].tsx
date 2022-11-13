@@ -6,7 +6,10 @@ import CourseType, {
 	RequirementType,
 	SectionType,
 } from "@/src/type/Course";
-import { checkChapterProgress } from "@/src/utils/course";
+import {
+	checkChapterProgress,
+	getSpecificChapterAddress,
+} from "@/src/utils/course";
 import { uncapitalize } from "@/src/utils/capitalize";
 
 interface CourseProps {
@@ -50,17 +53,22 @@ const Course = ({ details }: CourseProps) => {
 						chapter: chapter.id ?? uncapitalize(chapter.title),
 					};
 
-					const localPracticeAddress = {
-						...localAddress,
-						chapter: `${localAddress.chapter}@practice`,
-					};
+					const localReadAddress = getSpecificChapterAddress(
+						localAddress,
+						"read"
+					);
+
+					const localPracticeAddress = getSpecificChapterAddress(
+						localAddress,
+						"practice"
+					);
 
 					let readProgress = 0;
 					let practiceProgress = 0;
 
 					if (typeof window !== "undefined") {
 						const chapterProgress =
-							checkChapterProgress(localAddress);
+							checkChapterProgress(localReadAddress);
 						const chapterPracticeProgress =
 							checkChapterProgress(localPracticeAddress);
 

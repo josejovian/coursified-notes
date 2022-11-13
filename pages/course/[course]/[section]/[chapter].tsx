@@ -16,16 +16,14 @@ import Input from "@/src/compponents/basic/Input";
 import Blockquote from "@/src/compponents/basic/Quote";
 import {
 	checkChapterProgress,
+	getCourseKey,
 	getPracticeAnswer,
 	getPracticeId,
+	getSpecificChapterAddress,
 	regexPracticeInput,
 	storeChapterProgress,
 } from "@/src/utils/course";
-
-const DUMMY: ChapterType = {
-	title: "Definition of Limit",
-	requirements: [{ category: "read", completed: true }],
-};
+import { useRouter } from "next/router";
 
 interface CourseMaterialProps {
 	code: any;
@@ -33,6 +31,7 @@ interface CourseMaterialProps {
 }
 
 const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
+	const router = useRouter();
 	const [page, setPage] = useState(0);
 	const [solved, setSolved] = useState(-1);
 	const [maxPage, setMaxPage] = useState(0);
@@ -52,13 +51,14 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 		[page, params]
 	);
 
+	const chapterReadAddress = useMemo(
+		() => getSpecificChapterAddress(chapterAddress, "read"),
+		[chapterAddress]
+	);
+
 	const chapterPracticeAddress = useMemo(
-		() => ({
-			...params,
-			chapter: `${params.chapter}@practices`,
-			page: undefined,
-		}),
-		[params]
+		() => getSpecificChapterAddress(chapterAddress, "practice"),
+		[chapterAddress]
 	);
 
 	const handleCheckAnswer = useCallback(
@@ -459,15 +459,33 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 	const handlePreviousPage = useCallback(() => {
 		handleCleanUpStates();
 		if (page > 0) setPage((prev) => prev - 1);
-	}, [handleCleanUpStates, page]);
+	}, [page, handleCleanUpStates]);
 
 	const handleNextPage = useCallback(() => {
 		handleCleanUpStates();
+		if (solved !== 0) storeChapterProgress(chapterReadAddress, true);
 		if (page < maxPage - 1) {
-			if (solved !== 0) storeChapterProgress(chapterAddress, true);
 			setPage((prev) => prev + 1);
+		} else {
+			storeChapterProgress(
+				{
+					...chapterAddress,
+					page: undefined,
+				},
+				true
+			);
+			router.replace(`/course/${params.course}`);
 		}
-	}, [handleCleanUpStates, page, maxPage, solved, chapterAddress]);
+	}, [
+		chapterAddress,
+		chapterReadAddress,
+		maxPage,
+		page,
+		params,
+		router,
+		solved,
+		handleCleanUpStates,
+	]);
 
 	const renderPageControls = useMemo(
 		() => (
@@ -492,7 +510,7 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 					<Button
 						size="l"
 						onClick={handleNextPage}
-						disabled={page >= maxPage - 1}
+						// disabled={}
 					>
 						Next
 					</Button>

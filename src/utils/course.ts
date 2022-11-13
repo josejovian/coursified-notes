@@ -21,12 +21,19 @@ export function getPracticeAnswer(string: string) {
 	return question;
 }
 
-export function getLocalChapterAddress(
-	section: string,
-	chapter: string,
-	page?: number
+export function getLocalChapterAddress(section: string, chapter: string) {
+	return `${section}/${chapter}`;
+}
+
+export function getSpecificChapterAddress(
+	chapterAddress: ChapterAddressType,
+	string: string
 ) {
-	return page ? `${section}/${chapter}/${page}` : `${section}/${chapter}`;
+	return {
+		...chapterAddress,
+		chapter: `${chapterAddress.chapter}@${string}`,
+		page: string === "practice" ? undefined : chapterAddress.page,
+	};
 }
 
 export function getCourseKey(course: string) {
