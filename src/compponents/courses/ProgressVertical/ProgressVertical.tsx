@@ -160,7 +160,7 @@ export default function ProgressVertical({
 	const handleSizeAdjustment = useCallback(() => {
 		let totalHeight = 0;
 		let thresholds: [number, number][] = [];
-		let locked = false;
+
 		milestones.forEach((chapter, index) => {
 			const chapterElements = handleGetChapterElements(index);
 			if (chapterElements) {
@@ -176,64 +176,29 @@ export default function ProgressVertical({
 					CIRCLE_TOP_OFFSET + chapterCircleHeight + "px";
 				chapterLineElement.style.height = chapterHeight + "px";
 
-				console.log(`>>Index: ${index}`);
-				if (!locked && true) {
-					console.log(`>>Index: ${progress} <> ${index}`);
-					if (true) {
-						if (index + 1 < progress) {
-							thresholds = [
-								...thresholds,
-								[
-									totalHeight,
-									totalHeight + chapterCircleHeight,
-								],
-								[
-									totalHeight + chapterCircleHeight,
-									totalHeight +
-										chapterCircleHeight +
-										chapterHeight,
-								],
-							];
+				if (index + 1 < progress) {
+					thresholds = [
+						...thresholds,
+						[totalHeight, totalHeight + chapterCircleHeight],
+						[
+							totalHeight + chapterCircleHeight,
+							totalHeight + chapterCircleHeight + chapterHeight,
+						],
+					];
 
-							totalHeight += chapterCircleHeight + chapterHeight;
-						}
-						if (index + 2 === progress) {
-							thresholds = [
-								...thresholds,
-								[
-									totalHeight,
-									totalHeight + chapterCircleHeight,
-								],
-							];
+					totalHeight += chapterCircleHeight + chapterHeight;
+				}
+				if (index + 2 === progress) {
+					thresholds = [
+						...thresholds,
+						[totalHeight, totalHeight + chapterCircleHeight],
+					];
 
-							totalHeight += chapterCircleHeight;
-						}
-					}
-					// else {
-					// 	console.log("Timpa 2");
-					// 	thresholds = [
-					// 		...thresholds,
-					// 		[totalHeight, totalHeight + chapterCircleHeight],
-					// 		[
-					// 			totalHeight + chapterCircleHeight,
-					// 			totalHeight + chapterCircleHeight + 32,
-					// 		],
-					// 		[
-					// 			totalHeight + chapterCircleHeight + 32,
-					// 			totalHeight + chapterCircleHeight + 96,
-					// 		],
-					// 	];
-					// 	totalHeight += chapterCircleHeight;
-					// 	// locked = true;
-					// }
-
-					console.log(thresholds);
+					totalHeight += chapterCircleHeight;
 				}
 			}
 		});
 
-		console.log(milestones);
-		console.log(totalHeight);
 		setTarget(totalHeight);
 		setFloorIndex(thresholds);
 	}, [milestones, progress, handleGetChapterElements]);
@@ -242,7 +207,6 @@ export default function ProgressVertical({
 		if (floorIndex.length > 0) {
 			setAdjusted(true);
 		}
-		console.log(floorIndex);
 	}, [floorIndex]);
 
 	useEffect(() => {
@@ -290,17 +254,6 @@ export default function ProgressVertical({
 					index < progress &&
 					step >= floorIndex[adjustedIndex][1];
 
-				if (false && Math.round(step) % 12 === 0) {
-					console.log(`Index: ${index} - ${step}`);
-					console.log(floorIndex[adjustedIndex]);
-					console.log({
-						stepIsWithinIndexRange,
-						stepIsWithinFirstHalfOfIndexRange,
-						stepIsWithinSecondHalfOfIndexRange,
-						stepExceedsRange,
-						stepExceedsHalfRange,
-					});
-				}
 				function GRADIENT_STYLE(value: number) {
 					return `linear-gradient(
 						180deg,
