@@ -17,11 +17,17 @@ const CHAPTER_COMPLETED_STYLE = "bg-success-1 hover:bg-success-2";
 
 interface SectionProps {
 	section: SectionType;
+	courseId: string;
 	caption?: string;
 	index?: number;
 }
 
-export default function Section({ section, caption, index }: SectionProps) {
+export default function Section({
+	caption,
+	courseId,
+	index,
+	section,
+}: SectionProps) {
 	const { title, chapters } = section;
 
 	const [open, setOpen] = useState(true);
@@ -45,7 +51,11 @@ export default function Section({ section, caption, index }: SectionProps) {
 			if (!requirements) return false;
 
 			const allRequirementsCompleted = requirements.filter(
-				(requirement) => requirement.completed
+				(requirement) =>
+					requirement.completed ||
+					(requirement.params.number &&
+						requirement.params.progress &&
+						requirement.params.number == requirement.params.number)
 			);
 			return allRequirementsCompleted.length === requirements.length;
 		},
@@ -53,7 +63,7 @@ export default function Section({ section, caption, index }: SectionProps) {
 	);
 
 	const lastFinishedChapter = useMemo(() => {
-		let lastFinishedChapter = 0;
+		let result = 0;
 
 		chapters.forEach((chapter, idx) => {
 			if (chapter.requirements) {
@@ -62,11 +72,13 @@ export default function Section({ section, caption, index }: SectionProps) {
 						handleArraifyRequirements(chapter.requirements)
 					)
 				)
-					lastFinishedChapter = idx + 1;
+					result = idx + 1;
 			}
 		});
 
-		return lastFinishedChapter;
+		console.log(result);
+
+		return result;
 	}, [chapters, handleArraifyRequirements, handleCheckChapterIsComplete]);
 
 	const handleGetStylingForChapter = useCallback(
@@ -138,33 +150,48 @@ export default function Section({ section, caption, index }: SectionProps) {
 			return (
 				<Fragment>
 					<ul className="flex flex-col gap-2 mt-2">
-						{requirements.map((requirement, idx) => (
-							<li
-								key={`${section}-${idx}`}
-								className={clsx("flex items-center gap-2")}
-							>
-								<span
-									className={clsx(
-										"Icon",
-										requirement.completed
-											? "text-green-600"
-											: "text-gray-700"
-									)}
+						{requirements.map((requirement, idx) => {
+							let completed = Boolean(
+								requirement.params.progress &&
+									requirement.params.number &&
+									requirement.params.progress ===
+										requirement.params.number
+							);
+
+							if (typeof window === "undefined") {
+								completed = false;
+							}
+
+							console.log(`${completed}`);
+
+							return (
+								<li
+									key={`${section}-${idx}`}
+									className={clsx("flex items-center gap-2")}
 								>
-									{requirement.completed ? (
-										<BsCheckSquareFill />
-									) : (
-										<BsSquare />
-									)}
-								</span>
-								<span className="text-gray-600 text-sm">
-									{handleGetRequirementMessage(
-										requirement.category,
-										requirement.params
-									)}{" "}
-								</span>
-							</li>
-						))}
+									<span
+										className={clsx(
+											"Icon",
+											completed
+												? "text-green-600"
+												: "text-gray-700"
+										)}
+									>
+										{completed ? (
+											<BsCheckSquareFill />
+										) : (
+											<BsSquare />
+										)}
+									</span>
+									<span className="text-gray-600 text-sm">
+										{handleGetRequirementMessage(
+											requirement.category,
+											requirement.params
+										)}{" "}
+									</span>
+								</li>
+							);
+						})}
 					</ul>
 				</Fragment>
 			);
@@ -233,7 +260,7 @@ export default function Section({ section, caption, index }: SectionProps) {
 									chapters[idx - 1].requirements
 								)
 							)
-								? `/${idx}`
+								? `/course/${courseId}/${section.id}/${chapter.id}`
 								: "#"
 						)}
 					/>

@@ -2,6 +2,7 @@
 	"title": "Limits",
 	"overrideChapterTitles": {
 		"definition": "Definition of Limit",
-		"properties": "Properties of Limit"
+		"properties": "Properties of Limit",
+		"common": "Common"
 	}
 }

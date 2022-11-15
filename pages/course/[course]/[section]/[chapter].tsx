@@ -474,7 +474,9 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 				},
 				true
 			);
-			router.replace(`/course/${params.course}`);
+			setTimeout(() => {
+				router.replace(`/course/${params.course}`);
+			}, 250);
 		}
 	}, [
 		chapterAddress,

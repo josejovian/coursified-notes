@@ -176,7 +176,19 @@ async function getDetailedCourse(course: string) {
 				.then((result) => result.filter((x) => x))
 				.catch()) as ChapterType[];
 
-			sectionData.chapters = detectedChapters;
+			const topicIndexees = Object.keys(overrideChapterTitles);
+
+			sectionData.chapters = detectedChapters.sort((a, b) => {
+				if (a.id && b.id) {
+					const indexA = topicIndexees.indexOf(a.id);
+					const indexB = topicIndexees.indexOf(b.id);
+
+					if (indexA > indexB) return 1;
+					if (indexA == indexB) return 0;
+					if (indexA < indexB) return -1;
+				}
+				return 0;
+			});
 			return sectionData;
 		})
 	)

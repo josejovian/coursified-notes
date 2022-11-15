@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useCallback } from "react";
+import { Fragment, useMemo, useState, useEffect } from "react";
 import Section from "@/src/compponents/basic/Section";
 import SlantedBackgroundTemplate from "@/src/compponents/template/SlantedBackground";
 import CourseType, {
@@ -23,6 +23,8 @@ const Course = ({ details }: CourseProps) => {
 		description,
 		sections = [] as SectionType[],
 	} = useMemo(() => JSON.parse(details), [details]);
+
+	const [sectionData, setSectionData] = useState<SectionType[]>(sections);
 
 	const renderCourseHeader = useMemo(
 		() => (
@@ -121,28 +123,35 @@ const Course = ({ details }: CourseProps) => {
 		return rawSectionChapterProgresses;
 	}, [id, sections]);
 
-	const completeSections = sections.map(
-		(section: SectionType, index: number) => ({
-			...section,
-			chapters: section.chapters.map((chapter, index2: number) => {
-				const { percentage, requirements } =
-					sectionProgresses[index][index2];
-				return {
-					...chapter,
-					requirements,
-					percentage,
-				};
-			}),
-		})
+	const completeSections = useMemo(
+		() =>
+			sections.map((section: SectionType, index: number) => ({
+				...section,
+				chapters: section.chapters.map((chapter, index2: number) => {
+					const { percentage, requirements } =
+						sectionProgresses[index][index2];
+					return {
+						...chapter,
+						requirements,
+						percentage,
+					};
+				}),
+			})),
+		[sectionProgresses, sections]
 	);
+
+	useEffect(() => {
+		setSectionData(completeSections);
+	}, [completeSections]);
 
 	const renderCourseSections = useMemo(
 		() => (
 			<div className="grid grid-cols-1 gap-4">
-				{completeSections.map((section: SectionType, index: number) => {
+				{sectionData.map((section: SectionType, index: number) => {
 					return (
 						<Fragment key={`${title}-${section.title}`}>
 							<Section
+								courseId={id}
 								caption={`Section ${index + 1}`}
 								section={section}
 								index={index + 1}
@@ -152,7 +161,7 @@ const Course = ({ details }: CourseProps) => {
 				})}
 			</div>
 		),
-		[completeSections, title]
+		[id, sectionData, title]
 	);
 
 	return (

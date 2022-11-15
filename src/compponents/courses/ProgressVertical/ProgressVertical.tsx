@@ -16,8 +16,9 @@ interface ProgressVerticalProps {
 const COMPLETE_COLOR = "var(--gradient-2)";
 const INCOMPLETE_COLOR = "rgba(212, 212, 212, 1)";
 const CIRCLE_TOP_OFFSET = 50;
+const CIRCLE_SIZE = 32;
 const CIRCLE_LEFT_OFFSET = -57.6;
-const DEACCELERATION_THRESHOLD = 0.7;
+const DEACCELERATION_THRESHOLD = 1;
 
 export default function ProgressVertical({
 	title,
@@ -95,17 +96,18 @@ export default function ProgressVertical({
 			const chapterLineElement =
 				chapterElements && (chapterElements[1] as HTMLElement);
 
-			let heightFactor = 0.75;
+			let heightFactor = 1;
 			if (chapterLineElement) {
-				heightFactor = 32 / parseInt(chapterLineElement.style.height);
+				heightFactor =
+					32 / (parseInt(chapterLineElement.style.height) + 0.001);
 			}
 
 			const magnitude =
 				Math.ceil(
 					targetCurrent / goal <= DEACCELERATION_THRESHOLD
 						? iteration
-						: Math.max(-iteration + 2 * peak[1])
-				) / 100;
+						: Math.max(-iteration + 2 * peak[1], 0)
+				) / 50;
 			const multiplierRange =
 				floorIndex[currentAnimatedIndex] &&
 				targetCurrent > floorIndex[currentAnimatedIndex][1]
@@ -121,7 +123,7 @@ export default function ProgressVertical({
 				Math.min(next, goal),
 				targetCurrent / goal <= DEACCELERATION_THRESHOLD
 					? magnitude
-					: -1,
+					: 1,
 			];
 		},
 		[handleGetIndexFromThreshold, handleGetChapterElements, floorIndex]
@@ -174,33 +176,64 @@ export default function ProgressVertical({
 					CIRCLE_TOP_OFFSET + chapterCircleHeight + "px";
 				chapterLineElement.style.height = chapterHeight + "px";
 
-				if (!locked && index <= progress - 1) {
-					if (index + 1 <= progress - 1) {
-						thresholds.push([
-							totalHeight,
-							totalHeight + chapterCircleHeight,
-						]);
-						thresholds.push([
-							totalHeight + chapterCircleHeight,
-							totalHeight + chapterCircleHeight + chapterHeight,
-						]);
-						totalHeight += chapterCircleHeight + chapterHeight;
-					} else {
-						thresholds.push([
-							totalHeight,
-							totalHeight + chapterCircleHeight,
-						]);
-						thresholds.push([
-							totalHeight + chapterCircleHeight,
-							totalHeight + chapterCircleHeight + 10,
-						]);
-						locked = true;
-						totalHeight += chapterCircleHeight;
+				console.log(`>>Index: ${index}`);
+				if (!locked && true) {
+					console.log(`>>Index: ${progress} <> ${index}`);
+					if (true) {
+						if (index + 1 < progress) {
+							thresholds = [
+								...thresholds,
+								[
+									totalHeight,
+									totalHeight + chapterCircleHeight,
+								],
+								[
+									totalHeight + chapterCircleHeight,
+									totalHeight +
+										chapterCircleHeight +
+										chapterHeight,
+								],
+							];
+
+							totalHeight += chapterCircleHeight + chapterHeight;
+						}
+						if (index + 2 === progress) {
+							thresholds = [
+								...thresholds,
+								[
+									totalHeight,
+									totalHeight + chapterCircleHeight,
+								],
+							];
+
+							totalHeight += chapterCircleHeight;
+						}
 					}
+					// else {
+					// 	console.log("Timpa 2");
+					// 	thresholds = [
+					// 		...thresholds,
+					// 		[totalHeight, totalHeight + chapterCircleHeight],
+					// 		[
+					// 			totalHeight + chapterCircleHeight,
+					// 			totalHeight + chapterCircleHeight + 32,
+					// 		],
+					// 		[
+					// 			totalHeight + chapterCircleHeight + 32,
+					// 			totalHeight + chapterCircleHeight + 96,
+					// 		],
+					// 	];
+					// 	totalHeight += chapterCircleHeight;
+					// 	// locked = true;
+					// }
+
+					console.log(thresholds);
 				}
 			}
 		});
 
+		console.log(milestones);
+		console.log(totalHeight);
 		setTarget(totalHeight);
 		setFloorIndex(thresholds);
 	}, [milestones, progress, handleGetChapterElements]);
@@ -209,6 +242,7 @@ export default function ProgressVertical({
 		if (floorIndex.length > 0) {
 			setAdjusted(true);
 		}
+		console.log(floorIndex);
 	}, [floorIndex]);
 
 	useEffect(() => {
@@ -224,27 +258,49 @@ export default function ProgressVertical({
 			{milestones.map((chapter, index) => {
 				const adjustedIndex = 2 * index;
 				const stepIsWithinIndexRange =
-					adjusted &&
-					index < progress &&
-					step >= floorIndex[adjustedIndex][0] &&
-					floorIndex[adjustedIndex + 1][1] > step;
+					(floorIndex[adjustedIndex] &&
+						!floorIndex[adjustedIndex + 1] &&
+						adjusted &&
+						index < progress &&
+						step >= floorIndex[adjustedIndex][0]) ||
+					(floorIndex[adjustedIndex] &&
+						floorIndex[adjustedIndex + 1] &&
+						adjusted &&
+						index < progress &&
+						step >= floorIndex[adjustedIndex][0] &&
+						floorIndex[adjustedIndex + 1][1] > step);
 				const stepIsWithinFirstHalfOfIndexRange =
+					floorIndex[adjustedIndex] &&
 					index < progress &&
 					stepIsWithinIndexRange &&
 					floorIndex[adjustedIndex][1] > step;
 				const stepIsWithinSecondHalfOfIndexRange =
+					floorIndex[adjustedIndex] &&
 					index < progress &&
 					stepIsWithinIndexRange &&
 					step >= floorIndex[adjustedIndex][1];
 				const stepExceedsRange =
+					floorIndex[adjustedIndex + 1] &&
 					adjusted &&
 					index < progress &&
 					step > floorIndex[adjustedIndex + 1][1];
 				const stepExceedsHalfRange =
+					floorIndex[adjustedIndex] &&
 					adjusted &&
 					index < progress &&
 					step >= floorIndex[adjustedIndex][1];
 
+				if (false && Math.round(step) % 12 === 0) {
+					console.log(`Index: ${index} - ${step}`);
+					console.log(floorIndex[adjustedIndex]);
+					console.log({
+						stepIsWithinIndexRange,
+						stepIsWithinFirstHalfOfIndexRange,
+						stepIsWithinSecondHalfOfIndexRange,
+						stepExceedsRange,
+						stepExceedsHalfRange,
+					});
+				}
 				function GRADIENT_STYLE(value: number) {
 					return `linear-gradient(
 						180deg,
@@ -269,8 +325,11 @@ export default function ProgressVertical({
 				})();
 
 				const lineStyle = (() => {
-					if (index + 2 < milestones.length) {
-						if (stepIsWithinIndexRange) {
+					if (index + 1 < milestones.length) {
+						if (
+							floorIndex[adjustedIndex + 1] &&
+							stepIsWithinIndexRange
+						) {
 							if (stepIsWithinSecondHalfOfIndexRange) {
 								const lineProgress =
 									(step - floorIndex[adjustedIndex + 1][0]) /
