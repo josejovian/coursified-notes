@@ -53,9 +53,12 @@ export default function Section({
 			const allRequirementsCompleted = requirements.filter(
 				(requirement) =>
 					requirement.completed ||
-					(requirement.params.number &&
+					(requirement.params &&
+						requirement.params.number &&
 						requirement.params.progress &&
-						requirement.params.number == requirement.params.number)
+						requirement.params.number ==
+							requirement.params.number) ||
+					!requirement.params
 			);
 			return allRequirementsCompleted.length === requirements.length;
 		},
@@ -125,13 +128,18 @@ export default function Section({
 			params?: any | undefined
 		) => {
 			const progress =
+				params &&
 				params.progress &&
 				params.number &&
-				params.number !== params.progress
-					? `(${params.progress}/${params.number}) `
-					: params.number;
+				params.number > params.progress
+					? `(${Math.min(params.progress, params.number)}/${
+							params.number
+					  }) `
+					: params
+					? params.number
+					: 0;
 
-			const s = params.number > 1 ? "s" : "";
+			const s = params && params.number > 1 ? "s" : "";
 
 			switch (type) {
 				case "read":
@@ -152,22 +160,20 @@ export default function Section({
 					<ul className="flex flex-col gap-2 mt-2">
 						{requirements.map((requirement, idx) => {
 							let completed = Boolean(
-								requirement.params.progress &&
+								requirement.params &&
+									requirement.params.progress &&
 									requirement.params.number &&
-									requirement.params.progress ===
+									requirement.params.progress >=
 										requirement.params.number
 							);
-
-							if (typeof window === "undefined") {
-								completed = false;
-							}
-
-							console.log(`${completed}`);
 
 							return (
 								<li
 									key={`${section}-${idx}`}
-									className={clsx("flex items-center gap-2")}
+									className={clsx(
+										"flex items-center gap-2",
+										!requirement.params && "hidden"
+									)}
 								>
 									<span
 										className={clsx(

@@ -69,6 +69,20 @@ async function readChapter(course: string, section: string, chapter: string) {
 	return result;
 }
 
+function sortData(data: any[], index: any[], variable: string = "id") {
+	return data.sort((a, b) => {
+		if (a[variable] && b[variable]) {
+			const indexA = index.indexOf(a.id);
+			const indexB = index.indexOf(b.id);
+
+			if (indexA > indexB) return 1;
+			if (indexA == indexB) return 0;
+			if (indexA < indexB) return -1;
+		}
+		return 0;
+	});
+}
+
 async function getDetailedCourse(course: string) {
 	let result = await readCourse(course);
 	result = JSON.parse(result) as CourseType;
@@ -178,24 +192,27 @@ async function getDetailedCourse(course: string) {
 
 			const topicIndexees = Object.keys(overrideChapterTitles);
 
-			sectionData.chapters = detectedChapters.sort((a, b) => {
-				if (a.id && b.id) {
-					const indexA = topicIndexees.indexOf(a.id);
-					const indexB = topicIndexees.indexOf(b.id);
+			sectionData.chapters = sortData(detectedChapters, topicIndexees);
+			// detectedChapters.sort((a, b) => {
+			// 	if (a.id && b.id) {
+			// 		const indexA = topicIndexees.indexOf(a.id);
+			// 		const indexB = topicIndexees.indexOf(b.id);
 
-					if (indexA > indexB) return 1;
-					if (indexA == indexB) return 0;
-					if (indexA < indexB) return -1;
-				}
-				return 0;
-			});
+			// 		if (indexA > indexB) return 1;
+			// 		if (indexA == indexB) return 0;
+			// 		if (indexA < indexB) return -1;
+			// 	}
+			// 	return 0;
+			// });
 			return sectionData;
 		})
 	)
 		.then((result) => result.filter((x) => x))
 		.catch()) as SectionType[];
 
-	result.sections = sectionsData;
+	const topicIndexes = Object.values(result.sections);
+	result.sections = sortData(sectionsData, topicIndexes);
+	console.log(topicIndexes);
 	return result;
 }
 

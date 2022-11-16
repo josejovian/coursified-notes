@@ -337,7 +337,7 @@ export default function ProgressVertical({
 							title={chapter}
 							id={`Progress_${title}-${chapter}`}
 							caption={captions && captions[index]}
-							styling={clsx(stylings && stylings[index], "my-4")}
+							styling={clsx(stylings && stylings[index])}
 							link={links && links[index]}
 						/>
 					</li>

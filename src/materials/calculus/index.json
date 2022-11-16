@@ -1,4 +1,8 @@
 {
 	"title": "Calculus",
-	"description": "This is a course-ified version of my calculus notes."
+	"description": "This is a course-ified version of my calculus notes.",
+	"sections": [
+		"limits",
+		"derivative"
+	]
 }

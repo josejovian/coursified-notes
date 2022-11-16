@@ -20,7 +20,7 @@ export default function ProgressMilestone({
 	link,
 }: ProgressMilestoneProps) {
 	return (
-		<ToggleLink className="text-lg" href={link} disabled={!link}>
+		<ToggleLink className="text-lg my-4" href={link} disabled={!link}>
 			<article
 				id={id}
 				className={clsx(
