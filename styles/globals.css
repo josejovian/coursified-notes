@@ -128,6 +128,16 @@
 	.CourseMaterial_contents hr {
 		@apply py-2;
 	}
+	.CourseMaterial_contents ul {
+		@apply mb-8;
+		list-style-type: disc;
+	}
+	.CourseMaterial_contents li {
+		@apply ml-8 my-4;
+	}
+	.MatchBox div {
+		min-width: 12rem;
+	}
 	.GraphContainer {
 		@apply flex w-full justify-center pb-8;
 	}

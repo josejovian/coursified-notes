@@ -1,4 +1,13 @@
-import { useMemo, useState, useEffect, useCallback, useRef } from "react";
+import {
+	useMemo,
+	useState,
+	useEffect,
+	useCallback,
+	useRef,
+	ReactNode,
+	DetailedHTMLProps,
+	HTMLAttributes,
+} from "react";
 import { ChapterAddressType, ChapterType } from "@/src/type/Course";
 import ReactMarkdown from "react-markdown";
 import RemarkMath from "remark-math";
@@ -14,6 +23,9 @@ import { ReactElement } from "react-markdown/lib/react-markdown";
 import { CUSTOM_MATERIAL } from "@/src/type/Material";
 import Input from "@/src/compponents/basic/Input";
 import Blockquote from "@/src/compponents/basic/Quote";
+import TeX from "@matejmazur/react-katex";
+import "katex/dist/katex.min.css";
+
 import {
 	checkChapterProgress,
 	getCourseKey,
@@ -27,21 +39,45 @@ import { useRouter } from "next/router";
 
 interface CourseMaterialProps {
 	code: any;
+	courseDetail: any;
 	params: ChapterAddressType;
 }
 
-const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
+const CourseMaterial = ({
+	code = "",
+	courseDetail,
+	params,
+}: CourseMaterialProps) => {
 	const router = useRouter();
 	const [page, setPage] = useState(0);
 	const [solved, setSolved] = useState(-1);
 	const [maxPage, setMaxPage] = useState(0);
 	const [loading, setLoading] = useState(true);
-	const [answer, setAnswer] = useState<{ [key: string]: string }>({});
+	const [answer, setAnswer] = useState<Partial<{ [key: string]: string }>>(
+		{}
+	);
 	const [accept, setAccept] = useState<{ [key: string]: string }>({});
 	const [submitted, setSubmmited] = useState(false);
 	const answerInputBoxParentElement = useRef<
 		{ parentElement: HTMLElement; string: string }[]
 	>([]);
+	const matchParentElement = useRef<
+		{ parentElement: HTMLElement; pair: [string, string]; id: string }[]
+	>([]);
+	const leftCards = useRef<any[]>([]);
+	const rightCards = useRef<any[]>([]);
+	const [errors, setErrors] = useState<any[]>([]);
+	const [active, setActive] = useState<any>(null);
+
+	const handleGetChapterContents = useCallback(
+		() => code.split("===")[page],
+		[code, page]
+	);
+
+	useEffect(() => {
+		console.log("Answer Box");
+		console.log(answer);
+	}, [answer]);
 
 	const chapterAddress = useMemo(
 		() => ({
@@ -86,7 +122,6 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 
 	const handleGetExistingAnswerIfAny = useCallback(() => {
 		const existingAnswers = checkChapterProgress(chapterPracticeAddress);
-
 		const practiceIds = Object.keys(accept);
 
 		if (practiceIds.length === 0) return;
@@ -122,10 +157,6 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 		}
 	}, [chapterPracticeAddress, accept, handleCheckAnswer]);
 
-	useEffect(() => {
-		setMaxPage(code.split("===").length);
-	}, [code]);
-
 	const renderCustomElement = useCallback(
 		(
 			parentElement: HTMLElement,
@@ -149,8 +180,9 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 
 	const userAnswerStatus = useCallback(
 		(practiceId: string) => {
-			if (answer[practiceId])
-				return handleCheckAnswer(answer[practiceId], practiceId)
+			const specificAnswer = answer[practiceId];
+			if (specificAnswer)
+				return handleCheckAnswer(specificAnswer, practiceId)
 					? "success"
 					: "error";
 			return undefined;
@@ -183,6 +215,245 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 		[answer, solved, userAnswerStatus, submitted, accept]
 	);
 
+	const handleGetComponentForm = useCallback((str: string) => {
+		if (str.match(/\$([^\$])*\$/g)) {
+			return <TeX>{str.slice(1, -1)}</TeX>;
+		}
+		return str;
+	}, []);
+
+	const renderMatchCard = useCallback(
+		({
+			children,
+			className,
+			...props
+		}: DetailedHTMLProps<
+			HTMLAttributes<HTMLDivElement>,
+			HTMLDivElement
+		>) => (
+			<div
+				{...props}
+				className={clsx(
+					"Match_right flex align-self-end justify-center items-center",
+					"w-24 px-8 py-2",
+					"text-center bg-primary-2 hover:bg-primary-3 transition-colors rounded-sm",
+					className
+				)}
+			>
+				{handleGetComponentForm(children as string)}
+			</div>
+		),
+		[handleGetComponentForm]
+	);
+
+	useEffect(() => {
+		const entries = Object.entries(answer);
+		const newAnswer: { [key: string]: string } = {};
+		let different = false;
+		entries.forEach(([k, v]) => {
+			if (typeof v !== "undefined") {
+				newAnswer[k] = v;
+			} else {
+				different = true;
+			}
+		});
+		if (different) {
+			setAnswer(newAnswer);
+		}
+	}, [answer]);
+
+	const handleRemoveAnswer = useCallback((key: string) => {
+		setAnswer((prev) => ({
+			...prev,
+			[key]: undefined,
+		}));
+	}, []);
+
+	const handleCheckIfAlreadyMatched = useCallback(
+		(
+			currentKey: any,
+			currentAnswer: any,
+			onKeyMatch: null | ((key: string) => void),
+			onValueMatch: null | ((key: string) => void)
+		) => {
+			Object.entries(answer).forEach(([key, value]) => {
+				if (onKeyMatch && key === currentKey) {
+					onKeyMatch(key);
+				} else if (onValueMatch && value === currentAnswer) {
+					onValueMatch(key);
+				}
+			});
+		},
+		[answer]
+	);
+
+	const handleSetActive = useCallback(
+		(
+			type: "target" | "source",
+			content: string,
+			override: boolean = false
+		) => {
+			setActive((prev: any) => {
+				if (!prev || override) {
+					return type === "target"
+						? {
+								id: content,
+								type: "target",
+						  }
+						: {
+								answer: content,
+								type: "source",
+						  };
+				}
+				if (type === "target" && prev.type === "source") {
+					return {
+						id: content,
+						answer: prev.answer,
+						type: "complete",
+					};
+				} else if (type === "source" && prev.type === "target") {
+					return {
+						id: prev.id,
+						answer: content,
+						type: "complete",
+					};
+				} else {
+					return null;
+				}
+			});
+		},
+		[]
+	);
+
+	const renderMatchBox = useCallback(
+		(practiceId: string, left: string, right: string) => {
+			const currentAnswer = answer[practiceId];
+
+			return (
+				<div
+					key={`MatchBox-${practiceId}`}
+					id={`MatchBox-${practiceId}`}
+					className="MatchBox w-full flex justify-between gap-4 mb-8"
+				>
+					<div className="Match_left flex items-center">
+						{handleGetComponentForm(left)}
+						{currentAnswer ? (
+							renderMatchCard({
+								children: currentAnswer,
+								className: "ml-8",
+								onClick: () => {
+									handleCheckIfAlreadyMatched(
+										practiceId,
+										null,
+										handleRemoveAnswer,
+										null
+									);
+								},
+							})
+						) : (
+							<div
+								className={clsx(
+									"Match_hole w-24 h-10 px-8 py-2 ml-8",
+									"shadow-inner border-secondary-3 border",
+									"rounded-sm transition-colors",
+									active && active.id === practiceId
+										? "bg-success-1 hover:bg-success-2"
+										: "bg-white hover:bg-secondary-1"
+								)}
+								onClick={() => {
+									let terminate = false;
+
+									handleCheckIfAlreadyMatched(
+										practiceId,
+										null,
+										(key: string) => {
+											handleRemoveAnswer(key);
+											terminate = true;
+										},
+										null
+									);
+
+									if (active && active.type === "target") {
+										if (active.id === practiceId) {
+											setActive(null);
+										} else {
+											handleSetActive(
+												"target",
+												practiceId,
+												true
+											);
+										}
+										terminate = true;
+									}
+
+									if (terminate) return;
+
+									handleSetActive("target", practiceId);
+								}}
+							></div>
+						)}
+					</div>
+					{renderMatchCard({
+						children: right,
+						className: clsx(
+							!currentAnswer && "!bg-primary-2 rounded-sm",
+							Object.values(answer).includes(right) && "hidden",
+							active &&
+								active.answer === right &&
+								"!bg-primary-4 hover:bg-primary-5"
+						),
+						onClick: () => {
+							let terminate = false;
+
+							handleCheckIfAlreadyMatched(
+								null,
+								right,
+								null,
+								(key: string) => {
+									handleRemoveAnswer(key);
+
+									if (active && active.id) setActive(null);
+									terminate = true;
+								}
+							);
+
+							if (active && active.type === "source") {
+								if (active.answer === right) {
+									setActive(null);
+								} else {
+									handleSetActive("source", right, true);
+								}
+								terminate = true;
+							}
+							if (terminate) return;
+
+							handleSetActive("source", right);
+						},
+					})}
+				</div>
+			);
+		},
+		[
+			active,
+			answer,
+			handleCheckIfAlreadyMatched,
+			handleGetComponentForm,
+			handleRemoveAnswer,
+			handleSetActive,
+			renderMatchCard,
+		]
+	);
+
+	useEffect(() => {
+		if (active && active.type === "complete") {
+			setAnswer((prev) => ({
+				...prev,
+				[active.id]: active.answer,
+			}));
+			setActive(null);
+		}
+	}, [active]);
+
 	const handleRemoveCustomComponents = useCallback((className: string) => {
 		const previousRenders = document.querySelectorAll(`.${className}`);
 		previousRenders.forEach((element) => {
@@ -208,6 +479,33 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 		);
 	}, [handleRemoveCustomComponents, renderAnswerBox, renderCustomElement]);
 
+	const handleGetCard = useCallback((id: string, input: string) => {
+		const card: any = {
+			type: "string",
+			id,
+		};
+		if (input.match(/\$([^\$])*\$/g)) {
+			card.type = "formula";
+			card.content = input.slice(1, -1);
+		} else {
+			card.content = input;
+		}
+		return card;
+	}, []);
+
+	const handleRenderMatch = useCallback(() => {
+		handleRemoveCustomComponents("MatchBox");
+		matchParentElement.current.forEach(({ parentElement, pair, id }) => {
+			const [left, right] = pair;
+			renderCustomElement(
+				parentElement,
+				renderMatchBox(id, left, right),
+				CUSTOM_MATERIAL["match"],
+				id
+			);
+		});
+	}, [handleRemoveCustomComponents, renderCustomElement, renderMatchBox]);
+
 	const handleConvertCodeToComponents = useCallback(() => {
 		if (!loading) return;
 
@@ -224,6 +522,8 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 		let inputElementsRendered = 0;
 
 		let answerKeys = {};
+
+		matchParentElement.current = [];
 
 		elements.forEach((element, index) => {
 			const string = element.innerHTML;
@@ -306,6 +606,30 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 					inputElementsRendered++;
 				}
 			}
+			if (container && parentElement && string.match(/\[match\]/g)) {
+				const detectedPair = string.toString().split("@");
+
+				if (detectedPair && detectedPair.length === 5) {
+					const [tag, id, left, right, space] = detectedPair;
+					leftCards.current.push(handleGetCard(id, left));
+					rightCards.current.push(handleGetCard(id, right));
+					matchParentElement.current = [
+						...matchParentElement.current,
+						{
+							parentElement,
+							pair: [left, right],
+							id,
+						},
+					];
+
+					answerKeys = {
+						...answerKeys,
+						[id]: `${left}\$${right}`,
+					};
+
+					inputElementsRendered++;
+				}
+			}
 		});
 
 		if (inputElementsRendered > 0 && Object.values(answerKeys).length > 0) {
@@ -315,19 +639,35 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 				...answerKeys,
 			}));
 			handleRenderAnswerBoxes();
+			handleRenderMatch();
 		} else {
 			setSolved(-1);
 		}
 	}, [
 		loading,
 		handleRemoveCustomComponents,
+		handleGetCard,
 		renderCustomElement,
 		handleRenderAnswerBoxes,
+		handleRenderMatch,
 	]);
 
 	useEffect(() => {
+		setMaxPage(code.split("===").length);
+	}, [code]);
+
+	useEffect(() => {
 		handleRenderAnswerBoxes();
-	}, [accept, answer, solved, userAnswerStatus, handleRenderAnswerBoxes]);
+		handleRenderMatch();
+	}, [
+		active,
+		accept,
+		answer,
+		solved,
+		userAnswerStatus,
+		handleRenderAnswerBoxes,
+		handleRenderMatch,
+	]);
 
 	const handleTransformBlockQuotes = useCallback(() => {
 		const blockquotes = document.querySelectorAll("blockquote");
@@ -337,14 +677,19 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 		});
 	}, []);
 
-	const handleCheckForCodeInvokedElements = useCallback((element: any) => {
-		return element.toString().match(/\[[^\]]*\]/g);
-	}, []);
+	const handleCheckForCodeInvokedElements = useCallback(
+		(element: any, specific: string = "") => {
+			if (specific !== "") {
+				return element.toString().match(new RegExp(`\[${specific}\]`));
+			}
+			return element.toString().match(/\[[^\]]*\]/g);
+		},
+		[]
+	);
 
 	const handleCheckForSpecialBlockquote = useCallback(
-		(element: any, type: "formula" | "explanation") => {
-			const regex =
-				type === "formula" ? /\#formula\#/ : /\#explanation\#/;
+		(element: any, type: "formula" | "explanation" | "match") => {
+			const regex = new RegExp(`\#${type}\#`);
 
 			return element.some((str: any) => {
 				if (typeof str === "object") {
@@ -434,14 +779,13 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 						remarkPlugins={[RemarkMath, remarkGfm]}
 						rehypePlugins={[RehypeKatex]}
 					>
-						{code.split("===")[page]}
+						{handleGetChapterContents()}
 					</ReactMarkdown>
 				</article>
 			</div>
 		),
 		[
-			code,
-			page,
+			handleGetChapterContents,
 			handleCheckForCodeInvokedElements,
 			handleCheckForSpecialBlockquote,
 			solved,
@@ -454,6 +798,8 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 		setSubmmited(false);
 		setAnswer({});
 		setLoading(true);
+		leftCards.current = [];
+		rightCards.current = [];
 	}, []);
 
 	const handlePreviousPage = useCallback(() => {
@@ -509,11 +855,7 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 					{page + 1} / {maxPage}
 				</span>
 				{solved !== 0 ? (
-					<Button
-						size="l"
-						onClick={handleNextPage}
-						// disabled={}
-					>
+					<Button size="l" onClick={handleNextPage}>
 						Next
 					</Button>
 				) : (
@@ -527,7 +869,10 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 							) {
 								const correct = !Object.entries(answer).some(
 									([key, answer]) => {
-										return !handleCheckAnswer(answer, key);
+										return !handleCheckAnswer(
+											answer ?? "",
+											key
+										);
 									}
 								);
 
@@ -560,11 +905,12 @@ const CourseMaterial = ({ code = "", params }: CourseMaterialProps) => {
 
 	return (
 		<div className="CourseMaterial flex w-full overflow-hidden">
-			<link
-				rel="stylesheet"
-				href="https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css"
-			/>
-			<aside className="p-8"></aside>
+			<aside className="shadow-lg">
+				<div className="p-8">
+					<h2>Limits</h2>
+				</div>
+				<hr />
+			</aside>
 			<main
 				className="relative flex flex-col justify-between w-full h-screen overflow-hidden"
 				style={{ flex: "1 1 auto" }}
@@ -617,13 +963,23 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (req: any) => {
 	const { course, section, chapter } = req.params;
-	const { readChapter } = require("../../../../src/lib/mdx.tsx");
+	const {
+		getDetailedCourse,
+		readChapter,
+	} = require("../../../../src/lib/mdx.tsx");
 
 	const params = { course, section, chapter };
-	const projectMD = await readChapter(course, section, chapter);
+
+	const chapterMD = await readChapter(course, section, chapter);
+
+	const courseDetail = await getDetailedCourse(course);
 
 	return {
-		props: { code: projectMD, params: params },
+		props: {
+			code: chapterMD,
+			params: params,
+			courseDetail: JSON.stringify(courseDetail),
+		},
 	};
 };
 

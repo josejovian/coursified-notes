@@ -1,246 +1,138 @@
-# Properties of Limits
+# Limits of Trigonometric Functions
 
-> #formula# $\lim\limits_{x\rightarrow a} c = c$
-
-**The limit of a constant function is the constant itself.** At any point $x$, the function will be always equal to the constant, so finding the limit of this function as $x$ approaches any point would result the same, that is, the constant itself.
-
----
-
-> #formula# $\lim\limits_{x\rightarrow a} x = a$
-
-Similar to the previous one, this is self-explanatory.
-
----
-
-> #formula# $\lim\limits_{x\rightarrow a} c \times f(x) = c \lim\limits_{x\rightarrow a} f(x)$
-
-The limit of a function **multiplied by a constant** is equal to the constant multiplied by the limit of a function.
-
----
-
-> #formula# $\lim\limits*{x\rightarrow a} \left [f(x) \pm g(x) \right] =\lim\limits*{x\rightarrow a} f(x) \pm \lim\limits\_{x\rightarrow a} g(x) $
-
-The **sum or difference** of the limit of two functions is equal when **adding or subtracting** them individually.
-
----
-
-> #formula# $\lim\limits*{x\rightarrow a} f(x)g(x) =\lim\limits*{x\rightarrow a} f(x) \times \lim\limits\_{x\rightarrow a} g(x) $
+> #formula#
 >
-> $\lim\limits*{x\rightarrow a} \frac{f(x)}{g(x)} = \large \frac{\lim\limits*{x\rightarrow a} f(x)}{\lim\limits\_{x\rightarrow a} g(x)}, \normalsize \text{where } g(x) \neq 0 $
-
-The **product or quotient** of the limit of two functions is equal when **multiplying or dividing** them individually.
-
----
-
-> #formula# $\lim\limits_{x\rightarrow a} \left [ f(x) \right ]^n = \left [ \lim\limits_{x\rightarrow a} f(x) \right ]^n$
-
-Given that $n$ is any real number, including fractions, the limit of **(the function $f$ to the power of $n$)** is equal to **(the limit of the function $f$)** to the power of $n$. Due to the previous law or property, this one should be self-explanatory.
-
----
-
-> #formula# $\lim\limits_{x\rightarrow 0} \frac{1}{|x|} = \infty$
->
-> $\lim\limits_{x\rightarrow \infty} \frac{1}{x} = 0$
-
-These are some other basic limits that may help you in calculating limits.
-
-===
-
-# Properties of Limits: Easy Examples
-
-> #formula# **Example**  
-> Evaluate $\lim\limits_{x\rightarrow 4} \left [ 4x^2 - 4x + 1 \right ] = ...$
-
-To simplify things, we can first think of this function as a combination of three different functions, then find the limit of each function, then apply the addition or subtraction like the following.
-
-$$
-\begin{align*}
-\lim_{x\rightarrow 4} \left [ 4x^2 - 4x + 1 \right ] &= \lim_{x\rightarrow 4} 4x^2 - \lim_{x\rightarrow 4} 4x + \lim_{x\rightarrow 4} 1\\
- &= 64 - 16 + 1\\
- &= 49\\
-\end{align*}
-$$
-
-You may have realized that it is faster to think of this as substituting $x$ into $f(x)$. However, be warned that this is not **always the case**.
-
-> #formula# **Example**  
-> Evaluate $\lim\limits_{x\rightarrow -2} \frac{x^2 - 1} {9x^2 + 6x + 3}  = ...$
-
-Again, by thinking of this as doing a simple algebra, substituting $x$ into the function to find the value:
-
-$$
-\begin{align*}
-\lim_{x\rightarrow -2} \frac{x^2 - 1}{9x^2 + 6x + 3} &= \lim_{x\rightarrow -2} \frac{(-2)^2 - 1}{(9 \times (-2)^2) + (6 \times (-2)) + 3}\\
- &= \frac{3}{27}\\
- &= \frac{1}{9}\\
-\end{align*}
-$$
-
-===
-
-# Properties of Limits: Tricky Example #1
-
-> #formula# **Example**  
-> Evaluate $\lim\limits_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1}  = ...$
-
-When you plug in $x=1$ into the function, you get...
-
-$$
-\begin{align*}
-\lim_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1} &= \lim_{x\rightarrow 1} \frac{1-5+4}{1-1}\\
- &= \frac{0}{0}\\
-\end{align*}
-$$
-
-...this! Well, this is not how we are supposed to solve this. Instead, this just means that there is a common factor between the numerator and denominator that we can cancel from both sides. In this case, it is $(x - 1)$.
-
-$$
-\begin{align*}
-\lim_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1} &= \lim_{x\rightarrow 1} \frac{(x-1)(x-4)}{(x-1)(x+1)}\\
- &= \lim_{x\rightarrow 1} \frac{(x-4)}{(x+1)}\\
-  &= -\frac{3}{2}\\
-\end{align*}
-$$
-
-Now, we have learnt that **factorization** is one of the method that we can use when we encounter an indeterminate form $\frac{0}{0}$.
-
-===
-
-# Properties of Limits: Tricky Example #2
-
-> #formula# **Example**  
-> Evaluate $\lim\limits_{x\rightarrow \infty} \sqrt{x^2+6x-9}-\sqrt{x^2-8x+16}  = ...$
-
-Putting $x=\infty$ will yield an indeterminate form $\infty - \infty$. However, what if there is a way for us to manipulate the equation to avoid getting indeterminate forms? Let's try **rationalizing** it.
-
-$$
-\begin{align*}
-&\lim_{x\rightarrow \infty} \sqrt{x^2+6x-9}-\sqrt{x^2-8x+16}\\
-&=\lim_{x\rightarrow \infty} \sqrt{x^2+6x-9}-\sqrt{x^2-8x+16}\times \frac{\sqrt{x^2+6x-9}+\sqrt{x^2-8x+16}}{\sqrt{x^2+6x-9}+\sqrt{x^2-8x+16}}\\
-&=\lim_{x\rightarrow \infty} \frac{(x^2+6x-9)-(x^2-8x+16)}{\sqrt{x^2+6x-9}+\sqrt{x^2-8x+16}}\\
-&=\lim_{x\rightarrow \infty} \frac{14x-25}{\sqrt{x^2+6x-9}+\sqrt{x^2-8x+16}}\\
-&=\lim_{x\rightarrow \infty} \frac{14-\frac{25}{x}}{\sqrt{1+\frac{6}{x}-\frac{9}{x^2}}+\sqrt{1-\frac{8}{x}+\frac{16}{x^2}}}\\
-&=\frac{14-0}{\sqrt{1+0-0}+\sqrt{1-0+0}}\\
-&=7
-\end{align*}
-$$
-
-You may have found one step rather confusing, that is, when we **divide both numerator and denominator with $x$**. The reason we do this is that we're dealing with $\infty$. How would we exactly calculate $\frac{\infty - 25}{\infty + \infty}$, if we were to immediately substitute the $x$ value? That is why, we need a trick like the above, so that we do not reach an indeterminate form.
-
-Dividing both sides with $x$ for this specific case will help us evaluate the limit, because we know that $\lim\limits_{x\rightarrow a} c \times f(x) = c \lim\limits_{x\rightarrow a} f(x)$ and $\lim\limits_{x\rightarrow \infty} \frac{1}{x} = 0$. Combining these both properties, we know that we will end up with $\frac{14}{2}$.
-
-We can see that once we rationalize it, we can finally avoid getting indeterminate forms, Now, we have learnt that **rationalization** is one of the method that we can use to combat against indeterminate form $\infty - \infty$.
-
-===
-
-# Properties of Limits: Tricky Example #3
-
-> #formula# **Example**  
-> Evaluate $\lim\limits_{x\rightarrow 1} \frac{2x-\sqrt{x + 3}}{x - 1}  = ...$
-
-Once again, putting $x=1$ will yield $\frac{0}{0}$. However, trying to factor this directly may be not a simple task. However, let us try **rationalizing** the numerator.
-
-$$
-\begin{align*}
-\lim_{x\rightarrow 1} \frac{2x-\sqrt{x + 3}}{x - 1}
-&= \lim_{x\rightarrow 1} \frac{2x-\sqrt{x + 3}}{x - 1} \times \frac{2x+\sqrt{x + 3}}{2x+\sqrt{x + 3}}\\
-&= \lim_{x\rightarrow 1} \frac{4x^2-x-3}{(x-1)(2x+\sqrt{x + 3})}\\
-&= \lim_{x\rightarrow 1} \frac{(x-1)(4x+3)}{(x-1)(2x+\sqrt{x + 3})}\\
-&= \frac{7}{4}\\
-\end{align*}
-$$
-
-We can see that once we rationalize the numerator, we are fortunate enough to see a common factor, that we can cancel out. This is an unqiue example that we solved using more than one tricks.
-
-===
-
-# Piecewise Function: An Example
-
-> #formula# **Example**  
-> Given $f(x) = \begin{cases} x + 4 & \text{ if } x < -4 \\ x^2 + 5x + 4 & \text{ if } x \geq -4  \end{cases}$  
-> Evaluate $\lim\limits_{x\rightarrow -4} f(x)$
-
-Remember the definition of limit? The limit from the left and right side at a point must be equal, for a function to have a limit at that point. Let's calculate the left side. Since we're approaching from the left side, it means that $x < -4$, so we are using $f(x)$ when it is $x < -4$:
-
-$$
-\begin{align*}
-\lim_{x\rightarrow -4^-} f(x)
-&= \lim_{x\rightarrow -4^-} x + 4\\
-&= 0\\
-\end{align*}
-$$
-
-Now, to the right side:
-
-$$
-\begin{align*}
-\lim\limits_{x\rightarrow -4^+} f(x)
-&= \lim\limits_{x\rightarrow -4^+} x^2+5x+4\\
-&= \lim\limits_{x\rightarrow -4^+} (-4)^2+(5\times (-4))-4\\
-&= 0\\
-\end{align*}
-$$
-
-Since both sides are equal, we can conclude that:
-
-$$
-\begin{align*}
-\lim\limits_{x\rightarrow -4} f(x)
-&= \lim\limits_{x\rightarrow -4^-} f(x) = \lim\limits_{x\rightarrow -4^+} f(x)\\
-&= 0\\
-\end{align*}
-$$
-
-We can also see that if one of the limits had different values, then $f(x)$ would not have a limit at that point ($x = -4$).
-
-===
-
-# ✏️ Practice: Calculating Limits
-
-Evaluate $\lim\limits_{x\rightarrow 4} \frac{8 - \sqrt{x^3}}{\sqrt{x} - 2}  = ...$.  
-If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
-
-`[input;compute-limit-easy-1]-12`
-
-> #explanation# **Correct!** This is just another example of limit that we can solve with factorization. Tbe square root might get in our way, but let us create a new variable $v$, such that $v = \sqrt{x}$. Since we're converting from one to another variable, the $x$ we're approaching in the limit also changes accordingly. Even if you do not subsitute, **the result will stay the same**.
+> Given the constants $a$, and $b$:
 >
 > $$
 > \begin{align*}
-> \lim_{x\rightarrow 4} \frac{8 - \sqrt{x^3}}{\sqrt{x} - 2} &= \lim_{v\rightarrow 2} \frac{8 - v^3}{v - 2} \\
-> &= \lim_{v\rightarrow 2} \frac{- (v^3 - 8)}{v - 2} \\
-> &= \lim_{v\rightarrow 2} \frac{- (v - 2)(v^2 + 2v + 4)}{v - 2} \\
-> &= \lim_{v\rightarrow 2} -(v^2 + 2v + 4) \\
-> &= \lim_{v\rightarrow 2} -(2^2 + 2\times2 + 4) \\
-> &= -12 \\
-> \end{align*}
+> \text{1. }&\lim\limits_{x\rightarrow 0}\frac{\sin{ax}}{bx}=\lim\limits_{x\rightarrow 0}\frac{ax}{\sin{bx}}=\frac{a}{b}\\
+> \text{2. }&\lim\limits_{x\rightarrow 0}\frac{\tan{ax}}{bx}=\lim\limits_{x\rightarrow 0}\frac{ax}{\tan{bx}}=\frac{a}{b}\\
+> \text{3. }&\lim\limits_{x\rightarrow 0}\frac{\sin{ax}}{\tan{bx}}=\lim\limits_{x\rightarrow 0}\frac{\tan{ax}}{\sin{bx}}=\frac{a}{b}\\
+> \text{4. }&\lim\limits_{x\rightarrow 0}\frac{\sin{ax}}{\sin{bx}}=\lim\limits_{x\rightarrow 0}\frac{\tan{ax}}{\tan{bx}}=\frac{a}{b}\\ \end{align*}
 > $$
+
+Although the above limits are easy to remember, you may still wonder how are they possible.
+
+Based on the above formulas, you can tell that the following limit is correct.
+
+$$
+\lim\limits_{x\rightarrow 0}\frac{\sin{x}}{x}=1
+$$
+
+However, we will try to **prove** it, and there are many ways to prove this limit. This proof will require us to use the **Squeeze Theorem**.
 
 ===
 
-# ✏️ Practice: Calculating Limits
+# Proof of a Trigonometric Limit
 
-Evaluate $\lim\limits_{x\rightarrow \infty }(\sqrt{9x^2+6x-3}-3x-4) $.  
-If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
+> #formula#
+> **Squeeze Theorem**
+>
+> Suppose that $f(x) ≤ g(x) ≤ h(x)$ for all $x$ in an open interval containing $a$, except possibly at $a$, and $\lim\limits_{x\rightarrow a}f(x)= \lim\limits_{x\rightarrow a} h(x)=L$. So, $\lim\limits_{x\rightarrow a} g(x)=L$.
 
-`[input;compute-limit-easy-2]-3`
+![Visualization](/materials/squeeze_theorem_proof.png "Visualization")
 
-> #explanation# **Correct!** This is just another example of limit that we can solve with rationalization. However, you may find this one a little bit trickier than the example because you have to manipulate $-3x-4$ part of the equation into its root form, but that is it, the steps remain the same.
->
-> $$
-> \begin{align*}
-> \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-3x-4]  &= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-(3x+4)] \\
-> &= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-\sqrt{(3x+4)^2}] \\
-> &= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-\sqrt{9x^2+24x+16}] \\
-> &= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-\sqrt{9x^2+24x+16}] \times \frac{[\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}]}{[\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}]}  \\
-> &= \lim_{x\rightarrow \infty} \frac{(9x^2+6x-3) - (9x^2+24x+16)}{\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}} \\
-> &= \lim_{x\rightarrow \infty} \frac{(-18x - 19)}{\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}} \\
-> &= \lim_{x\rightarrow \infty} \frac{(-18 - \frac{19}{x})}{\sqrt{9+\frac{6}{x}-\frac{3}{x^2}}+\sqrt{9+\frac{24}{x}+\frac{16}{x^2}}} \\
-> &= \frac{-18}{6} \\
-> &= -3 \\
-> \end{align*}
-> $$
->
-> You may find these steps a little bit repetetive, so here is a little trick:
->
-> > #formula# Given $f(x) = \sqrt{ax^2 + bx + c} - \sqrt{px^2 + qx + r}$,  
-> > then, $\lim_{x\rightarrow \infty} f(x) = \begin{cases} \infty & \text{ if } a > p \\ \frac{b-q}{2\sqrt{a}} & \text{ if } a = p \\ -\infty & \text{ if } a < p \\ \end{cases}$
+First, we will refer to $\angle BOC$ as $x$ in radian, and the circle's radius as $r$. Note that $BC$ and $DA$ are perpendicular to $OA$ and $OC$. Based on this, we can see that:
+
+-   $OB$'s length = $OA$'s length = $r$
+-   $BC$'s length = $r \sin{x}$
+-   $OC$'s length = $r \cos{x}$
+-   $AD$'s length = $r \tan{x}$
+
+Next, we will extract three different shapes; the triangle $BOC$, the sector $BOA$, and the triangle $DOA$. Just by looking at the visualization, we can tell that:
+$$ \text{Area }BOC \lt \text{Area }BOA \lt \text{DOA} $$
+
+Before continuing, we must find each of the region's area:
+
+-   $\text{Triangle } BOC = \frac{1}{2} r^2 \sin{x} \cos{x}$
+-   $\text{Sector } BOA = \frac{1}{2}xr^2$
+-   $\text{Triangle } DOA = \frac{1}{2} r^2 \tan{x}$
+
+Now that we know each of the area, we can plug the formula in:
+
+$$
+\begin{align*}
+\text{Area }BOC &<  \text{Area }BOA < \text{Area }DOA\\
+\frac{1}{2} r^2 \sin{x} \cos{x} &< \frac{1}{2} x r^2 < \frac{1}{2}r^2 \tan{x} \\
+\sin{x} \cos{x} &< x < \tan{x} \\
+\cos{x} &< \frac{x}{\sin{x}} < \frac{1}{\cos{x}} \\
+\end{align*}
+$$
+
+Next, we will take the limit of all terms:
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow 0} \cos{x} &< \lim\limits_{x\rightarrow 0} \frac{1}{\sin{x}} < \lim\limits_{x\rightarrow 0} \cos{x} \\
+1 &< \lim\limits_{x\rightarrow 0} \frac{x}{\sin{x}} < 1 \\
+\end{align*}
+$$
+
+Based on **Squeeze Theorem**, we can conclude that $\lim\limits_{x\rightarrow 0} \frac{x}{\sin{x}} = 1$. Although this was not what we wanted to prove initially, we can just play with limit's properties:
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow 0} \frac{x}{\sin{x}} &= 1\\
+\frac{1}{\lim\limits_{x\rightarrow 0} \frac{x}{\sin{x}}} &= \frac{1}{1}\\
+\lim\limits_{x\rightarrow 0}\frac{1}{\frac{x}{\sin{x}}} &= \frac{1}{1}\\
+\lim\limits_{x\rightarrow 0}\frac{\sin{x}}{x} &= 1\\
+\end{align*}
+$$
+
+There we go! We have proven that $\lim\limits_{x\rightarrow 0}\frac{\sin{x}}{x} = 1$.
+
+===
+
+# Practice: Limits of Trigonometric Functions
+
+Match the limits on the left side, with the numbers on the right side.
+
+`[match]@limit-trig-1@$\lim\limits_{x\rightarrow \infty} \frac{\csc^{-1}{(x)}}{x^2 - x}$@$0$@`
+`[match]@limit-trig-2@$\lim\limits_{a\rightarrow \infty} \frac{\tan^{-1}{a}}{a}$@$1$@`
+`[match]@limit-trig-3@$\lim\limits_{x\rightarrow 0} \frac{\left(1-\cos\left(4x\right)\right)}{2x\sin\left(x\right)} $@$4$@`
+`[match]@limit-trig-4@$\lim\limits_{x\rightarrow 0} \frac{\sin{x}+\tan{x}}{\tan{2x}-\sin{x}}$@$2$@`
+`[match]@limit-trig-5@$\lim\limits_{x\rightarrow 0} \frac{\cos{17x} - \cos{8x}}{\cos{7x} - \cos{2x}}$@$5$@`
+`[match]@limit-log-1@$\lim\limits_{x\rightarrow 0} \ln{ \left [ (1 + 3x)^{\frac{1}{x}} \right ] }$@$3$@`
+`[match]@limit-log-2@$\lim\limits_{x\rightarrow 0} \frac{\ln{\left ( \frac{1}{3} + x \right )} - \ln{\left ( \frac{1}{3} - x \right )}}{x}$@$6$@`
+
+===
+
+# Limits of Logarithmic-related Functions
+
+> #formula# $\lim\limits_{x\rightarrow \infty} \left ( 1 + \frac{1}{x} \right) ^ x = e$
+
+The euler number is often defined as above. Using the above, we can quickly prove that, for a constant $k$, $\lim\limits_{x\rightarrow \infty} \left ( 1 + \frac{k}{x} \right) ^ x = e^k$.
+Let us first define a new variable $y$, such that $y = \frac{x}{k}$.
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow \infty}\left ( 1 + \frac{k}{x} \right) ^ x
+&= \lim\limits_{x\rightarrow \infty}\left ( 1 + \frac{1}{\frac{x}{k}} \right) ^ x \\
+&= \lim\limits_{y\rightarrow \infty}\left ( 1 + \frac{1}{y} \right) ^ {yk} \\
+&= \lim\limits_{y\rightarrow \infty}\left [ \left ( 1 + \frac{1}{y} \right) ^ y \right ] k \\
+&= e^k \\
+\end{align*}
+$$
+
+Since $x$ is approaching $\infty$, when we swap out the variables of the limit, $y$ is also approaching $\infty$ because $x$ and $y$ are proportional. Consequently, the above proof is possible.
+
+---
+
+> #formula# Given the constant $a$, $\lim\limits\_{x\rightarrow 0} \frac{a^x - 1}{x} = \ln{a} $
+
+To prove the above limit, we must first know that $a^x$ can be represented as a series, that is:  
+$$1 + x \ln{a} + \frac{\left ( x \ln{a} \right )^2}{2!} + \frac{\left ( x \ln{a} \right )^3}{3!} + ...$$
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow 0} \frac{a^x - 1}{x}
+&= \lim\limits_{x\rightarrow 0} \frac{\left[ 1 + x \ln{a} + \frac{\left ( x \ln{a} \right )^2}{2!} + \frac{\left ( x \ln{a} \right )^3}{3!} + ... \right] - 1}{x} \\
+&= \lim\limits_{x\rightarrow 0} \left [ \frac{x \ln{a} + \frac{\left ( x \ln{a} \right )^2}{2!} + \frac{\left ( x \ln{a} \right )^3}{3!} + ...}{x} \right ] \\
+&= \lim\limits_{x\rightarrow 0} \left [ \frac{x \ln{a} + \frac{x^2 \left ( \ln{a} \right )^2}{2!} + \frac{x^3 \left ( \ln{a} \right )^3}{3!} + ...}{x} \right ] \\
+&= \lim\limits_{x\rightarrow 0} \left [ \ln{a} + \frac{x \left ( \ln{a} \right )^2}{2!} + \frac{x^2 \left ( \ln{a} \right )^3}{3!} + ... \right ] \\
+&= \ln{a} \\
+\end{align*}
+$$
+
+The remaining infinite terms would be zero due to $x$, so the only term that matters is the first one, that is $\ln{a}$, which would be the limit.
