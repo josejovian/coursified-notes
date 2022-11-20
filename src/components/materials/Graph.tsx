@@ -1,6 +1,6 @@
-import { MathFunction, MathPoint } from "@/src/type/Math";
 import JXG from "jsxgraph";
 import { useEffect, useState, useCallback, useRef } from "react";
+import { MathFunction, MathPoint } from "@/src/type";
 
 interface GraphProps {
 	mathFunctions: MathFunction[];

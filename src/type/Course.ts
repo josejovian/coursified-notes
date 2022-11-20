@@ -45,7 +45,7 @@ export interface SectionType {
 	progress?: number;
 }
 
-export default interface CourseType {
+export interface CourseType {
 	id?: string;
 	title: string;
 	description: string;

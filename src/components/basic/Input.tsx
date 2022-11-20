@@ -1,8 +1,11 @@
-import { ColorType, INPUT_COLOR_CLASS } from "@/src/style/Colors";
-import { SizeType } from "@/src/style/Sizes";
 import clsx from "clsx";
 import { ReactNode, DetailedHTMLProps, ButtonHTMLAttributes } from "react";
-import { INPUT_SIZE_CLASS } from "@/src/style/Sizes";
+import {
+	ColorType,
+	SizeType,
+	INPUT_COLOR_CLASS,
+	INPUT_SIZE_CLASS,
+} from "@/src/style";
 
 interface InputProps
 	extends Omit<

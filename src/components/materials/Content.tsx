@@ -1,22 +1,6 @@
-import { StateType } from "@/src/type/Generic";
 import * as ReactDOM from "react-dom";
-import {
-	AddressesType,
-	AnswerType,
-	CUSTOM_MATERIAL,
-	InputBoxElementType,
-	MatchBoxElementType,
-} from "@/src/type/Material";
-import {
-	checkChapterProgress,
-	getPracticeAnswer,
-	getPracticeId,
-	regexPracticeInput,
-	storeChapterProgress,
-} from "@/src/utils/course";
 import clsx from "clsx";
 import {
-	ReactNode,
 	useCallback,
 	useState,
 	useRef,
@@ -29,12 +13,27 @@ import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import Blockquote from "../basic/Quote";
-import Input from "../basic/Input";
 import TeX from "@matejmazur/react-katex";
-import { MathFunction, MathPoint } from "@/src/type/Math";
-import evaluateMath from "@/src/utils/evaluateMath";
+import {
+	AddressesType,
+	AnswerType,
+	CUSTOM_MATERIAL,
+	InputBoxElementType,
+	MatchBoxElementType,
+	MathFunction,
+	MathPoint,
+	StateType,
+} from "@/src/type";
+import {
+	checkChapterProgress,
+	evaluateMath,
+	getPracticeAnswer,
+	getPracticeId,
+	regexPracticeInput,
+} from "@/src/utils";
+import { Blockquote } from "@/src/components";
 import Graph from "./Graph";
+import Input from "../basic/Input";
 
 interface ContentProps {
 	markdown: any;

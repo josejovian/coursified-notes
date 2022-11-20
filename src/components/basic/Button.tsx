@@ -1,18 +1,19 @@
-import { ButtonVariantType } from "@/src/style/Variants";
-import { ColorType } from "@/src/style/Colors";
-import { SizeType } from "@/src/style/Sizes";
 import clsx from "clsx";
 import {
 	Fragment,
-	HTMLProps,
 	ReactNode,
 	useMemo,
 	DetailedHTMLProps,
 	ButtonHTMLAttributes,
 } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
-import { BUTTON_COLOR_CLASS } from "@/src/style/Colors";
-import { BUTTON_SIZE_CLASS } from "@/src/style/Sizes";
+import {
+	ButtonVariantType,
+	ColorType,
+	SizeType,
+	BUTTON_COLOR_CLASS,
+	BUTTON_SIZE_CLASS,
+} from "@/src/style";
 
 interface ButtonProps
 	extends Omit<
@@ -31,7 +32,7 @@ interface ButtonProps
 	variant?: ButtonVariantType;
 }
 
-export default function Button({
+export function Button({
 	children,
 	loading,
 	disabled,

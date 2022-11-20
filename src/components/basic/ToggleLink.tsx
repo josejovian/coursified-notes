@@ -8,7 +8,7 @@ interface ToggleLinkProps extends HTMLProps<HTMLAnchorElement> {
 	disabled?: boolean;
 }
 
-export default function ToggleLink({
+export function ToggleLink({
 	children,
 	href = "",
 	disabled,

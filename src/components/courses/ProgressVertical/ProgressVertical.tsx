@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useEffect, useState, useCallback, ReactNode } from "react";
 import { BsCheckLg } from "react-icons/bs";
-import ProgressMilestone from "./ProgressMilestone";
+import { ProgressMilestone } from "./ProgressMilestone";
 
 interface ProgressVerticalProps {
 	title: string;
@@ -20,7 +20,7 @@ const CIRCLE_SIZE = 32;
 const CIRCLE_LEFT_OFFSET = -57.6;
 const DEACCELERATION_THRESHOLD = 1;
 
-export default function ProgressVertical({
+export function ProgressVertical({
 	title,
 	milestones = [],
 	captions,

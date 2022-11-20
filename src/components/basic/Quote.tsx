@@ -1,4 +1,3 @@
-import { BLOCKQUOTE_COLOR_CLASS, ColorType } from "@/src/style/Colors";
 import clsx from "clsx";
 import {
 	Fragment,
@@ -7,6 +6,7 @@ import {
 	DetailedHTMLProps,
 	ButtonHTMLAttributes,
 } from "react";
+import { ColorType, BLOCKQUOTE_COLOR_CLASS } from "@/src/style";
 
 interface QuoteProps
 	extends DetailedHTMLProps<
@@ -19,7 +19,7 @@ interface QuoteProps
 	color?: ColorType;
 }
 
-export default function Blockquote({
+export function Blockquote({
 	children,
 	className,
 	left,

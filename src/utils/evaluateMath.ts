@@ -36,7 +36,7 @@ function applyMath(
 	return 0;
 }
 
-export default function evaluateMath(expression: string) {
+export function evaluateMath(expression: string) {
 	const operands: number[] = [];
 	const operators: OperatorType[] = [];
 

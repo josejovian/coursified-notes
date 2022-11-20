@@ -1,14 +1,14 @@
 import clsx from "clsx";
 import { Fragment, useCallback, useMemo, useState } from "react";
-import CourseType, {
+import { BsCheckSquareFill, BsChevronLeft, BsSquare } from "react-icons/bs";
+import {
 	ChapterType,
 	RequirementCategoryType,
 	RequirementMap,
 	RequirementType,
 	SectionType,
-} from "@/src/type/Course";
-import { BsCheckSquareFill, BsChevronLeft, BsSquare } from "react-icons/bs";
-import ProgressVertical from "@/src/compponents/courses/ProgressVertical/ProgressVertical";
+} from "@/src/type";
+import { ProgressVertical } from "./../courses";
 
 const CHAPTER_BASE_STYLE = "transition-colors";
 const CHAPTER_LOCKED_STYLE = "bg-secondary-1";
@@ -22,12 +22,7 @@ interface SectionProps {
 	index?: number;
 }
 
-export default function Section({
-	caption,
-	courseId,
-	index,
-	section,
-}: SectionProps) {
+export function Section({ caption, courseId, index, section }: SectionProps) {
 	const { title, chapters } = section;
 
 	const [open, setOpen] = useState(true);
