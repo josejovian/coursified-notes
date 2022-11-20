@@ -7,7 +7,7 @@ interface GenericProps {
 	header?: ReactNode;
 }
 
-export default function SlantedBackgroundTemplate({
+export function SlantedBackgroundTemplate({
 	children,
 	className,
 	header,

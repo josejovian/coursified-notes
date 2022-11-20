@@ -8,7 +8,7 @@ interface GraphProps {
 	id: string;
 }
 
-export default function Graph({ id, mathFunctions, mathPoints }: GraphProps) {
+export function Graph({ id, mathFunctions, mathPoints }: GraphProps) {
 	const [loading, setLoading] = useState(true);
 
 	const renderFunction = useCallback(() => {

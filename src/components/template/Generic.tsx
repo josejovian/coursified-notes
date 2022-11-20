@@ -1,13 +1,9 @@
 import { ReactNode } from "react";
 
 interface GenericProps {
-	children: ReactNode
+	children: ReactNode;
 }
 
-export default function GenericTemplate({ children } : GenericProps) {
-	return (
-		<div>
-			{ children }
-		</div>
-	)
+export function GenericTemplate({ children }: GenericProps) {
+	return <div>{children}</div>;
 }

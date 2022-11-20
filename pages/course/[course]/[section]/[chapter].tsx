@@ -1,17 +1,15 @@
 import { useMemo, useState, useEffect, useCallback, useRef } from "react";
-import { ChapterAddressType } from "@/src/type/Course";
-import Button from "@/src/compponents/basic/Button";
 import clsx from "clsx";
-import { AnswerType } from "@/src/type/Material";
 import "katex/dist/katex.min.css";
-
+import { useRouter } from "next/router";
+import { AnswerType } from "@/src/type/Material";
+import { ChapterAddressType } from "@/src/type";
 import {
 	checkChapterProgress,
 	getSpecificChapterAddress,
 	storeChapterProgress,
-} from "@/src/utils/course";
-import { useRouter } from "next/router";
-import Content from "@/src/compponents/materials/Content";
+} from "@/src/utils";
+import { Button, Content } from "@/src/components";
 
 interface CourseMaterialProps {
 	code: any;

@@ -1,11 +1,6 @@
 import { Fragment, useMemo, useState, useEffect } from "react";
-import Section from "@/src/compponents/basic/Section";
-import SlantedBackgroundTemplate from "@/src/compponents/template/SlantedBackground";
-import CourseType, {
-	RequirementMap,
-	RequirementType,
-	SectionType,
-} from "@/src/type/Course";
+import { Section, SlantedBackgroundTemplate } from "@/src/components";
+import { RequirementMap, SectionType } from "@/src/type";
 import {
 	checkChapterProgress,
 	getSpecificChapterAddress,

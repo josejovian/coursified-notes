@@ -31,9 +31,7 @@ import {
 	getPracticeId,
 	regexPracticeInput,
 } from "@/src/utils";
-import { Blockquote } from "@/src/components";
-import Graph from "./Graph";
-import Input from "../basic/Input";
+import { Blockquote, Input, Graph } from "@/src/components";
 
 interface ContentProps {
 	markdown: any;
@@ -48,7 +46,7 @@ interface ContentProps {
 	handleCleanUpStates: () => void;
 }
 
-export default function Content({
+export function Content({
 	markdown,
 	addreses,
 	stateSolved,

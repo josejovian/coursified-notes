@@ -26,7 +26,7 @@ interface InputProps
 	size?: SizeType;
 }
 
-export default function Input({
+export function Input({
 	className,
 	color = "primary",
 	helperText,
