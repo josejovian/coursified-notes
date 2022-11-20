@@ -65,8 +65,6 @@ export function Content({
 	const [submitted, setSubmmited] = stateSubmitted;
 	const answerInputBoxParentElement = useRef<InputBoxElementType[]>([]);
 	const matchParentElement = useRef<MatchBoxElementType[]>([]);
-	const leftCards = useRef<any[]>([]);
-	const rightCards = useRef<any[]>([]);
 	const [active, setActive] = useState<any>(null);
 
 	const { practice } = addreses;
@@ -580,8 +578,6 @@ export function Content({
 
 				if (detectedPair && detectedPair.length === 5) {
 					const [tag, id, left, right, space] = detectedPair;
-					leftCards.current.push(handleGetCard(id, left));
-					rightCards.current.push(handleGetCard(id, right));
 					matchParentElement.current = [
 						...matchParentElement.current,
 						{
@@ -678,16 +674,6 @@ export function Content({
 	useEffect(() => {
 		handleTransformBlockQuotes();
 	}, [page, accept, answer, handleTransformBlockQuotes]);
-
-	const handleCleanUpAllStates = useCallback(() => {
-		setAccept({});
-		setSolved(-1);
-		setSubmmited(false);
-		setAnswer({});
-		setLoading(true);
-		leftCards.current = [];
-		rightCards.current = [];
-	}, [setAccept, setAnswer, setLoading, setSolved, setSubmmited]);
 
 	const handlePrepareNewPage = useCallback(() => {
 		if (loading) {
