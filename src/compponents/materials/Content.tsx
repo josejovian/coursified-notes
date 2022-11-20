@@ -44,8 +44,9 @@ interface ContentProps {
 	stateAccept: StateType<AnswerType>;
 	stateLoading: StateType<boolean>;
 	stateSubmitted: StateType<boolean>;
-	statePage: StateType<number>;
+	page: number;
 	handleCheckAnswer: (ans: string, id: string) => boolean;
+	handleCleanUpStates: () => void;
 }
 
 export default function Content({
@@ -56,15 +57,15 @@ export default function Content({
 	stateAccept,
 	stateLoading,
 	stateSubmitted,
-	statePage,
+	page,
 	handleCheckAnswer,
+	handleCleanUpStates,
 }: ContentProps) {
 	const [loading, setLoading] = stateLoading;
 	const [answer, setAnswer] = stateAnswer;
 	const [accept, setAccept] = stateAccept;
 	const [solved, setSolved] = stateSolved;
 	const [submitted, setSubmmited] = stateSubmitted;
-	const [page, setPage] = statePage;
 	const answerInputBoxParentElement = useRef<InputBoxElementType[]>([]);
 	const matchParentElement = useRef<MatchBoxElementType[]>([]);
 	const leftCards = useRef<any[]>([]);
@@ -602,8 +603,7 @@ export default function Content({
 				}
 			}
 		});
-		console.log("????????");
-		console.log(inputElementsRendered);
+
 		if (inputElementsRendered > 0 && Object.values(answerKeys).length > 0) {
 			setSolved(0);
 			setAccept((prev) => ({
@@ -682,7 +682,7 @@ export default function Content({
 		handleTransformBlockQuotes();
 	}, [page, accept, answer, handleTransformBlockQuotes]);
 
-	const handleCleanUpStates = useCallback(() => {
+	const handleCleanUpAllStates = useCallback(() => {
 		setAccept({});
 		setSolved(-1);
 		setSubmmited(false);

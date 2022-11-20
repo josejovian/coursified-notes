@@ -76,11 +76,6 @@ const CourseMaterial = ({
 
 	const chapterContent = useMemo(() => code.split("===")[page], [code, page]);
 
-	useEffect(() => {
-		console.log("Answer Box");
-		console.log(answer);
-	}, [answer]);
-
 	const chapterBaseAddress = useMemo(
 		() => ({
 			...params,
@@ -125,6 +120,16 @@ const CourseMaterial = ({
 		setMaxPage(code.split("===").length);
 	}, [code]);
 
+	const handleCleanUpStates = useCallback(() => {
+		setAccept({});
+		setSolved(-1);
+		setSubmmited(false);
+		setAnswer({});
+		setLoading(true);
+		leftCards.current = [];
+		rightCards.current = [];
+	}, [setAccept, setAnswer, setLoading, setSolved, setSubmmited]);
+
 	const renderChapterContents = useMemo(
 		() => (
 			<Content
@@ -135,28 +140,32 @@ const CourseMaterial = ({
 				stateLoading={stateLoading}
 				stateSolved={stateSolved}
 				stateSubmitted={stateSubmitted}
-				statePage={statePage}
+				page={page}
 				handleCheckAnswer={handleCheckAnswer}
+				handleCleanUpStates={handleCleanUpStates}
 			/>
 		),
 		[
 			addresses,
 			chapterContent,
-			handleCheckAnswer,
 			stateAccept,
 			stateAnswer,
 			stateLoading,
-			statePage,
 			stateSolved,
 			stateSubmitted,
+			page,
+			handleCheckAnswer,
+			handleCleanUpStates,
 		]
 	);
 
 	const handlePreviousPage = useCallback(() => {
+		handleCleanUpStates();
 		if (page > 0) setPage((prev) => prev - 1);
-	}, [page, setPage]);
+	}, [handleCleanUpStates, page, setPage]);
 
 	const handleNextPage = useCallback(() => {
+		handleCleanUpStates();
 		if (solved !== 0) storeChapterProgress(read, true);
 		if (page < maxPage - 1) {
 			setPage((prev) => prev + 1);
@@ -174,6 +183,7 @@ const CourseMaterial = ({
 		}
 	}, [
 		chapterBaseAddress,
+		handleCleanUpStates,
 		maxPage,
 		page,
 		params.course,
