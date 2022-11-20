@@ -1,38 +1,13 @@
-import {
-	useMemo,
-	useState,
-	useEffect,
-	useCallback,
-	useRef,
-	ReactNode,
-	DetailedHTMLProps,
-	HTMLAttributes,
-} from "react";
-import { ChapterAddressType, ChapterType } from "@/src/type/Course";
-import ReactMarkdown from "react-markdown";
-import RemarkMath from "remark-math";
-import RehypeKatex from "rehype-katex";
+import { useMemo, useState, useEffect, useCallback, useRef } from "react";
+import { ChapterAddressType } from "@/src/type/Course";
 import Button from "@/src/compponents/basic/Button";
-import Graph from "@/src/compponents/materials/Graph";
-import evaluateMath from "@/src/utils/evaluateMath";
-import * as ReactDOM from "react-dom";
 import clsx from "clsx";
-import { MathFunction, MathPoint } from "@/src/type/Math";
-import remarkGfm from "remark-gfm";
-import { ReactElement } from "react-markdown/lib/react-markdown";
-import { AnswerType, CUSTOM_MATERIAL } from "@/src/type/Material";
-import Input from "@/src/compponents/basic/Input";
-import Blockquote from "@/src/compponents/basic/Quote";
-import TeX from "@matejmazur/react-katex";
+import { AnswerType } from "@/src/type/Material";
 import "katex/dist/katex.min.css";
 
 import {
 	checkChapterProgress,
-	getCourseKey,
-	getPracticeAnswer,
-	getPracticeId,
 	getSpecificChapterAddress,
-	regexPracticeInput,
 	storeChapterProgress,
 } from "@/src/utils/course";
 import { useRouter } from "next/router";
