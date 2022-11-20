@@ -651,6 +651,19 @@ export function Content({
 		[]
 	);
 
+	const handleGetBlockquoteWithoutTags = useCallback((element: any) => {
+		const regex = /\#([^\#])*\#/g;
+
+		return element.map((str: any) => {
+			if (typeof str === "object") {
+				return str.props.children.map((x: any) =>
+					typeof x === "string" ? x.replace(regex, "") : x
+				);
+			}
+			return str.replace(regex, "");
+		});
+	}, []);
+
 	const handleCheckForSpecialBlockquote = useCallback(
 		(element: any, type: "formula" | "explanation" | "match") => {
 			const regex = new RegExp(`\#${type}\#`);
@@ -670,10 +683,6 @@ export function Content({
 	useEffect(() => {
 		handleGetExistingAnswerIfAny();
 	}, [accept, handleGetExistingAnswerIfAny, handleTransformBlockQuotes]);
-
-	useEffect(() => {
-		handleTransformBlockQuotes();
-	}, [page, accept, answer, handleTransformBlockQuotes]);
 
 	const handlePrepareNewPage = useCallback(() => {
 		if (loading) {
@@ -713,6 +722,8 @@ export function Content({
 							);
 						},
 						blockquote: ({ node, children, ...props }) => {
+							const modifiedChildren =
+								handleGetBlockquoteWithoutTags(children);
 							if (
 								handleCheckForSpecialBlockquote(
 									children,
@@ -726,7 +737,7 @@ export function Content({
 										)}
 										color="success"
 									>
-										{children}
+										{modifiedChildren}
 									</Blockquote>
 								);
 
@@ -738,11 +749,11 @@ export function Content({
 							)
 								return (
 									<Blockquote className="!pl-8">
-										{children}
+										{modifiedChildren}
 									</Blockquote>
 								);
 
-							return <Blockquote>{children}</Blockquote>;
+							return <Blockquote>{modifiedChildren}</Blockquote>;
 						},
 					}}
 					remarkPlugins={[remarkMath, remarkGfm]}
