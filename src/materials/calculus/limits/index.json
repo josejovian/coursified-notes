@@ -3,6 +3,7 @@
 	"overrideChapterTitles": {
 		"definition": "Definition of Limit",
 		"properties": "Properties of Limit",
-		"common": "Common"
+		"common": "Common Limits",
+		"continuity": "Continuity of Functions"
 	}
 }
