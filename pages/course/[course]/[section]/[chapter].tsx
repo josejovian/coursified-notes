@@ -115,7 +115,6 @@ const CourseMaterial = ({
 				stateSubmitted={stateSubmitted}
 				page={page}
 				handleCheckAnswer={handleCheckAnswer}
-				handleCleanUpStates={handleCleanUpStates}
 			/>
 		),
 		[
@@ -128,7 +127,6 @@ const CourseMaterial = ({
 			stateSubmitted,
 			page,
 			handleCheckAnswer,
-			handleCleanUpStates,
 		]
 	);
 

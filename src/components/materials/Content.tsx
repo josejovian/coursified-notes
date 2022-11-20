@@ -8,6 +8,7 @@ import {
 	DetailedHTMLProps,
 	HTMLAttributes,
 	useEffect,
+	ReactNode,
 } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
@@ -32,7 +33,6 @@ import {
 	regexPracticeInput,
 } from "@/src/utils";
 import { Blockquote, Input, Graph } from "@/src/components";
-
 interface ContentProps {
 	markdown: any;
 	addreses: AddressesType;
@@ -43,7 +43,6 @@ interface ContentProps {
 	stateSubmitted: StateType<boolean>;
 	page: number;
 	handleCheckAnswer: (ans: string, id: string) => boolean;
-	handleCleanUpStates: () => void;
 }
 
 export function Content({
@@ -56,7 +55,6 @@ export function Content({
 	stateSubmitted,
 	page,
 	handleCheckAnswer,
-	handleCleanUpStates,
 }: ContentProps) {
 	const [loading, setLoading] = stateLoading;
 	const [answer, setAnswer] = stateAnswer;
@@ -69,49 +67,17 @@ export function Content({
 
 	const { practice } = addreses;
 
-	const handleGetExistingAnswerIfAny = useCallback(() => {
-		const existingAnswers = checkChapterProgress(practice);
-		const practiceIds = Object.keys(accept);
-
-		if (practiceIds.length === 0) return;
-
-		let currentAnswers = {};
-		let allAnswersAreCorrect = true;
-		practiceIds.forEach((practiceId: string) => {
-			if (
-				existingAnswers &&
-				existingAnswers[practiceId] &&
-				handleCheckAnswer(existingAnswers[practiceId], practiceId)
-			) {
-				const specificAnswer = existingAnswers[practiceId];
-				if (specificAnswer) {
-					currentAnswers = {
-						...currentAnswers,
-						[practiceId]: specificAnswer,
-					};
-				}
-			} else {
-				allAnswersAreCorrect = false;
-			}
-		});
-
-		if (
-			allAnswersAreCorrect &&
-			Object.keys(currentAnswers).length === practiceIds.length &&
-			practiceIds.length > 0
-		) {
-			setAnswer(currentAnswers);
-			setSubmmited(true);
-			setSolved(1);
-		}
-	}, [
-		practice,
-		accept,
-		handleCheckAnswer,
-		setAnswer,
-		setSubmmited,
-		setSolved,
-	]);
+	const userAnswerStatus = useCallback(
+		(practiceId: string) => {
+			const specificAnswer = answer[practiceId];
+			if (specificAnswer)
+				return handleCheckAnswer(specificAnswer, practiceId)
+					? "success"
+					: "error";
+			return undefined;
+		},
+		[answer, handleCheckAnswer]
+	);
 
 	const renderCustomElement = useCallback(
 		(
@@ -134,50 +100,19 @@ export function Content({
 		[]
 	);
 
-	const userAnswerStatus = useCallback(
-		(practiceId: string) => {
-			const specificAnswer = answer[practiceId];
-			if (specificAnswer)
-				return handleCheckAnswer(specificAnswer, practiceId)
-					? "success"
-					: "error";
-			return undefined;
-		},
-		[answer, handleCheckAnswer]
-	);
+	const handleOnePairMatch = useCallback(() => {
+		if (active && active.type === "complete") {
+			setAnswer((prev) => ({
+				...prev,
+				[active.id]: active.answer,
+			}));
+			setActive(null);
+		}
+	}, [active, setAnswer]);
 
-	const renderAnswerBox = useCallback(
-		(practiceId: string) => (
-			<Input
-				key={`InputBox-${practiceId}`}
-				id={`InputBox-${practiceId}`}
-				className="InputBox"
-				onBlur={(e) => {
-					if (answer !== accept) {
-						setSubmmited(false);
-						setAnswer((prev) => ({
-							...prev,
-							[practiceId]: e.target.value,
-						}));
-					}
-				}}
-				defaultValue={answer[practiceId]}
-				disabled={
-					solved === 1 || userAnswerStatus(practiceId) === "success"
-				}
-				state={submitted ? userAnswerStatus(practiceId) : undefined}
-			/>
-		),
-		[
-			answer,
-			solved,
-			userAnswerStatus,
-			submitted,
-			accept,
-			setSubmmited,
-			setAnswer,
-		]
-	);
+	useEffect(() => {
+		handleOnePairMatch();
+	}, [active, handleOnePairMatch]);
 
 	const handleGetComponentForm = useCallback((str: string) => {
 		if (str.match(/\$([^\$])*\$/g)) {
@@ -185,74 +120,6 @@ export function Content({
 		}
 		return str;
 	}, []);
-
-	const renderMatchCard = useCallback(
-		({
-			children,
-			className,
-			...props
-		}: DetailedHTMLProps<
-			HTMLAttributes<HTMLDivElement>,
-			HTMLDivElement
-		>) => (
-			<div
-				{...props}
-				className={clsx(
-					"Match_right flex align-self-end justify-center items-center",
-					"w-24 px-8 py-2",
-					"text-center bg-primary-2 hover:bg-primary-3 transition-colors rounded-sm",
-					className
-				)}
-			>
-				{handleGetComponentForm(children as string)}
-			</div>
-		),
-		[handleGetComponentForm]
-	);
-
-	useEffect(() => {
-		const entries = Object.entries(answer);
-		const newAnswer: { [key: string]: string } = {};
-		let different = false;
-		entries.forEach(([k, v]) => {
-			if (typeof v !== "undefined") {
-				newAnswer[k] = v;
-			} else {
-				different = true;
-			}
-		});
-		if (different) {
-			setAnswer(newAnswer);
-		}
-	}, [answer, setAnswer]);
-
-	const handleRemoveAnswer = useCallback(
-		(key: string) => {
-			setAnswer((prev) => ({
-				...prev,
-				[key]: undefined,
-			}));
-		},
-		[setAnswer]
-	);
-
-	const handleCheckIfAlreadyMatched = useCallback(
-		(
-			currentKey: any,
-			currentAnswer: any,
-			onKeyMatch: null | ((key: string) => void),
-			onValueMatch: null | ((key: string) => void)
-		) => {
-			Object.entries(answer).forEach(([key, value]) => {
-				if (onKeyMatch && key === currentKey) {
-					onKeyMatch(key);
-				} else if (onValueMatch && value === currentAnswer) {
-					onValueMatch(key);
-				}
-			});
-		},
-		[answer]
-	);
 
 	const handleSetActive = useCallback(
 		(
@@ -290,6 +157,66 @@ export function Content({
 			});
 		},
 		[]
+	);
+
+	const handleRemoveCustomComponents = useCallback((className: string) => {
+		const previousRenders = document.querySelectorAll(`.${className}`);
+		previousRenders.forEach((element) => {
+			//TODO: Something MIGHT be wrong with this unmount method.
+			element.parentElement?.removeChild(element);
+		});
+	}, []);
+
+	const handleRemoveAnswer = useCallback(
+		(key: string) => {
+			setAnswer((prev) => ({
+				...prev,
+				[key]: undefined,
+			}));
+		},
+		[setAnswer]
+	);
+
+	const handleCheckIfAlreadyMatched = useCallback(
+		(
+			currentKey: any,
+			currentAnswer: any,
+			onKeyMatch: null | ((key: string) => void),
+			onValueMatch: null | ((key: string) => void)
+		) => {
+			Object.entries(answer).forEach(([key, value]) => {
+				if (onKeyMatch && key === currentKey) {
+					onKeyMatch(key);
+				} else if (onValueMatch && value === currentAnswer) {
+					onValueMatch(key);
+				}
+			});
+		},
+		[answer]
+	);
+
+	const renderMatchCard = useCallback(
+		({
+			children,
+			className,
+			...props
+		}: DetailedHTMLProps<
+			HTMLAttributes<HTMLDivElement>,
+			HTMLDivElement
+		>) => (
+			<div
+				{...props}
+				className={clsx(
+					"Match_right flex align-self-end justify-center items-center",
+					"w-24 px-8 py-2",
+					"text-center bg-primary-2 hover:bg-primary-3 transition-colors rounded-sm",
+					className
+				)}
+			>
+				{handleGetComponentForm(children as string)}
+			</div>
+		),
+		[handleGetComponentForm]
 	);
 
 	const renderMatchBox = useCallback(
@@ -411,23 +338,38 @@ export function Content({
 		]
 	);
 
-	useEffect(() => {
-		if (active && active.type === "complete") {
-			setAnswer((prev) => ({
-				...prev,
-				[active.id]: active.answer,
-			}));
-			setActive(null);
-		}
-	}, [active, setAnswer]);
-
-	const handleRemoveCustomComponents = useCallback((className: string) => {
-		const previousRenders = document.querySelectorAll(`.${className}`);
-		previousRenders.forEach((element) => {
-			//TODO: Something MIGHT be wrong with this unmount method.
-			element.parentElement?.removeChild(element);
-		});
-	}, []);
+	const renderAnswerBox = useCallback(
+		(practiceId: string) => (
+			<Input
+				key={`InputBox-${practiceId}`}
+				id={`InputBox-${practiceId}`}
+				className="InputBox"
+				onBlur={(e) => {
+					if (answer !== accept) {
+						setSubmmited(false);
+						setAnswer((prev) => ({
+							...prev,
+							[practiceId]: e.target.value,
+						}));
+					}
+				}}
+				defaultValue={answer[practiceId]}
+				disabled={
+					solved === 1 || userAnswerStatus(practiceId) === "success"
+				}
+				state={submitted ? userAnswerStatus(practiceId) : undefined}
+			/>
+		),
+		[
+			answer,
+			solved,
+			userAnswerStatus,
+			submitted,
+			accept,
+			setSubmmited,
+			setAnswer,
+		]
+	);
 
 	const handleRenderAnswerBoxes = useCallback(() => {
 		answerInputBoxParentElement.current.forEach(
@@ -446,20 +388,6 @@ export function Content({
 		);
 	}, [handleRemoveCustomComponents, renderAnswerBox, renderCustomElement]);
 
-	const handleGetCard = useCallback((id: string, input: string) => {
-		const card: any = {
-			type: "string",
-			id,
-		};
-		if (input.match(/\$([^\$])*\$/g)) {
-			card.type = "formula";
-			card.content = input.slice(1, -1);
-		} else {
-			card.content = input;
-		}
-		return card;
-	}, []);
-
 	const handleRenderMatch = useCallback(() => {
 		handleRemoveCustomComponents("MatchBox");
 		matchParentElement.current.forEach(({ parentElement, pair, id }) => {
@@ -472,6 +400,88 @@ export function Content({
 			);
 		});
 	}, [handleRemoveCustomComponents, renderCustomElement, renderMatchBox]);
+
+	useEffect(() => {
+		handleRenderAnswerBoxes();
+		handleRenderMatch();
+	}, [
+		page,
+		active,
+		accept,
+		answer,
+		solved,
+		userAnswerStatus,
+		handleRenderAnswerBoxes,
+		handleRenderMatch,
+	]);
+
+	const handleRemoveUndefinedAnswers = useCallback(() => {
+		const entries = Object.entries(answer);
+		const newAnswer: { [key: string]: string } = {};
+		let different = false;
+		entries.forEach(([k, v]) => {
+			if (typeof v !== "undefined") {
+				newAnswer[k] = v;
+			} else {
+				different = true;
+			}
+		});
+		if (different) {
+			setAnswer(newAnswer);
+		}
+	}, [answer, setAnswer]);
+
+	useEffect(() => {
+		handleRemoveUndefinedAnswers();
+	}, [answer, handleRemoveUndefinedAnswers]);
+
+	const handleGetExistingAnswerIfAny = useCallback(() => {
+		const existingAnswers = checkChapterProgress(practice);
+		const practiceIds = Object.keys(accept);
+
+		if (practiceIds.length === 0) return;
+
+		let currentAnswers = {};
+		let allAnswersAreCorrect = true;
+		practiceIds.forEach((practiceId: string) => {
+			if (
+				existingAnswers &&
+				existingAnswers[practiceId] &&
+				handleCheckAnswer(existingAnswers[practiceId], practiceId)
+			) {
+				const specificAnswer = existingAnswers[practiceId];
+				if (specificAnswer) {
+					currentAnswers = {
+						...currentAnswers,
+						[practiceId]: specificAnswer,
+					};
+				}
+			} else {
+				allAnswersAreCorrect = false;
+			}
+		});
+
+		if (
+			allAnswersAreCorrect &&
+			Object.keys(currentAnswers).length === practiceIds.length &&
+			practiceIds.length > 0
+		) {
+			setAnswer(currentAnswers);
+			setSubmmited(true);
+			setSolved(1);
+		}
+	}, [
+		practice,
+		accept,
+		handleCheckAnswer,
+		setAnswer,
+		setSubmmited,
+		setSolved,
+	]);
+
+	useEffect(() => {
+		handleGetExistingAnswerIfAny();
+	}, [accept, handleGetExistingAnswerIfAny]);
 
 	const handleConvertCodeToComponents = useCallback(() => {
 		if (!loading) return;
@@ -612,34 +622,22 @@ export function Content({
 		loading,
 		handleRemoveCustomComponents,
 		renderCustomElement,
-		handleGetCard,
 		setSolved,
 		setAccept,
 		handleRenderAnswerBoxes,
 		handleRenderMatch,
 	]);
 
+	const handlePrepareNewPage = useCallback(() => {
+		if (loading) {
+			handleConvertCodeToComponents();
+			setLoading(false);
+		}
+	}, [handleConvertCodeToComponents, loading, setLoading]);
+
 	useEffect(() => {
-		handleRenderAnswerBoxes();
-		handleRenderMatch();
-	}, [
-		page,
-		active,
-		accept,
-		answer,
-		solved,
-		userAnswerStatus,
-		handleRenderAnswerBoxes,
-		handleRenderMatch,
-	]);
-
-	const handleTransformBlockQuotes = useCallback(() => {
-		const blockquotes = document.querySelectorAll("blockquote");
-
-		blockquotes.forEach((bq) => {
-			bq.innerHTML = bq.innerHTML.replace(/\#[^\#]*\#/g, "");
-		});
-	}, []);
+		handlePrepareNewPage();
+	}, [page, handlePrepareNewPage]);
 
 	const handleCheckForCodeInvokedElements = useCallback(
 		(element: any, specific: string = "") => {
@@ -649,6 +647,17 @@ export function Content({
 			return element.toString().match(/\[[^\]]*\]/g);
 		},
 		[]
+	);
+
+	const handlePreTransformCode = useCallback(
+		({ node, children, ...props }: any) => {
+			return handleCheckForCodeInvokedElements(children) ? (
+				<span className="CustomMaterialInvoker hidden">{children}</span>
+			) : (
+				<code>{children}</code>
+			);
+		},
+		[handleCheckForCodeInvokedElements]
 	);
 
 	const handleGetBlockquoteWithoutTags = useCallback((element: any) => {
@@ -680,26 +689,30 @@ export function Content({
 		[]
 	);
 
-	useEffect(() => {
-		handleGetExistingAnswerIfAny();
-	}, [accept, handleGetExistingAnswerIfAny, handleTransformBlockQuotes]);
+	const handlePreTransformBlockquote = useCallback(
+		({ node, children, ...props }: any) => {
+			const taglessChildren = handleGetBlockquoteWithoutTags(children);
+			let quoteProps = {};
 
-	const handlePrepareNewPage = useCallback(() => {
-		if (loading) {
-			handleCleanUpStates();
-			handleConvertCodeToComponents();
-			setLoading(false);
-		}
-	}, [
-		handleCleanUpStates,
-		handleConvertCodeToComponents,
-		loading,
-		setLoading,
-	]);
+			if (handleCheckForSpecialBlockquote(children, "explanation"))
+				quoteProps = {
+					className: clsx(solved !== 1 && "hidden"),
+					color: "success",
+				};
 
-	useEffect(() => {
-		handlePrepareNewPage();
-	}, [page, handlePrepareNewPage]);
+			if (handleCheckForSpecialBlockquote(children, "formula"))
+				quoteProps = {
+					className: "!pl-8",
+				};
+
+			return <Blockquote {...quoteProps}>{taglessChildren}</Blockquote>;
+		},
+		[
+			handleCheckForSpecialBlockquote,
+			handleGetBlockquoteWithoutTags,
+			solved,
+		]
+	);
 
 	return (
 		<div className="flex w-full h-full overflow-x-hidden overflow-y-scroll">
@@ -710,51 +723,8 @@ export function Content({
 				<ReactMarkdown
 					className="CourseMaterial_contents pb-32"
 					components={{
-						code: ({ node, children, ...props }) => {
-							return handleCheckForCodeInvokedElements(
-								children
-							) ? (
-								<span className="CustomMaterialInvoker hidden">
-									{children}
-								</span>
-							) : (
-								<code>{children}</code>
-							);
-						},
-						blockquote: ({ node, children, ...props }) => {
-							const modifiedChildren =
-								handleGetBlockquoteWithoutTags(children);
-							if (
-								handleCheckForSpecialBlockquote(
-									children,
-									"explanation"
-								)
-							)
-								return (
-									<Blockquote
-										className={clsx(
-											solved !== 1 && "hidden"
-										)}
-										color="success"
-									>
-										{modifiedChildren}
-									</Blockquote>
-								);
-
-							if (
-								handleCheckForSpecialBlockquote(
-									children,
-									"formula"
-								)
-							)
-								return (
-									<Blockquote className="!pl-8">
-										{modifiedChildren}
-									</Blockquote>
-								);
-
-							return <Blockquote>{modifiedChildren}</Blockquote>;
-						},
+						code: handlePreTransformCode,
+						blockquote: handlePreTransformBlockquote,
 					}}
 					remarkPlugins={[remarkMath, remarkGfm]}
 					rehypePlugins={[rehypeKatex]}
