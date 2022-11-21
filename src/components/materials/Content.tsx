@@ -487,14 +487,16 @@ export function Content({
 	const handleConvertCodeToComponents = useCallback(() => {
 		if (!loading) return;
 
-		const container = document.getElementById("CourseMaterial_contents");
+		const container = document.getElementsByClassName(
+			"CourseMaterial_content"
+		)[0].parentElement;
 
 		Object.values(CUSTOM_MATERIAL).forEach((group) => {
 			handleRemoveCustomComponents(group);
 		});
 
 		const elements = document.querySelectorAll(
-			"#CourseMaterial_contents .CustomMaterialInvoker"
+			".CourseMaterial_content .CustomMaterialInvoker"
 		);
 
 		let inputElementsRendered = 0;
