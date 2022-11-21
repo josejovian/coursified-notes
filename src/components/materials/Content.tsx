@@ -717,12 +717,9 @@ export function Content({
 
 	return (
 		<div className="flex w-full h-full overflow-x-hidden overflow-y-scroll">
-			<article
-				id="CourseMaterial_contents"
-				className="w-full h-full pt-32 p-adapt-sm"
-			>
+			<article className="w-full h-full pt-32 p-adapt-sm">
 				<ReactMarkdown
-					className="CourseMaterial_contents pb-32"
+					className="CourseMaterial_content"
 					components={{
 						code: handlePreTransformCode,
 						blockquote: handlePreTransformBlockquote,

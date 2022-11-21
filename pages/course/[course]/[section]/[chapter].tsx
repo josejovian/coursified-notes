@@ -103,33 +103,6 @@ const CourseMaterial = ({
 		rightCards.current = [];
 	}, [setAccept, setAnswer, setLoading, setSolved, setSubmmited]);
 
-	const renderChapterContents = useMemo(
-		() => (
-			<Content
-				addreses={addresses}
-				markdown={chapterContent}
-				stateAccept={stateAccept}
-				stateAnswer={stateAnswer}
-				stateLoading={stateLoading}
-				stateSolved={stateSolved}
-				stateSubmitted={stateSubmitted}
-				page={page}
-				handleCheckAnswer={handleCheckAnswer}
-			/>
-		),
-		[
-			addresses,
-			chapterContent,
-			stateAccept,
-			stateAnswer,
-			stateLoading,
-			stateSolved,
-			stateSubmitted,
-			page,
-			handleCheckAnswer,
-		]
-	);
-
 	const handlePreviousPage = useCallback(() => {
 		handleCleanUpStates();
 		if (page > 0) setPage((prev) => prev - 1);
@@ -234,14 +207,48 @@ const CourseMaterial = ({
 		]
 	);
 
-	return (
-		<div className="CourseMaterial flex w-full overflow-hidden">
-			<aside className="shadow-lg">
+	const renderChapterContents = useMemo(
+		() => (
+			<Content
+				addreses={addresses}
+				markdown={chapterContent}
+				stateAccept={stateAccept}
+				stateAnswer={stateAnswer}
+				stateLoading={stateLoading}
+				stateSolved={stateSolved}
+				stateSubmitted={stateSubmitted}
+				page={page}
+				handleCheckAnswer={handleCheckAnswer}
+			/>
+		),
+		[
+			addresses,
+			chapterContent,
+			stateAccept,
+			stateAnswer,
+			stateLoading,
+			stateSolved,
+			stateSubmitted,
+			page,
+			handleCheckAnswer,
+		]
+	);
+
+	const renderCourseContents = useMemo(
+		() => (
+			<aside id="CourseMaterial_side" className="shadow-lg">
 				<div className="p-8">
 					<h2>Limits</h2>
 				</div>
 				<hr />
 			</aside>
+		),
+		[]
+	);
+
+	return (
+		<div id="CourseMaterial" className="flex w-full overflow-hidden">
+			{renderCourseContents}
 			<main
 				className="relative flex flex-col justify-between w-full h-screen overflow-hidden"
 				style={{ flex: "1 1 auto" }}

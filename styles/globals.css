@@ -2,7 +2,6 @@
 	font-family: "Inter";
 	src: url("../public/fonts/Inter-VariableFont_slnt,wght.ttf");
 }
-
 @layer base {
 	html,
 	body {
@@ -99,49 +98,45 @@
 	.Course_nextProgress {
 		left: 0.8rem;
 	}
-	.CourseMaterial {
+	#CourseMaterial {
 		min-height: 100vh;
 	}
-	.CourseMaterial_contents > h1 {
+	.CourseMaterial_content {
+		@apply pb-32;
+	}
+	.CourseMaterial_content > h1 {
 		@apply mb-8 text-4xl;
 	}
-	.CourseMaterial_contents > h2 {
+	.CourseMaterial_content > h2 {
 		@apply mb-4 text-2xl;
 	}
-	.CourseMaterial_contents > p {
+	.CourseMaterial_content > p {
 		@apply mb-8 leading-10;
 		font-size: 17px;
 	}
-	.CourseMaterial_contents > table {
-		@apply mb-8;
-	}
-	.CourseMaterial_contents :is(table, th, td) {
+	.CourseMaterial_content :is(table, th, td) {
 		@apply py-2 px-4 border-2 border-secondary-2;
 	}
-	.CourseMaterial_contents th {
+	.CourseMaterial_content th {
 		@apply p-2 border-2 bg-secondary-1;
 	}
-	.CourseMaterial_contents ol {
+	.CourseMaterial_content ol {
 		list-style-type: decimal;
 		@apply ml-8;
 	}
-	.CourseMaterial_contents hr {
-		@apply py-2;
-	}
-	.CourseMaterial_contents ul {
-		@apply mb-8;
+	.CourseMaterial_content ul {
 		list-style-type: disc;
 	}
-	.CourseMaterial_contents li {
+	.CourseMaterial_content li {
 		@apply ml-8 my-4;
 	}
-	.CourseMaterial_contents img {
+	.CourseMaterial_content img {
 		@apply mx-auto;
 	}
-	.CourseMaterial_contents .katex-display {
+	.CourseMaterial_content .katex-display {
 		@apply !my-0;
 	}
-	.CourseMaterial_contents .math-display {
+	.CourseMaterial_content > * {
 		@apply mb-8;
 	}
 	.MatchBox div {
