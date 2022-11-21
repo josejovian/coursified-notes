@@ -4,6 +4,8 @@ export const regexPracticeInput = /\[input\;([^\\])*\]/g;
 export const regexPracticeInputWithAnswer = /\[input\;([^\`])*/g;
 
 export function getPracticeId(string: string) {
+	if (!string) return null;
+
 	const split = (string.match(regexPracticeInput) ?? [""])[0].split(";");
 
 	if (split.length !== 2) return null;
@@ -12,6 +14,8 @@ export function getPracticeId(string: string) {
 }
 
 export function getPracticeAnswer(string: string) {
+	if (!string) return null;
+
 	const answer = string.match(regexPracticeInputWithAnswer) ?? [];
 
 	if (answer.length !== 1) return null;

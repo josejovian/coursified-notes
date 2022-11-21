@@ -372,16 +372,17 @@ export function Content({
 	);
 
 	const handleRenderAnswerBoxes = useCallback(() => {
+		handleRemoveCustomComponents("InputBox");
+
 		answerInputBoxParentElement.current.forEach(
 			({ parentElement, string }) => {
 				const currentId = getPracticeId(string);
 				if (currentId) {
-					handleRemoveCustomComponents("InputBox");
 					renderCustomElement(
 						parentElement,
 						renderAnswerBox(currentId),
 						CUSTOM_MATERIAL["input"],
-						string
+						currentId
 					);
 				}
 			}
@@ -718,7 +719,7 @@ export function Content({
 		<div className="flex w-full h-full overflow-x-hidden overflow-y-scroll">
 			<article
 				id="CourseMaterial_contents"
-				className="h-full pt-32 p-adapt-sm"
+				className="w-full h-full pt-32 p-adapt-sm"
 			>
 				<ReactMarkdown
 					className="CourseMaterial_contents pb-32"
