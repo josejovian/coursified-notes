@@ -12,17 +12,18 @@ import {
 import { Button, Content } from "@/src/components";
 
 interface CourseMaterialProps {
-	code: any;
-	courseDetail: any;
-	params: ChapterAddressType;
+	markdown: any;
+	chapterAddress: ChapterAddressType;
+	rawCourseDetail: any;
 }
 
 const CourseMaterial = ({
-	code = "",
-	courseDetail,
-	params,
+	markdown = "",
+	chapterAddress,
+	rawCourseDetail,
 }: CourseMaterialProps) => {
 	const router = useRouter();
+
 	const statePage = useState(0);
 	const [page, setPage] = statePage;
 	const stateSolved = useState(-1);
@@ -36,27 +37,27 @@ const CourseMaterial = ({
 	const [accept, setAccept] = stateAccept;
 	const stateSubmitted = useState(false);
 	const [submitted, setSubmmited] = stateSubmitted;
+
 	const answerInputBoxParentElement = useRef<
 		{ parentElement: HTMLElement; string: string }[]
 	>([]);
 	const matchParentElement = useRef<
 		{ parentElement: HTMLElement; pair: [string, string]; id: string }[]
 	>([]);
-	const leftCards = useRef<any[]>([]);
-	const rightCards = useRef<any[]>([]);
 	const [errors, setErrors] = useState<any[]>([]);
-	const [active, setActive] = useState<any>(null);
 
-	const chapterContent = useMemo(() => code.split("===")[page], [code, page]);
+	const chapterContent = useMemo(
+		() => markdown.split("===")[page],
+		[markdown, page]
+	);
 
 	const chapterBaseAddress = useMemo(
 		() => ({
-			...params,
+			...chapterAddress,
 			page,
 		}),
-		[page, params]
+		[page, chapterAddress]
 	);
-
 	const addresses = useMemo(
 		() => ({
 			read: getSpecificChapterAddress(chapterBaseAddress, "read"),
@@ -64,7 +65,6 @@ const CourseMaterial = ({
 		}),
 		[chapterBaseAddress]
 	);
-
 	const { read, practice } = addresses;
 
 	const handleCheckAnswer = useCallback(
@@ -90,8 +90,8 @@ const CourseMaterial = ({
 	);
 
 	useEffect(() => {
-		setMaxPage(code.split("===").length);
-	}, [code]);
+		setMaxPage(markdown.split("===").length);
+	}, [markdown]);
 
 	const handleCleanUpStates = useCallback(() => {
 		setAccept({});
@@ -99,8 +99,6 @@ const CourseMaterial = ({
 		setSubmmited(false);
 		setAnswer({});
 		setLoading(true);
-		leftCards.current = [];
-		rightCards.current = [];
 	}, [setAccept, setAnswer, setLoading, setSolved, setSubmmited]);
 
 	const handlePreviousPage = useCallback(() => {
@@ -122,7 +120,7 @@ const CourseMaterial = ({
 				true
 			);
 			setTimeout(() => {
-				router.replace(`/course/${params.course}`);
+				router.replace(`/course/${chapterAddress.course}`);
 			}, 250);
 		}
 	}, [
@@ -130,7 +128,7 @@ const CourseMaterial = ({
 		handleCleanUpStates,
 		maxPage,
 		page,
-		params.course,
+		chapterAddress.course,
 		read,
 		router,
 		setPage,
@@ -241,6 +239,7 @@ const CourseMaterial = ({
 					<h2>Limits</h2>
 				</div>
 				<hr />
+				{}
 			</aside>
 		),
 		[]
@@ -314,9 +313,9 @@ export const getStaticProps = async (req: any) => {
 
 	return {
 		props: {
-			code: chapterMD,
-			params: params,
-			courseDetail: JSON.stringify(courseDetail),
+			markdown: chapterMD,
+			chapterAddress: params,
+			rawCourseDetail: JSON.stringify(courseDetail),
 		},
 	};
 };

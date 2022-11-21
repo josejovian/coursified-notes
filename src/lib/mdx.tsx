@@ -1,4 +1,5 @@
-import CourseType, {
+import {
+	CourseType,
 	ChapterType,
 	PageType,
 	PracticeType,
