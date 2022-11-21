@@ -145,6 +145,9 @@
 	.GraphContainer {
 		@apply flex w-full justify-center pb-8;
 	}
+	.CourseMaterial_entry {
+		@apply px-8 py-4 border-b border-secondary-2 hover:bg-secondary-1;
+	}
 }
 @tailwind components;
 @layer utilities {

@@ -3,13 +3,13 @@ import clsx from "clsx";
 import "katex/dist/katex.min.css";
 import { useRouter } from "next/router";
 import { AnswerType } from "@/src/type/Material";
-import { ChapterAddressType } from "@/src/type";
+import { ChapterAddressType, CourseType } from "@/src/type";
 import {
 	checkChapterProgress,
 	getSpecificChapterAddress,
 	storeChapterProgress,
 } from "@/src/utils";
-import { Button, Content } from "@/src/components";
+import { Button, Content, Side } from "@/src/components";
 
 interface CourseMaterialProps {
 	markdown: any;
@@ -45,6 +45,11 @@ const CourseMaterial = ({
 		{ parentElement: HTMLElement; pair: [string, string]; id: string }[]
 	>([]);
 	const [errors, setErrors] = useState<any[]>([]);
+
+	const courseDetail: CourseType = useMemo(
+		() => JSON.parse(rawCourseDetail),
+		[rawCourseDetail]
+	);
 
 	const chapterContent = useMemo(
 		() => markdown.split("===")[page],
@@ -232,17 +237,11 @@ const CourseMaterial = ({
 		]
 	);
 
+	console.log(courseDetail);
+
 	const renderCourseContents = useMemo(
-		() => (
-			<aside id="CourseMaterial_side" className="shadow-lg">
-				<div className="p-8">
-					<h2>Limits</h2>
-				</div>
-				<hr />
-				{}
-			</aside>
-		),
-		[]
+		() => <Side courseDetail={courseDetail} />,
+		[courseDetail]
 	);
 
 	return (
