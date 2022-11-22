@@ -237,11 +237,15 @@ const CourseMaterial = ({
 		]
 	);
 
-	console.log(courseDetail);
-
 	const renderCourseContents = useMemo(
-		() => <Side courseDetail={courseDetail} />,
-		[courseDetail]
+		() => (
+			<Side
+				courseDetail={courseDetail}
+				chapterAddress={chapterAddress}
+				loading={loading}
+			/>
+		),
+		[chapterAddress, courseDetail, loading]
 	);
 
 	return (

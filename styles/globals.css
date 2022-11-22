@@ -160,10 +160,11 @@
 	.CourseMaterial_header {
 		@apply flex;
 	}
-	.CourseMaterial_entry-locked {
+	.CourseMaterial_entry-locked:not(.CourseMaterial_header) {
 		@apply text-secondary-4;
 	}
-	.CourseMaterial_entry-locked > .CourseMaterial_index {
+	.CourseMaterial_entry-locked:not(.CourseMaterial_header)
+		> .CourseMaterial_index {
 		@apply text-secondary-4;
 	}
 }
