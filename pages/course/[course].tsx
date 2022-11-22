@@ -1,11 +1,7 @@
 import { Fragment, useMemo, useState, useEffect } from "react";
 import { Section, SlantedBackgroundTemplate } from "@/src/components";
-import { RequirementMap, SectionType } from "@/src/type";
-import {
-	checkChapterProgress,
-	getSpecificChapterAddress,
-} from "@/src/utils/course";
-import { uncapitalize } from "@/src/utils/capitalize";
+import { SectionType } from "@/src/type";
+import { checkCourseProgress } from "@/src/utils";
 
 interface CourseProps {
 	details: string;
@@ -31,92 +27,10 @@ const Course = ({ details }: CourseProps) => {
 		[title, description]
 	);
 
-	const sectionProgresses = useMemo(() => {
-		const rawSectionChapterProgresses = sections.map(
-			(section: SectionType) => {
-				let completedChapters = 0;
-
-				return section.chapters.map((chapter) => {
-					let totalSteps = 0;
-					let steps = 0;
-					const { requirements, pages } = chapter;
-
-					if (pages) {
-					}
-
-					const localAddress = {
-						course: id,
-						section: section.id ?? uncapitalize(section.title),
-						chapter: chapter.id ?? uncapitalize(chapter.title),
-					};
-
-					const localReadAddress = getSpecificChapterAddress(
-						localAddress,
-						"read"
-					);
-
-					const localPracticeAddress = getSpecificChapterAddress(
-						localAddress,
-						"practice"
-					);
-
-					let readProgress = 0;
-					let practiceProgress = 0;
-
-					if (typeof window !== "undefined") {
-						const chapterProgress =
-							checkChapterProgress(localReadAddress);
-						const chapterPracticeProgress =
-							checkChapterProgress(localPracticeAddress);
-
-						if (chapterProgress)
-							readProgress =
-								Object.values(chapterProgress).length;
-
-						if (chapterPracticeProgress)
-							practiceProgress = Object.values(
-								chapterPracticeProgress
-							).length;
-					}
-
-					let requirementsProgresses: RequirementMap = {
-						read: undefined,
-						practice: undefined,
-					};
-
-					if (requirements) {
-						requirementsProgresses = {
-							read: requirements.read
-								? {
-										...requirements.read,
-										params: {
-											...requirements.read.params,
-											progress: readProgress,
-										},
-								  }
-								: undefined,
-							practice: requirements.practice
-								? {
-										...requirements.practice,
-										params: {
-											...requirements.practice.params,
-											progress: practiceProgress,
-										},
-								  }
-								: undefined,
-						};
-					}
-
-					return {
-						percentage: Math.floor((steps * 100) / totalSteps),
-						requirements: requirementsProgresses,
-					};
-				});
-			}
-		);
-
-		return rawSectionChapterProgresses;
-	}, [id, sections]);
+	const sectionProgresses = useMemo(
+		() => checkCourseProgress(id, sections),
+		[id, sections]
+	);
 
 	const completeSections = useMemo(
 		() =>
