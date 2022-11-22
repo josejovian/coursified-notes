@@ -145,8 +145,20 @@
 	.GraphContainer {
 		@apply flex w-full justify-center pb-8;
 	}
+	#CourseMaterial_side {
+		min-width: 320px;
+	}
 	.CourseMaterial_entry {
-		@apply px-8 py-4 border-b border-secondary-2 hover:bg-secondary-1;
+		@apply flex items-center px-8 py-4 border-b border-secondary-2;
+	}
+	.CourseMaterial_index {
+		@apply w-8 text-sm font-bold text-primary-6;
+	}
+	.CourseMaterial_entry:not(.CourseMaterial_header) {
+		@apply hover:bg-secondary-1;
+	}
+	.CourseMaterial_entry:not(.CourseMaterial_header) > .CourseMaterial_index {
+		@apply ml-8;
 	}
 }
 @tailwind components;
