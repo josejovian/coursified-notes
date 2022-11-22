@@ -52,7 +52,7 @@ export function Section({ caption, courseId, index, section }: SectionProps) {
 						requirement.params.number &&
 						requirement.params.progress &&
 						requirement.params.number ==
-							requirement.params.number) ||
+							requirement.params.progress) ||
 					!requirement.params
 			);
 			return allRequirementsCompleted.length === requirements.length;
@@ -73,8 +73,6 @@ export function Section({ caption, courseId, index, section }: SectionProps) {
 					result = idx + 1;
 			}
 		});
-
-		console.log(result);
 
 		return result;
 	}, [chapters, handleArraifyRequirements, handleCheckChapterIsComplete]);

@@ -46,7 +46,7 @@ export interface SectionType {
 }
 
 export interface CourseType {
-	id?: string;
+	id: string;
 	title: string;
 	description: string;
 	sections: SectionType[];

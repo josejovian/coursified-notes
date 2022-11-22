@@ -149,16 +149,22 @@
 		min-width: 320px;
 	}
 	.CourseMaterial_entry {
-		@apply flex items-center px-8 py-4 border-b border-secondary-2;
+		@apply relative flex items-center px-8 py-4 border-b border-secondary-2;
 	}
 	.CourseMaterial_index {
 		@apply w-8 text-sm font-bold text-primary-6;
 	}
-	.CourseMaterial_entry:not(.CourseMaterial_header) {
-		@apply hover:bg-secondary-1;
-	}
 	.CourseMaterial_entry:not(.CourseMaterial_header) > .CourseMaterial_index {
 		@apply ml-8;
+	}
+	.CourseMaterial_header {
+		@apply flex;
+	}
+	.CourseMaterial_entry-locked {
+		@apply text-secondary-4;
+	}
+	.CourseMaterial_entry-locked > .CourseMaterial_index {
+		@apply text-secondary-4;
 	}
 }
 @tailwind components;

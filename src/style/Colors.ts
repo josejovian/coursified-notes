@@ -85,3 +85,11 @@ export const BLOCKQUOTE_COLOR_CLASS: { [key in ColorType]: string } = {
 	warning: "border-warning-6 bg-warning-2 text-warning-9",
 	danger: "border-danger-6 bg-danger-2 text-danger-9",
 };
+
+export const BADGE_COLOR_CLASS: { [key in ColorType]: string } = {
+	primary: "bg-primary-2 text-primary-9",
+	secondary: "bg-secondary-2 text-secondary-9",
+	success: "bg-success-2 text-success-9",
+	warning: "bg-warning-2 text-warning-9",
+	danger: "bg-danger-2 text-danger-9",
+};
