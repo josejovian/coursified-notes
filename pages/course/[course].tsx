@@ -2,6 +2,7 @@ import { Fragment, useMemo, useState, useEffect } from "react";
 import { Section, SlantedBackgroundTemplate } from "@/src/components";
 import { SectionType } from "@/src/type";
 import { checkCourseProgress } from "@/src/utils";
+import { useProgress } from "@/src/hooks/materials/useProgress";
 
 interface CourseProps {
 	details: string;
@@ -15,7 +16,7 @@ const Course = ({ details }: CourseProps) => {
 		sections = [] as SectionType[],
 	} = useMemo(() => JSON.parse(details), [details]);
 
-	const [sectionData, setSectionData] = useState<SectionType[]>(sections);
+	const sectionData = useProgress({ id, sections });
 
 	const renderCourseHeader = useMemo(
 		() => (
@@ -26,32 +27,6 @@ const Course = ({ details }: CourseProps) => {
 		),
 		[title, description]
 	);
-
-	const sectionProgresses = useMemo(
-		() => checkCourseProgress(id, sections),
-		[id, sections]
-	);
-
-	const completeSections = useMemo(
-		() =>
-			sections.map((section: SectionType, index: number) => ({
-				...section,
-				chapters: section.chapters.map((chapter, index2: number) => {
-					const { percentage, requirements } =
-						sectionProgresses[index][index2];
-					return {
-						...chapter,
-						requirements,
-						percentage,
-					};
-				}),
-			})),
-		[sectionProgresses, sections]
-	);
-
-	useEffect(() => {
-		setSectionData(completeSections);
-	}, [completeSections]);
 
 	const renderCourseSections = useMemo(
 		() => (

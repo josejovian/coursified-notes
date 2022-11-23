@@ -1,4 +1,10 @@
-import { useMemo, useState, useEffect, useCallback, useRef } from "react";
+import React, {
+	useMemo,
+	useState,
+	useEffect,
+	useCallback,
+	useRef,
+} from "react";
 import clsx from "clsx";
 import "katex/dist/katex.min.css";
 import { useRouter } from "next/router";

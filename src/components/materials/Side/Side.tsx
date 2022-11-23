@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { Badge } from "@/src/components";
 import { checkCourseProgress } from "@/src/utils";
+import { useProgress } from "@/src/hooks";
 
 interface SideProps {
 	courseDetail: CourseType;
@@ -22,33 +23,7 @@ interface SideProps {
 export function Side({ courseDetail, chapterAddress, loading }: SideProps) {
 	const { id, title, sections, description } = courseDetail;
 
-	const [progress, setProgress] = useState<SectionType[] | null>(null);
-
-	const sectionProgresses = useMemo(
-		() => checkCourseProgress(id, sections),
-		[id, sections]
-	);
-
-	const completeSections = useMemo(
-		() =>
-			sections.map((section: SectionType, index: number) => ({
-				...section,
-				chapters: section.chapters.map((chapter, index2: number) => {
-					const { percentage, requirements } =
-						sectionProgresses[index][index2];
-					return {
-						...chapter,
-						requirements,
-						percentage,
-					};
-				}),
-			})),
-		[sectionProgresses, sections]
-	);
-
-	useEffect(() => {
-		setProgress(completeSections);
-	}, [loading, completeSections]);
+	const sectionData = useProgress({ id, sections });
 
 	const chapterIsActive = useCallback(
 		(section: string, chapter: string) => {
@@ -149,8 +124,8 @@ export function Side({ courseDetail, chapterAddress, loading }: SideProps) {
 
 	const renderSections = useMemo(
 		() =>
-			progress &&
-			progress.map((section, idx1) => {
+			sectionData &&
+			sectionData.map((section, idx1) => {
 				idx1++;
 
 				const _id = section.id ?? "";
@@ -219,7 +194,7 @@ export function Side({ courseDetail, chapterAddress, loading }: SideProps) {
 			chapterIsActive,
 			id,
 			lastFinishedChapterOfASection,
-			progress,
+			sectionData,
 			renderChapterEntry,
 		]
 	);
