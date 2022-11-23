@@ -33,6 +33,8 @@ import {
 	regexPracticeInput,
 } from "@/src/utils";
 import { Blockquote, Input, Graph } from "@/src/components";
+import { useRouter } from "next/router";
+
 interface ContentProps {
 	markdown: any;
 	addreses: AddressesType;
@@ -43,6 +45,7 @@ interface ContentProps {
 	stateSubmitted: StateType<boolean>;
 	page: number;
 	handleCheckAnswer: (ans: string, id: string) => boolean;
+	onChapterChange?: () => void;
 }
 
 export function Content({
@@ -55,7 +58,9 @@ export function Content({
 	stateSubmitted,
 	page,
 	handleCheckAnswer,
+	onChapterChange,
 }: ContentProps) {
+	const router = useRouter();
 	const [loading, setLoading] = stateLoading;
 	const [answer, setAnswer] = stateAnswer;
 	const [accept, setAccept] = stateAccept;
@@ -162,10 +167,16 @@ export function Content({
 	const handleRemoveCustomComponents = useCallback((className: string) => {
 		const previousRenders = document.querySelectorAll(`.${className}`);
 		previousRenders.forEach((element) => {
-			//TODO: Something MIGHT be wrong with this unmount method.
+			/** @todos Something MIGHT be wrong with this unmount method. */
 			element.parentElement?.removeChild(element);
 		});
 	}, []);
+
+	const handleRemoveAllCustomComponents = useCallback(() => {
+		Object.values(CUSTOM_MATERIAL).forEach((group) => {
+			handleRemoveCustomComponents(group);
+		});
+	}, [handleRemoveCustomComponents]);
 
 	const handleRemoveAnswer = useCallback(
 		(key: string) => {
@@ -491,9 +502,7 @@ export function Content({
 			"CourseMaterial_content"
 		)[0].parentElement;
 
-		Object.values(CUSTOM_MATERIAL).forEach((group) => {
-			handleRemoveCustomComponents(group);
-		});
+		handleRemoveAllCustomComponents();
 
 		const elements = document.querySelectorAll(
 			".CourseMaterial_content .CustomMaterialInvoker"
@@ -623,7 +632,7 @@ export function Content({
 		}
 	}, [
 		loading,
-		handleRemoveCustomComponents,
+		handleRemoveAllCustomComponents,
 		renderCustomElement,
 		setSolved,
 		setAccept,
@@ -640,7 +649,7 @@ export function Content({
 
 	useEffect(() => {
 		handlePrepareNewPage();
-	}, [page, handlePrepareNewPage]);
+	}, [page, handlePrepareNewPage, handleRemoveAllCustomComponents]);
 
 	const handleCheckForCodeInvokedElements = useCallback(
 		(element: any, specific: string = "") => {
@@ -716,6 +725,24 @@ export function Content({
 			solved,
 		]
 	);
+
+	const handleRouteChange = useCallback(() => {
+		onChapterChange && onChapterChange();
+		handleRemoveAllCustomComponents();
+	}, [handleRemoveAllCustomComponents, onChapterChange]);
+
+	useEffect(() => {
+		router.events.on("routeChangeStart", handleRouteChange);
+		return () => {
+			router.events.off("routeChangeStart", handleRouteChange);
+		};
+	}, [
+		onChapterChange,
+		handlePrepareNewPage,
+		handleRemoveAllCustomComponents,
+		router.events,
+		handleRouteChange,
+	]);
 
 	return (
 		<div className="flex w-full h-full overflow-x-hidden overflow-y-scroll">

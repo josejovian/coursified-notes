@@ -228,6 +228,7 @@ const CourseMaterial = ({
 				stateSubmitted={stateSubmitted}
 				page={page}
 				handleCheckAnswer={handleCheckAnswer}
+				onChapterChange={() => setPage(0)}
 			/>
 		),
 		[
@@ -240,6 +241,7 @@ const CourseMaterial = ({
 			stateSubmitted,
 			page,
 			handleCheckAnswer,
+			setPage,
 		]
 	);
 
