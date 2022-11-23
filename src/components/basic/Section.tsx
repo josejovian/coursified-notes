@@ -9,6 +9,12 @@ import {
 	SectionType,
 } from "@/src/type";
 import { ProgressVertical } from "./../courses";
+import {
+	arraifyRequirements,
+	checkChapterIsComplete,
+	checkChaptersAreComplete,
+	getLastFinishedChapter,
+} from "@/src/utils/materials";
 
 const CHAPTER_BASE_STYLE = "transition-colors";
 const CHAPTER_LOCKED_STYLE = "bg-secondary-1";
@@ -27,92 +33,29 @@ export function Section({ caption, courseId, index, section }: SectionProps) {
 
 	const [open, setOpen] = useState(true);
 
-	const handleArraifyRequirements = useCallback(
-		(requirements: RequirementMap | undefined): RequirementType[] => {
-			return requirements
-				? (Object.entries(requirements)
-						.filter((x) => x)
-						.map(([key, value]) => ({
-							...value,
-							category: key,
-						})) as RequirementType[])
-				: [];
-		},
-		[]
+	const lastFinishedChapter = useMemo(
+		() => getLastFinishedChapter(chapters),
+		[chapters]
 	);
 
-	const handleCheckChapterIsComplete = useCallback(
-		(requirements: RequirementType[] | undefined) => {
-			if (!requirements) return false;
-
-			const allRequirementsCompleted = requirements.filter(
-				(requirement) =>
-					requirement.completed ||
-					(requirement.params &&
-						requirement.params.number &&
-						requirement.params.progress &&
-						requirement.params.number ==
-							requirement.params.progress) ||
-					!requirement.params
-			);
-			return allRequirementsCompleted.length === requirements.length;
-		},
-		[]
+	const chaptersComplete = useMemo(
+		() => checkChaptersAreComplete(chapters),
+		[chapters]
 	);
-
-	const lastFinishedChapter = useMemo(() => {
-		let result = 0;
-
-		chapters.forEach((chapter, idx) => {
-			if (chapter.requirements) {
-				if (
-					handleCheckChapterIsComplete(
-						handleArraifyRequirements(chapter.requirements)
-					)
-				)
-					result = idx + 1;
-			}
-		});
-
-		return result;
-	}, [chapters, handleArraifyRequirements, handleCheckChapterIsComplete]);
 
 	const handleGetStylingForChapter = useCallback(
-		(chapters: ChapterType[], index: number) => {
+		(index: number) => {
 			const SPECIFIC_STYLE = (function () {
-				if (chapters[index].requirements) {
-					if (
-						handleCheckChapterIsComplete(
-							handleArraifyRequirements(
-								chapters[index].requirements
-							)
-						)
-					)
-						return CHAPTER_COMPLETED_STYLE;
+				if (lastFinishedChapter > index) return CHAPTER_COMPLETED_STYLE;
 
-					if (
-						chapters[index - 1] &&
-						chapters[index - 1].requirements
-					) {
-						if (
-							handleCheckChapterIsComplete(
-								handleArraifyRequirements(
-									chapters[index - 1].requirements
-								)
-							)
-						) {
-							return CHAPTER_UNLOCKED_STYLE;
-						}
-					}
-				}
-
-				if (index === 0) return CHAPTER_UNLOCKED_STYLE;
+				if (index === 0 || lastFinishedChapter === index)
+					return CHAPTER_UNLOCKED_STYLE;
 
 				return CHAPTER_LOCKED_STYLE;
 			})();
 			return clsx(CHAPTER_BASE_STYLE, SPECIFIC_STYLE);
 		},
-		[handleArraifyRequirements, handleCheckChapterIsComplete]
+		[lastFinishedChapter]
 	);
 
 	const handleGetRequirementMessage = useCallback(
@@ -199,10 +142,7 @@ export function Section({ caption, courseId, index, section }: SectionProps) {
 	);
 
 	return (
-		<article
-			className={clsx(clsx("border-gray-300 border", "rounded-md"))}
-			key={title}
-		>
+		<article className="border-gray-300 border rounded-md" key={title}>
 			<div
 				className="p-8 w-full flex justify-between items-center cursor-pointer"
 				onClick={() => setOpen((prev) => !prev)}
@@ -240,25 +180,17 @@ export function Section({ caption, courseId, index, section }: SectionProps) {
 						captions={chapters.map((chapter) =>
 							renderChapterRequirements(
 								chapter.title,
-								handleArraifyRequirements(
-									chapter.requirements
-								) ?? []
+								arraifyRequirements(chapter.requirements) ?? []
 							)
 						)}
 						progress={lastFinishedChapter}
 						stylings={chapters.map((chapter, idx) =>
-							handleGetStylingForChapter(chapters, idx)
+							handleGetStylingForChapter(idx)
 						)}
 						links={chapters.map((chapter, idx) =>
 							idx === 0 ||
-							handleCheckChapterIsComplete(
-								handleArraifyRequirements(chapter.requirements)
-							) ||
-							handleCheckChapterIsComplete(
-								handleArraifyRequirements(
-									chapters[idx - 1].requirements
-								)
-							)
+							chaptersComplete[idx] ||
+							chaptersComplete[idx - 1]
 								? `/course/${courseId}/${section.id}/${chapter.id}`
 								: "#"
 						)}

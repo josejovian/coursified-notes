@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Badge } from "@/src/components";
 import { checkCourseProgress } from "@/src/utils";
 import { useProgress } from "@/src/hooks";
+import { getLastFinishedChapter } from "@/src/utils/materials";
 
 interface SideProps {
 	courseDetail: CourseType;
@@ -102,26 +103,6 @@ export function Side({ courseDetail, chapterAddress, loading }: SideProps) {
 		[]
 	);
 
-	const lastFinishedChapterOfASection = useCallback(
-		(chapters: ChapterType[]) => {
-			let result = 0;
-
-			chapters.forEach((chapter, idx) => {
-				if (chapter.requirements) {
-					if (
-						handleCheckChapterIsComplete(
-							handleArraifyRequirements(chapter.requirements)
-						)
-					)
-						result = idx + 1;
-				}
-			});
-
-			return result;
-		},
-		[handleArraifyRequirements, handleCheckChapterIsComplete]
-	);
-
 	const renderSections = useMemo(
 		() =>
 			sectionData &&
@@ -132,8 +113,7 @@ export function Side({ courseDetail, chapterAddress, loading }: SideProps) {
 				const _title = section.title;
 				const chapters = section.chapters;
 				const sectionId = `Side_section-${_id}`;
-				const lastCompletedChapter =
-					lastFinishedChapterOfASection(chapters);
+				const lastCompletedChapter = getLastFinishedChapter(chapters);
 
 				return (
 					<Fragment key={sectionId}>
@@ -190,13 +170,7 @@ export function Side({ courseDetail, chapterAddress, loading }: SideProps) {
 					</Fragment>
 				);
 			}),
-		[
-			chapterIsActive,
-			id,
-			lastFinishedChapterOfASection,
-			sectionData,
-			renderChapterEntry,
-		]
+		[chapterIsActive, id, sectionData, renderChapterEntry]
 	);
 
 	return (
