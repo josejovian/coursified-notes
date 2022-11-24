@@ -76,6 +76,51 @@ const CourseMaterial = ({
 		}),
 		[chapterBaseAddress]
 	);
+	const nextDestination = useMemo(() => {
+		const { sections } = courseDetail;
+		let nextAddress: ChapterAddressType = chapterAddress;
+		let lastSection = false;
+
+		sections.some((section, idx1) => {
+			if (section.id === chapterAddress.section) {
+				const { chapters } = section;
+				chapters.some((chapter, idx2) => {
+					if (chapter.id === chapterAddress.chapter) {
+						if (idx2 + 1 === chapters.length) {
+							if (idx1 + 1 === sections.length) {
+								lastSection = true;
+							} else {
+								const nextSection = sections[idx1 + 1];
+								nextAddress = {
+									...nextAddress,
+									section: nextSection.id ?? "",
+									chapter: nextSection.chapters[0].id ?? "",
+								};
+							}
+						} else {
+							nextAddress = {
+								...nextAddress,
+								chapter: chapters[idx2 + 1].id ?? "",
+							};
+						}
+						return true;
+					}
+					return false;
+				});
+				return true;
+			}
+			return false;
+		});
+
+		if (lastSection) {
+			return `/course/${chapterAddress.course}`;
+		}
+
+		const { section, chapter } = nextAddress;
+
+		return `/course/${chapterAddress.course}/${section}/${chapter}`;
+	}, [chapterAddress, courseDetail]);
+
 	const { read, practice } = addresses;
 
 	const handleCheckAnswer = useCallback(
@@ -131,19 +176,19 @@ const CourseMaterial = ({
 				true
 			);
 			setTimeout(() => {
-				router.replace(`/course/${chapterAddress.course}`);
+				router.replace(nextDestination);
 			}, 250);
 		}
 	}, [
-		chapterBaseAddress,
 		handleCleanUpStates,
-		maxPage,
-		page,
-		chapterAddress.course,
-		read,
-		router,
-		setPage,
 		solved,
+		read,
+		page,
+		maxPage,
+		setPage,
+		chapterBaseAddress,
+		router,
+		nextDestination,
 	]);
 
 	const renderPageControls = useMemo(
