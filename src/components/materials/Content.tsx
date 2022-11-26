@@ -681,9 +681,16 @@ export function Content({
 
 		return element.map((str: any) => {
 			if (typeof str === "object") {
-				return str.props.children.map((x: any) =>
+				const newChildren = str.props.children.map((x: any) =>
 					typeof x === "string" ? x.replace(regex, "") : x
 				);
+				return {
+					...str,
+					props: {
+						...str.props,
+						children: newChildren,
+					}
+				}
 			}
 			return str.replace(regex, "");
 		});
@@ -708,6 +715,10 @@ export function Content({
 	const handlePreTransformBlockquote = useCallback(
 		({ node, children, ...props }: any) => {
 			const taglessChildren = handleGetBlockquoteWithoutTags(children);
+
+			console.log(children)
+			console.log(taglessChildren);
+
 			let quoteProps = {};
 
 			if (handleCheckForSpecialBlockquote(children, "explanation"))
