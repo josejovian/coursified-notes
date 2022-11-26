@@ -36,7 +36,9 @@ const CourseMaterial = ({
 	const [solved, setSolved] = stateSolved;
 	const [maxPage, setMaxPage] = useState(0);
 	const stateLoading = useState(true);
+	const stateSwapChapters = useState(false);
 	const [loading, setLoading] = stateLoading;
+	const [swapChapters, setSwapChapters] = stateSwapChapters;
 	const stateAnswer = useState<Partial<AnswerType>>({});
 	const [answer, setAnswer] = stateAnswer;
 	const stateAccept = useState<AnswerType>({});
@@ -269,6 +271,7 @@ const CourseMaterial = ({
 				stateAccept={stateAccept}
 				stateAnswer={stateAnswer}
 				stateLoading={stateLoading}
+				stateSwapChapters={stateSwapChapters}
 				stateSolved={stateSolved}
 				stateSubmitted={stateSubmitted}
 				page={page}
@@ -282,6 +285,7 @@ const CourseMaterial = ({
 			stateAccept,
 			stateAnswer,
 			stateLoading,
+			stateSwapChapters,
 			stateSolved,
 			stateSubmitted,
 			page,
@@ -289,6 +293,16 @@ const CourseMaterial = ({
 			setPage,
 		]
 	);
+
+	const handleRouteChangeStart = useCallback(() => {
+		console.log("Start");
+		setSwapChapters(true);
+	}, [setSwapChapters]);
+
+	const handleRouteChangeComplete = useCallback(() => {
+		console.log("Complete");
+		setSwapChapters(false);
+	}, [setSwapChapters]);
 
 	const renderCourseContents = useMemo(
 		() => (
@@ -300,6 +314,19 @@ const CourseMaterial = ({
 		),
 		[chapterAddress, courseDetail, loading]
 	);
+
+	useEffect(() => {
+		console.log("Loading >> ", loading);
+	}, [loading]);
+
+	useEffect(() => {
+		router.events.on("routeChangeStart", handleRouteChangeStart);
+		router.events.on("routeChangeComplete", handleRouteChangeComplete);
+		return () => {
+			router.events.off("routeChangeStart", handleRouteChangeStart);
+			router.events.off("routeChangeComplete", handleRouteChangeComplete);
+		};
+	}, [handleRouteChangeComplete, handleRouteChangeStart, router.events]);
 
 	return (
 		<div id="CourseMaterial" className="flex w-full overflow-hidden">

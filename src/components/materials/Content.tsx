@@ -4,6 +4,7 @@ import {
 	useCallback,
 	useState,
 	useRef,
+	useMemo,
 	ReactElement,
 	DetailedHTMLProps,
 	HTMLAttributes,
@@ -32,7 +33,7 @@ import {
 	getPracticeId,
 	regexPracticeInput,
 } from "@/src/utils";
-import { Blockquote, Input, Graph } from "@/src/components";
+import { Blockquote, Input, Graph, Loader } from "@/src/components";
 import { useRouter } from "next/router";
 
 interface ContentProps {
@@ -42,6 +43,7 @@ interface ContentProps {
 	stateAnswer: StateType<Partial<AnswerType>>;
 	stateAccept: StateType<AnswerType>;
 	stateLoading: StateType<boolean>;
+	stateSwapChapters: StateType<boolean>;
 	stateSubmitted: StateType<boolean>;
 	page: number;
 	handleCheckAnswer: (ans: string, id: string) => boolean;
@@ -55,6 +57,7 @@ export function Content({
 	stateAnswer,
 	stateAccept,
 	stateLoading,
+	stateSwapChapters,
 	stateSubmitted,
 	page,
 	handleCheckAnswer,
@@ -62,6 +65,7 @@ export function Content({
 }: ContentProps) {
 	const router = useRouter();
 	const [loading, setLoading] = stateLoading;
+	const swapChapters = stateSwapChapters[0];
 	const [answer, setAnswer] = stateAnswer;
 	const [accept, setAccept] = stateAccept;
 	const [solved, setSolved] = stateSolved;
@@ -726,27 +730,47 @@ export function Content({
 		]
 	);
 
-	const handleRouteChange = useCallback(() => {
+	const handleRouteChangeStart = useCallback(() => {
 		onChapterChange && onChapterChange();
 		handleRemoveAllCustomComponents();
 	}, [handleRemoveAllCustomComponents, onChapterChange]);
 
 	useEffect(() => {
-		router.events.on("routeChangeStart", handleRouteChange);
+		router.events.on("routeChangeStart", handleRouteChangeStart);
 		return () => {
-			router.events.off("routeChangeStart", handleRouteChange);
+			router.events.off("routeChangeStart", handleRouteChangeStart);
 		};
 	}, [
 		onChapterChange,
 		handlePrepareNewPage,
 		handleRemoveAllCustomComponents,
 		router.events,
-		handleRouteChange,
+		handleRouteChangeStart,
 	]);
 
+	const trueLoading = useMemo(
+		() => swapChapters || (!swapChapters && loading),
+		[loading, swapChapters]
+	);
+
 	return (
-		<div className="flex w-full h-full overflow-x-hidden overflow-y-scroll">
-			<article className="w-full h-full pt-32 p-adapt-sm">
+		<div className="relative flex w-full h-full overflow-x-hidden overflow-y-scroll">
+			<div
+				className={clsx(
+					"self-center w-full h-full justify-self-center mx-auto",
+					"flex justify-center items-center z-10",
+					!trueLoading && "hidden"
+				)}
+			>
+				<Loader />
+			</div>
+			<article
+				className={clsx(
+					"absolute left-0 top-0",
+					"w-full h-full pt-32 p-adapt-sm",
+					trueLoading && "hidden"
+				)}
+			>
 				<ReactMarkdown
 					className="CourseMaterial_content"
 					components={{
