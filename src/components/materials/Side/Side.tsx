@@ -18,10 +18,10 @@ import { getLastFinishedChapter } from "@/src/utils/materials";
 interface SideProps {
 	courseDetail: CourseType;
 	chapterAddress: ChapterAddressType;
-	loading?: boolean;
+	trueLoading?: boolean;
 }
 
-export function Side({ courseDetail, chapterAddress, loading }: SideProps) {
+export function Side({ courseDetail, chapterAddress, trueLoading }: SideProps) {
 	const { id, title, sections, description } = courseDetail;
 
 	const sectionData = useProgress({ id, sections });
@@ -66,39 +66,6 @@ export function Side({ courseDetail, chapterAddress, loading }: SideProps) {
 					{name}
 				</div>
 			);
-		},
-		[]
-	);
-
-	const handleArraifyRequirements = useCallback(
-		(requirements: RequirementMap | undefined): RequirementType[] => {
-			return requirements
-				? (Object.entries(requirements)
-						.filter((x) => x)
-						.map(([key, value]) => ({
-							...value,
-							category: key,
-						})) as RequirementType[])
-				: [];
-		},
-		[]
-	);
-
-	const handleCheckChapterIsComplete = useCallback(
-		(requirements: RequirementType[] | undefined) => {
-			if (!requirements) return false;
-
-			const allRequirementsCompleted = requirements.filter(
-				(requirement) =>
-					requirement.completed ||
-					(requirement.params &&
-						requirement.params.number &&
-						requirement.params.progress &&
-						requirement.params.number ==
-							requirement.params.progress) ||
-					!requirement.params
-			);
-			return allRequirementsCompleted.length === requirements.length;
 		},
 		[]
 	);
@@ -170,7 +137,7 @@ export function Side({ courseDetail, chapterAddress, loading }: SideProps) {
 					</Fragment>
 				);
 			}),
-		[chapterIsActive, id, sectionData, renderChapterEntry]
+		[sectionData, trueLoading, chapterIsActive, renderChapterEntry, id]
 	);
 
 	return (

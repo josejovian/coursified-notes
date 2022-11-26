@@ -17,9 +17,9 @@ export const BLOCKQUOTE_PRESET_CLASS: StylePropsType<BlockquotePresetType> = {
 		color: "success",
 	},
 	example: {
-		color: "information",
+		color: "warning",
 	},
 	theorem: {
-		color: "warning",
+		color: "information",
 	},
 };

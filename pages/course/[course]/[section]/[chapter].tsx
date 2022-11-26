@@ -64,6 +64,11 @@ const CourseMaterial = ({
 		[markdown, page]
 	);
 
+	const trueLoading = useMemo(
+		() => swapChapters || (!swapChapters && loading),
+		[loading, swapChapters]
+	);
+
 	const chapterBaseAddress = useMemo(
 		() => ({
 			...chapterAddress,
@@ -271,7 +276,7 @@ const CourseMaterial = ({
 				stateAccept={stateAccept}
 				stateAnswer={stateAnswer}
 				stateLoading={stateLoading}
-				stateSwapChapters={stateSwapChapters}
+				trueLoading={trueLoading}
 				stateSolved={stateSolved}
 				stateSubmitted={stateSubmitted}
 				page={page}
@@ -279,19 +284,7 @@ const CourseMaterial = ({
 				onChapterChange={() => setPage(0)}
 			/>
 		),
-		[
-			addresses,
-			chapterContent,
-			stateAccept,
-			stateAnswer,
-			stateLoading,
-			stateSwapChapters,
-			stateSolved,
-			stateSubmitted,
-			page,
-			handleCheckAnswer,
-			setPage,
-		]
+		[addresses, chapterContent, stateAccept, stateAnswer, stateLoading, trueLoading, stateSolved, stateSubmitted, page, handleCheckAnswer, setPage]
 	);
 
 	const handleRouteChangeStart = useCallback(() => {
@@ -311,15 +304,11 @@ const CourseMaterial = ({
 			<Side
 				courseDetail={courseDetail}
 				chapterAddress={chapterAddress}
-				loading={loading}
+				trueLoading={trueLoading}
 			/>
 		),
-		[chapterAddress, courseDetail, loading]
+		[chapterAddress, courseDetail, trueLoading]
 	);
-
-	useEffect(() => {
-		console.log("Loading >> ", loading);
-	}, [loading]);
 
 	useEffect(() => {
 		router.events.on("routeChangeStart", handleRouteChangeStart);

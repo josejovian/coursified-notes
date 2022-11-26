@@ -44,8 +44,8 @@ interface ContentProps {
 	stateAnswer: StateType<Partial<AnswerType>>;
 	stateAccept: StateType<AnswerType>;
 	stateLoading: StateType<boolean>;
-	stateSwapChapters: StateType<boolean>;
 	stateSubmitted: StateType<boolean>;
+	trueLoading: boolean;
 	page: number;
 	handleCheckAnswer: (ans: string, id: string) => boolean;
 	onChapterChange?: () => void;
@@ -58,15 +58,14 @@ export function Content({
 	stateAnswer,
 	stateAccept,
 	stateLoading,
-	stateSwapChapters,
 	stateSubmitted,
+	trueLoading,
 	page,
 	handleCheckAnswer,
 	onChapterChange,
 }: ContentProps) {
 	const router = useRouter();
 	const [loading, setLoading] = stateLoading;
-	const swapChapters = stateSwapChapters[0];
 	const [answer, setAnswer] = stateAnswer;
 	const [accept, setAccept] = stateAccept;
 	const [solved, setSolved] = stateSolved;
@@ -616,7 +615,7 @@ export function Content({
 
 					answerKeys = {
 						...answerKeys,
-						[id]: `${left}\$${right}`,
+						[id]: `${right}`,
 					};
 
 					inputElementsRendered++;
@@ -758,10 +757,12 @@ export function Content({
 		handleRouteChangeStart,
 	]);
 
-	const trueLoading = useMemo(
-		() => swapChapters || (!swapChapters && loading),
-		[loading, swapChapters]
-	);
+	useEffect(() => {
+		console.log(answer)
+	}, [answer]);
+	useEffect(() => {
+		console.log(accept)
+	}, [accept]);
 
 	return (
 		<div className="relative flex w-full h-full overflow-x-hidden overflow-y-scroll">
@@ -778,8 +779,8 @@ export function Content({
 				className={clsx(
 					"CourseMaterial_wrapper",
 					"absolute left-0 top-0",
-					"w-full h-full pt-32 p-adapt-sm"
-					// trueLoading && "hidden"
+					"w-full h-full pt-24 p-adapt-sm",
+					trueLoading && "hidden"
 				)}
 			>
 				<ReactMarkdown
