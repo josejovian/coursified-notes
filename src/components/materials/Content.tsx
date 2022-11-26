@@ -359,7 +359,6 @@ export function Content({
 			<Input
 				key={`InputBox-${practiceId}`}
 				id={`InputBox-${practiceId}`}
-				className="InputBox"
 				onBlur={(e) => {
 					if (answer !== accept) {
 						setSubmmited(false);
@@ -504,8 +503,8 @@ export function Content({
 		if (!loading) return;
 
 		const container = document.getElementsByClassName(
-			"CourseMaterial_content"
-		)[0].parentElement;
+			"CourseMaterial_wrapper"
+		)[0];
 
 		handleRemoveAllCustomComponents();
 
@@ -517,6 +516,7 @@ export function Content({
 
 		let answerKeys = {};
 
+		answerInputBoxParentElement.current = [];
 		matchParentElement.current = [];
 
 		elements.forEach((element, index) => {
@@ -647,10 +647,16 @@ export function Content({
 
 	const handlePrepareNewPage = useCallback(() => {
 		if (loading) {
+			handleRemoveAllCustomComponents();
 			handleConvertCodeToComponents();
 			setLoading(false);
 		}
-	}, [handleConvertCodeToComponents, loading, setLoading]);
+	}, [
+		handleConvertCodeToComponents,
+		handleRemoveAllCustomComponents,
+		loading,
+		setLoading,
+	]);
 
 	useEffect(() => {
 		handlePrepareNewPage();
@@ -717,9 +723,6 @@ export function Content({
 		({ node, children, ...props }: any) => {
 			const taglessChildren = handleGetBlockquoteWithoutTags(children);
 
-			console.log(children);
-			console.log(taglessChildren);
-
 			let quoteProps = {};
 
 			const presets = BLOCKQUOTE_PRESETS.filter((c) =>
@@ -773,9 +776,10 @@ export function Content({
 			</div>
 			<article
 				className={clsx(
+					"CourseMaterial_wrapper",
 					"absolute left-0 top-0",
-					"w-full h-full pt-32 p-adapt-sm",
-					trueLoading && "hidden"
+					"w-full h-full pt-32 p-adapt-sm"
+					// trueLoading && "hidden"
 				)}
 			>
 				<ReactMarkdown

@@ -15,6 +15,7 @@ interface InputProps
 		>,
 		"size" | "type"
 	> {
+	classWrapper?: string;
 	className?: string;
 	color?: ColorType;
 	helperText?: string;
@@ -27,6 +28,7 @@ interface InputProps
 }
 
 export function Input({
+	classWrapper,
 	className,
 	color = "primary",
 	helperText,
@@ -39,7 +41,7 @@ export function Input({
 	...props
 }: InputProps) {
 	return (
-		<div className="flex">
+		<div className={clsx(classWrapper, "flex")}>
 			<input
 				className={clsx(
 					"border-2 border-secondary-4 p-4",

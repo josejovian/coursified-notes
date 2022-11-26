@@ -297,12 +297,14 @@ const CourseMaterial = ({
 	const handleRouteChangeStart = useCallback(() => {
 		console.log("Start");
 		setSwapChapters(true);
-	}, [setSwapChapters]);
+		handleCleanUpStates();
+	}, [handleCleanUpStates, setSwapChapters]);
 
 	const handleRouteChangeComplete = useCallback(() => {
 		console.log("Complete");
 		setSwapChapters(false);
-	}, [setSwapChapters]);
+		handleCleanUpStates();
+	}, [handleCleanUpStates, setSwapChapters]);
 
 	const renderCourseContents = useMemo(
 		() => (
