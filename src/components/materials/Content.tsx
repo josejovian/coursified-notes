@@ -35,6 +35,7 @@ import {
 } from "@/src/utils";
 import { Blockquote, Input, Graph, Loader } from "@/src/components";
 import { useRouter } from "next/router";
+import { BLOCKQUOTE_PRESETS, COLORS } from "@/src/style";
 
 interface ContentProps {
 	markdown: any;
@@ -689,15 +690,15 @@ export function Content({
 					props: {
 						...str.props,
 						children: newChildren,
-					}
-				}
+					},
+				};
 			}
 			return str.replace(regex, "");
 		});
 	}, []);
 
 	const handleCheckForSpecialBlockquote = useCallback(
-		(element: any, type: "formula" | "explanation" | "match") => {
+		(element: any, type: string) => {
 			const regex = new RegExp(`\#${type}\#`);
 
 			return element.some((str: any) => {
@@ -716,29 +717,24 @@ export function Content({
 		({ node, children, ...props }: any) => {
 			const taglessChildren = handleGetBlockquoteWithoutTags(children);
 
-			console.log(children)
+			console.log(children);
 			console.log(taglessChildren);
 
 			let quoteProps = {};
 
-			if (handleCheckForSpecialBlockquote(children, "explanation"))
-				quoteProps = {
-					className: clsx(solved !== 1 && "hidden"),
-					color: "success",
-				};
+			const presets = BLOCKQUOTE_PRESETS.filter((c) =>
+				handleCheckForSpecialBlockquote(children, c)
+			);
 
-			if (handleCheckForSpecialBlockquote(children, "formula"))
+			if (presets.length === 1) {
 				quoteProps = {
-					className: "!pl-8",
+					preset: presets[0],
 				};
+			}
 
 			return <Blockquote {...quoteProps}>{taglessChildren}</Blockquote>;
 		},
-		[
-			handleCheckForSpecialBlockquote,
-			handleGetBlockquoteWithoutTags,
-			solved,
-		]
+		[handleCheckForSpecialBlockquote, handleGetBlockquoteWithoutTags]
 	);
 
 	const handleRouteChangeStart = useCallback(() => {

@@ -1,12 +1,16 @@
 import clsx from "clsx";
 import { ButtonVariantType } from "./Variants";
 
-export type ColorType =
-	| "primary"
-	| "secondary"
-	| "success"
-	| "warning"
-	| "danger";
+export const COLORS = [
+	"primary",
+	"secondary",
+	"success",
+	"warning",
+	"danger",
+	"information",
+] as const;
+
+export type ColorType = typeof COLORS[number];
 
 export function BUTTON_COLOR_CLASS(
 	color: ColorType = "primary",
@@ -65,6 +69,16 @@ export function BUTTON_COLOR_CLASS(
 				"outline-primary-5 disabled:bg-primary-3",
 			]
 		),
+		information: clsx(
+			variant === "solid" && [
+				"bg-information-5 hover:bg-information-6 active:bg-information-7",
+				"outline-information-5 disabled:bg-information-3",
+			],
+			variant === "outline" && [
+				"bg-primary-5 hover:bg-primary-6 active:bg-primary-7",
+				"outline-primary-5 disabled:bg-primary-3",
+			]
+		),
 	};
 
 	return clsx(BASE_STYLE, SPECIFIC_STYLES[color]);
@@ -76,6 +90,7 @@ export const INPUT_COLOR_CLASS: { [key in ColorType]: string } = {
 	success: "focus:outline-success-4",
 	warning: "focus:outline-warning-4",
 	danger: "focus:outline-danger-4",
+	information: "focus:outline-information-4",
 };
 
 export const BLOCKQUOTE_COLOR_CLASS: { [key in ColorType]: string } = {
@@ -84,6 +99,7 @@ export const BLOCKQUOTE_COLOR_CLASS: { [key in ColorType]: string } = {
 	success: "border-success-6 bg-success-2 text-success-9",
 	warning: "border-warning-6 bg-warning-2 text-warning-9",
 	danger: "border-danger-6 bg-danger-2 text-danger-9",
+	information: "border-information-6 bg-information-2 text-information-9",
 };
 
 export const BADGE_COLOR_CLASS: { [key in ColorType]: string } = {
@@ -92,4 +108,5 @@ export const BADGE_COLOR_CLASS: { [key in ColorType]: string } = {
 	success: "bg-success-2 text-success-9",
 	warning: "bg-warning-2 text-warning-9",
 	danger: "bg-danger-2 text-danger-9",
+	information: "bg-information-2 text-information-9",
 };
