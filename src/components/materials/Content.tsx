@@ -747,13 +747,14 @@ export function Content({
 
 			if (presets.length === 1) {
 				quoteProps = {
+					className: (presets[0] === "explanation") && !solved && "hidden",
 					preset: presets[0],
 				};
 			}
 
 			return <Blockquote {...quoteProps}>{taglessChildren}</Blockquote>;
 		},
-		[handleCheckForSpecialBlockquote, handleGetBlockquoteWithoutTags]
+		[handleCheckForSpecialBlockquote, handleGetBlockquoteWithoutTags, solved]
 	);
 
 	const handleRouteChangeStart = useCallback(() => {
