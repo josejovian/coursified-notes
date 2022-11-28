@@ -226,14 +226,14 @@ export function Content({
 					"Match_right flex align-self-end justify-center items-center",
 					"w-24 px-8 py-2",
 					"text-center transition-colors rounded-sm",
-					solved ? "bg-success-2" : "bg-primary-2 hover:bg-primary-3",
+					solved === 1 ? "bg-success-2" : "bg-primary-2 hover:bg-primary-3",
 					className
 				)}
 			>
 				{handleGetComponentForm(children as string)}
 			</div>
 		),
-		[handleGetComponentForm]
+		[handleGetComponentForm, solved]
 	);
 
 	const renderMatchBox = useCallback(
@@ -407,8 +407,10 @@ export function Content({
 
 	const handleRenderMatch = useCallback(() => {
 		handleRemoveCustomComponents("MatchBox");
+
 		matchParentElement.current.forEach(({ parentElement, pair, id }) => {
-			const [left, right] = pair;
+			const left = pair[0];
+			const right = pair[1];
 			renderCustomElement(
 				parentElement,
 				renderMatchBox(id, left, right),
@@ -625,8 +627,17 @@ export function Content({
 			}
 		});
 
-		if(matchParentElement.current.length > 0) {
-			matchParentElement.current = matchParentElement.current.sort((a, b) => Math.random() - 0.5);
+		if(matchParentElement.current.length > 0 && solved !== 1) {
+			matchParentElement.current.sort(() => Math.random() - 0.5);
+			let randomizedPairs = matchParentElement.current.map(({pair}) => {
+				return pair[1];
+			})
+	
+			randomizedPairs.sort(() => Math.random() - 0.5);
+			matchParentElement.current = matchParentElement.current.map((parent, idx: number) => ({
+				...parent,
+				pair: [parent.pair[0], randomizedPairs[idx]]
+			}));
 		}
 
 		if (inputElementsRendered > 0 && Object.values(answerKeys).length > 0) {
