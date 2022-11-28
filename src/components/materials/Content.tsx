@@ -199,6 +199,7 @@ export function Content({
 			onKeyMatch: null | ((key: string) => void),
 			onValueMatch: null | ((key: string) => void)
 		) => {
+			if(solved) return;
 			Object.entries(answer).forEach(([key, value]) => {
 				if (onKeyMatch && key === currentKey) {
 					onKeyMatch(key);
@@ -207,7 +208,7 @@ export function Content({
 				}
 			});
 		},
-		[answer]
+		[answer, solved]
 	);
 
 	const renderMatchCard = useCallback(
@@ -224,7 +225,8 @@ export function Content({
 				className={clsx(
 					"Match_right flex align-self-end justify-center items-center",
 					"w-24 px-8 py-2",
-					"text-center bg-primary-2 hover:bg-primary-3 transition-colors rounded-sm",
+					"text-center transition-colors rounded-sm",
+					solved ? "bg-success-2" : "bg-primary-2 hover:bg-primary-3",
 					className
 				)}
 			>
@@ -623,6 +625,10 @@ export function Content({
 			}
 		});
 
+		if(matchParentElement.current.length > 0) {
+			matchParentElement.current = matchParentElement.current.sort((a, b) => Math.random() - 0.5);
+		}
+
 		if (inputElementsRendered > 0 && Object.values(answerKeys).length > 0) {
 			setSolved(0);
 			setAccept((prev) => ({
@@ -756,13 +762,6 @@ export function Content({
 		router.events,
 		handleRouteChangeStart,
 	]);
-
-	useEffect(() => {
-		console.log(answer)
-	}, [answer]);
-	useEffect(() => {
-		console.log(accept)
-	}, [accept]);
 
 	return (
 		<div className="relative flex w-full h-full overflow-x-hidden overflow-y-scroll">
