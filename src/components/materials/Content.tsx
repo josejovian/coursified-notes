@@ -36,6 +36,7 @@ import {
 import { Blockquote, Input, Graph, Loader } from "@/src/components";
 import { useRouter } from "next/router";
 import { BLOCKQUOTE_PRESETS, COLORS } from "@/src/style";
+import { useToast } from "@/src/hooks";
 
 interface ContentProps {
 	markdown: any;
@@ -75,6 +76,8 @@ export function Content({
 	const [active, setActive] = useState<any>(null);
 
 	const { practice } = addreses;
+
+	const addToast = useToast();
 
 	const userAnswerStatus = useCallback(
 		(practiceId: string) => {
@@ -199,7 +202,7 @@ export function Content({
 			onKeyMatch: null | ((key: string) => void),
 			onValueMatch: null | ((key: string) => void)
 		) => {
-			if(solved) return;
+			if (solved) return;
 			Object.entries(answer).forEach(([key, value]) => {
 				if (onKeyMatch && key === currentKey) {
 					onKeyMatch(key);
@@ -226,7 +229,9 @@ export function Content({
 					"Match_right flex align-self-end justify-center items-center",
 					"w-24 px-8 py-2",
 					"text-center transition-colors rounded-sm",
-					solved === 1 ? "bg-success-2" : "bg-primary-2 hover:bg-primary-3",
+					solved === 1
+						? "bg-success-2"
+						: "bg-primary-2 hover:bg-primary-3",
 					className
 				)}
 			>
@@ -489,13 +494,25 @@ export function Content({
 			setSubmmited(true);
 			setSolved(1);
 		}
+
+		if (
+			!allAnswersAreCorrect &&
+			submitted &&
+			matchParentElement.current.length > 0
+		) {
+			addToast({
+				message: "One or more answers are incorrect.",
+			});
+		}
 	}, [
 		practice,
 		accept,
+		submitted,
 		handleCheckAnswer,
 		setAnswer,
 		setSubmmited,
 		setSolved,
+		addToast,
 	]);
 
 	useEffect(() => {
@@ -627,17 +644,19 @@ export function Content({
 			}
 		});
 
-		if(matchParentElement.current.length > 0 && solved !== 1) {
+		if (matchParentElement.current.length > 0 && solved !== 1) {
 			matchParentElement.current.sort(() => Math.random() - 0.5);
-			let randomizedPairs = matchParentElement.current.map(({pair}) => {
+			let randomizedPairs = matchParentElement.current.map(({ pair }) => {
 				return pair[1];
-			})
-	
+			});
+
 			randomizedPairs.sort(() => Math.random() - 0.5);
-			matchParentElement.current = matchParentElement.current.map((parent, idx: number) => ({
-				...parent,
-				pair: [parent.pair[0], randomizedPairs[idx]]
-			}));
+			matchParentElement.current = matchParentElement.current.map(
+				(parent, idx: number) => ({
+					...parent,
+					pair: [parent.pair[0], randomizedPairs[idx]],
+				})
+			);
 		}
 
 		if (inputElementsRendered > 0 && Object.values(answerKeys).length > 0) {
@@ -747,14 +766,19 @@ export function Content({
 
 			if (presets.length === 1) {
 				quoteProps = {
-					className: (presets[0] === "explanation") && !solved && "hidden",
+					className:
+						presets[0] === "explanation" && !solved && "hidden",
 					preset: presets[0],
 				};
 			}
 
 			return <Blockquote {...quoteProps}>{taglessChildren}</Blockquote>;
 		},
-		[handleCheckForSpecialBlockquote, handleGetBlockquoteWithoutTags, solved]
+		[
+			handleCheckForSpecialBlockquote,
+			handleGetBlockquoteWithoutTags,
+			solved,
+		]
 	);
 
 	const handleRouteChangeStart = useCallback(() => {
