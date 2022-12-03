@@ -110,3 +110,12 @@ export const BADGE_COLOR_CLASS: { [key in ColorType]: string } = {
 	danger: "bg-danger-2 text-danger-9",
 	information: "bg-information-2 text-information-9",
 };
+
+export const TOAST_COLOR_CLASS: { [key in ColorType]: string } = {
+	primary: "bg-primary-6",
+	secondary: "bg-secondary-6",
+	success: "bg-success-6",
+	warning: "bg-warning-6",
+	danger: "bg-danger-6",
+	information: "bg-information-6",
+};

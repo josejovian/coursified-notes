@@ -13,11 +13,20 @@ import {
 	BlockquotePresetType,
 } from "@/src/style";
 
-interface QuoteProps
-	extends DetailedHTMLProps<
-		ButtonHTMLAttributes<HTMLQuoteElement>,
-		HTMLQuoteElement
-	> {
+export interface BaseQuoteProps {
+	className?: string;
+	left?: ReactNode;
+	right?: ReactNode;
+	color?: ColorType;
+	preset?: BlockquotePresetType;
+}
+
+export interface QuoteProps
+	extends BaseQuoteProps,
+		DetailedHTMLProps<
+			ButtonHTMLAttributes<HTMLQuoteElement>,
+			HTMLQuoteElement
+		> {
 	className?: string;
 	left?: ReactNode;
 	right?: ReactNode;

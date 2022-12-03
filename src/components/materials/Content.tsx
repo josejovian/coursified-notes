@@ -45,6 +45,7 @@ interface ContentProps {
 	stateAnswer: StateType<Partial<AnswerType>>;
 	stateAccept: StateType<AnswerType>;
 	stateLoading: StateType<boolean>;
+	stateChecking: StateType<boolean>;
 	stateSubmitted: StateType<boolean>;
 	trueLoading: boolean;
 	page: number;
@@ -60,6 +61,7 @@ export function Content({
 	stateAccept,
 	stateLoading,
 	stateSubmitted,
+	stateChecking,
 	trueLoading,
 	page,
 	handleCheckAnswer,
@@ -74,10 +76,25 @@ export function Content({
 	const answerInputBoxParentElement = useRef<InputBoxElementType[]>([]);
 	const matchParentElement = useRef<MatchBoxElementType[]>([]);
 	const [active, setActive] = useState<any>(null);
+	const checking = stateChecking[0];
 
 	const { practice } = addreses;
 
 	const addToast = useToast();
+
+	const handleShowToastIfAtLeastOneMatchIncorrect = useCallback(() => {
+		if (checking && submitted && matchParentElement.current.length > 0) {
+			addToast({
+				title: "Incorrect!",
+				message: "One or more answers are incorrect.",
+				preset: "warning",
+			});
+		}
+	}, [addToast, checking, submitted]);
+
+	useEffect(() => {
+		handleShowToastIfAtLeastOneMatchIncorrect();
+	}, [checking, handleShowToastIfAtLeastOneMatchIncorrect]);
 
 	const userAnswerStatus = useCallback(
 		(practiceId: string) => {
@@ -494,25 +511,13 @@ export function Content({
 			setSubmmited(true);
 			setSolved(1);
 		}
-
-		if (
-			!allAnswersAreCorrect &&
-			submitted &&
-			matchParentElement.current.length > 0
-		) {
-			addToast({
-				message: "One or more answers are incorrect.",
-			});
-		}
 	}, [
 		practice,
 		accept,
-		submitted,
 		handleCheckAnswer,
 		setAnswer,
 		setSubmmited,
 		setSolved,
-		addToast,
 	]);
 
 	useEffect(() => {
@@ -673,6 +678,7 @@ export function Content({
 	}, [
 		loading,
 		handleRemoveAllCustomComponents,
+		solved,
 		renderCustomElement,
 		setSolved,
 		setAccept,

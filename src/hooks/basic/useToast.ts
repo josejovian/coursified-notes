@@ -13,7 +13,7 @@ export function useToast() {
 						...prev,
 						{
 							...toast,
-							id: `${prev}_${new Date().toLocaleDateString}`,
+							id: `${new Date().toISOString()}`,
 						},
 					] as ToastType[]
 			);

@@ -44,6 +44,8 @@ const CourseMaterial = ({
 	const stateAccept = useState<AnswerType>({});
 	const [accept, setAccept] = stateAccept;
 	const stateSubmitted = useState(false);
+	const stateChecking = useState(false);
+	const setChecking = stateChecking[1];
 	const [submitted, setSubmmited] = stateSubmitted;
 
 	const answerInputBoxParentElement = useRef<
@@ -132,24 +134,32 @@ const CourseMaterial = ({
 
 	const handleCheckAnswer = useCallback(
 		(userAnswer: string, practiceId: string) => {
-			const exactAnswer: string = accept[practiceId];
-			if (
-				exactAnswer &&
-				(exactAnswer === userAnswer ||
-					String(exactAnswer) === String(userAnswer) ||
-					exactAnswer.toLowerCase() === userAnswer.toLowerCase())
-			) {
-				const existingData = checkChapterProgress(practice) ?? {};
-				storeChapterProgress(practice, {
-					...existingData,
-					[practiceId]: userAnswer,
-				});
-				return true;
-			}
+			setChecking(true);
 
-			return false;
+			const result = (() => {
+				const exactAnswer: string = accept[practiceId];
+				if (
+					exactAnswer &&
+					(exactAnswer === userAnswer ||
+						String(exactAnswer) === String(userAnswer) ||
+						exactAnswer.toLowerCase() === userAnswer.toLowerCase())
+				) {
+					const existingData = checkChapterProgress(practice) ?? {};
+					storeChapterProgress(practice, {
+						...existingData,
+						[practiceId]: userAnswer,
+					});
+					return true;
+				}
+				return false;
+			})();
+
+			setTimeout(() => {
+				setChecking(false);
+			}, 200);
+			return result;
 		},
-		[accept, practice]
+		[accept, practice, setChecking]
 	);
 
 	useEffect(() => {
@@ -279,12 +289,26 @@ const CourseMaterial = ({
 				trueLoading={trueLoading}
 				stateSolved={stateSolved}
 				stateSubmitted={stateSubmitted}
+				stateChecking={stateChecking}
 				page={page}
 				handleCheckAnswer={handleCheckAnswer}
 				onChapterChange={() => setPage(0)}
 			/>
 		),
-		[addresses, chapterContent, stateAccept, stateAnswer, stateLoading, trueLoading, stateSolved, stateSubmitted, page, handleCheckAnswer, setPage]
+		[
+			addresses,
+			chapterContent,
+			stateAccept,
+			stateAnswer,
+			stateLoading,
+			trueLoading,
+			stateSolved,
+			stateSubmitted,
+			stateChecking,
+			page,
+			handleCheckAnswer,
+			setPage,
+		]
 	);
 
 	const handleRouteChangeStart = useCallback(() => {
