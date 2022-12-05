@@ -49,7 +49,7 @@ interface ContentProps {
 	stateSubmitted: StateType<boolean>;
 	trueLoading: boolean;
 	page: number;
-	handleCheckAnswer: (ans: string, id: string) => boolean;
+	handleCheckAnswer: (ans: string, id: string, flag?: boolean) => boolean;
 	onChapterChange?: () => void;
 }
 
@@ -82,30 +82,39 @@ export function Content({
 
 	const addToast = useToast();
 
-	const handleShowToastIfAtLeastOneMatchIncorrect = useCallback(() => {
-		if (checking && submitted && matchParentElement.current.length > 0) {
+	const hanldeShowAnswerFeedback = useCallback(() => {
+		if (!checking || !submitted) return;
+
+		if (solved === 1) {
 			addToast({
-				title: "Incorrect!",
-				message: "One or more answers are incorrect.",
-				preset: "warning",
+				title: "Correct!",
+				message: "You answered all questions correctly.",
+				preset: "success",
 			});
+			return;
 		}
-	}, [addToast, checking, submitted]);
+
+		addToast({
+			title: "Incorrect!",
+			message: "At least one answer is incorrect.",
+			preset: "warning",
+		});
+	}, [addToast, checking, solved, submitted]);
 
 	useEffect(() => {
-		handleShowToastIfAtLeastOneMatchIncorrect();
-	}, [checking, handleShowToastIfAtLeastOneMatchIncorrect]);
+		hanldeShowAnswerFeedback();
+	}, [checking, hanldeShowAnswerFeedback]);
 
 	const userAnswerStatus = useCallback(
 		(practiceId: string) => {
 			const specificAnswer = answer[practiceId];
-			if (specificAnswer)
-				return handleCheckAnswer(specificAnswer, practiceId)
+			if (specificAnswer && submitted)
+				return handleCheckAnswer(specificAnswer, practiceId, false)
 					? "success"
 					: "error";
 			return undefined;
 		},
-		[answer, handleCheckAnswer]
+		[answer, submitted, handleCheckAnswer]
 	);
 
 	const renderCustomElement = useCallback(
@@ -488,7 +497,11 @@ export function Content({
 			if (
 				existingAnswers &&
 				existingAnswers[practiceId] &&
-				handleCheckAnswer(existingAnswers[practiceId], practiceId)
+				handleCheckAnswer(
+					existingAnswers[practiceId],
+					practiceId,
+					false
+				)
 			) {
 				const specificAnswer = existingAnswers[practiceId];
 				if (specificAnswer) {

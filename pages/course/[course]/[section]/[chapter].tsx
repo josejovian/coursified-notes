@@ -45,7 +45,7 @@ const CourseMaterial = ({
 	const [accept, setAccept] = stateAccept;
 	const stateSubmitted = useState(false);
 	const stateChecking = useState(false);
-	const setChecking = stateChecking[1];
+	const [checking, setChecking] = stateChecking;
 	const [submitted, setSubmmited] = stateSubmitted;
 
 	const answerInputBoxParentElement = useRef<
@@ -133,33 +133,41 @@ const CourseMaterial = ({
 	const { read, practice } = addresses;
 
 	const handleCheckAnswer = useCallback(
-		(userAnswer: string, practiceId: string) => {
-			setChecking(true);
+		(
+			userAnswer: string,
+			practiceId: string,
+			updateCheckingState: boolean = true
+		) => {
+			if (updateCheckingState) {
+				setChecking(true);
+				setTimeout(() => {
+					setChecking(false);
+				}, 1000);
+			}
 
 			const result = (() => {
 				const exactAnswer: string = accept[practiceId];
-				if (
+				return Boolean(
 					exactAnswer &&
-					(exactAnswer === userAnswer ||
-						String(exactAnswer) === String(userAnswer) ||
-						exactAnswer.toLowerCase() === userAnswer.toLowerCase())
-				) {
-					const existingData = checkChapterProgress(practice) ?? {};
-					storeChapterProgress(practice, {
-						...existingData,
-						[practiceId]: userAnswer,
-					});
-					return true;
-				}
-				return false;
+						(exactAnswer === userAnswer ||
+							String(exactAnswer) === String(userAnswer) ||
+							exactAnswer.toLowerCase() ===
+								userAnswer.toLowerCase())
+				);
 			})();
 
-			setTimeout(() => {
-				setChecking(false);
-			}, 200);
+			if (result && updateCheckingState) {
+				const existingData = checkChapterProgress(practice) ?? {};
+				storeChapterProgress(practice, {
+					...existingData,
+					[practiceId]: userAnswer,
+				});
+				setSolved(1);
+			}
+
 			return result;
 		},
-		[accept, practice, setChecking]
+		[accept, practice, setChecking, setSolved]
 	);
 
 	useEffect(() => {
@@ -253,6 +261,7 @@ const CourseMaterial = ({
 							}
 						}}
 						disabled={
+							checking ||
 							Object.values(answer).length !==
 								Object.values(accept).length ||
 							Object.values(answer).filter((x) => x === "")
@@ -270,6 +279,7 @@ const CourseMaterial = ({
 			maxPage,
 			solved,
 			handleNextPage,
+			checking,
 			answer,
 			accept,
 			setSubmmited,

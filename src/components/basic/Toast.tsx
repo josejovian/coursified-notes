@@ -35,7 +35,7 @@ export function Toast(props: ToastProps) {
 		>
 			{icon && <span className={title ? "Icon-xl" : "Icon"}>{icon}</span>}
 			<div className="flex flex-col">
-				<span className="font-semibold">{title}</span>
+				<span className="font-semibold tracking-wide">{title}</span>
 				<span>{message}</span>
 			</div>
 			<div

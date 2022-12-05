@@ -137,7 +137,7 @@ export function Side({ courseDetail, chapterAddress, trueLoading }: SideProps) {
 					</Fragment>
 				);
 			}),
-		[sectionData, trueLoading, chapterIsActive, renderChapterEntry, id]
+		[sectionData, chapterIsActive, renderChapterEntry, id]
 	);
 
 	return (
