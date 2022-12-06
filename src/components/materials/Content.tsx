@@ -37,6 +37,7 @@ import { Blockquote, Input, Graph, Loader } from "@/src/components";
 import { useRouter } from "next/router";
 import { BLOCKQUOTE_PRESETS, COLORS } from "@/src/style";
 import { useToast } from "@/src/hooks";
+import { MatchBox } from "./Match";
 
 interface ContentProps {
 	markdown: any;
@@ -152,7 +153,7 @@ export function Content({
 		handleOnePairMatch();
 	}, [active, handleOnePairMatch]);
 
-	const handleGetComponentForm = useCallback((str: string) => {
+	const handleGetComponentForm = useCallback((str: string): ReactNode => {
 		if (str.match(/\$([^\$])*\$/g)) {
 			return <TeX>{str.slice(1, -1)}</TeX>;
 		}
@@ -267,122 +268,113 @@ export function Content({
 		[handleGetComponentForm, solved]
 	);
 
+	const handleClickMatchedCard = useCallback(
+		(practiceId: string) =>
+			handleCheckIfAlreadyMatched(
+				practiceId,
+				null,
+				handleRemoveAnswer,
+				null
+			),
+		[handleCheckIfAlreadyMatched, handleRemoveAnswer]
+	);
+
+	const handleClickDrop = useCallback(
+		(practiceId: string) => {
+			let terminate = false;
+
+			handleCheckIfAlreadyMatched(
+				practiceId,
+				null,
+				(key: string) => {
+					handleRemoveAnswer(key);
+					terminate = true;
+				},
+				null
+			);
+
+			if (active && active.type === "target") {
+				if (active.id === practiceId) {
+					setActive(null);
+				} else {
+					handleSetActive("target", practiceId, true);
+				}
+				terminate = true;
+			}
+
+			if (terminate) return;
+
+			handleSetActive("target", practiceId);
+		},
+		[
+			active,
+			handleCheckIfAlreadyMatched,
+			handleRemoveAnswer,
+			handleSetActive,
+		]
+	);
+
+	const handleClickUnmatchedCard = useCallback(
+		(right: string) => {
+			let terminate = false;
+
+			handleCheckIfAlreadyMatched(null, right, null, (key: string) => {
+				handleRemoveAnswer(key);
+
+				if (active && active.id) setActive(null);
+				terminate = true;
+			});
+
+			if (active && active.type === "source") {
+				if (active.answer === right) {
+					setActive(null);
+				} else {
+					handleSetActive("source", right, true);
+				}
+				terminate = true;
+			}
+			if (terminate) return;
+
+			handleSetActive("source", right);
+		},
+		[
+			active,
+			handleCheckIfAlreadyMatched,
+			handleRemoveAnswer,
+			handleSetActive,
+		]
+	);
+
 	const renderMatchBox = useCallback(
 		(practiceId: string, left: string, right: string) => {
-			const currentAnswer = answer[practiceId];
-
+			const identifier = `MatchBox-${practiceId}`;
 			return (
-				<div
-					key={`MatchBox-${practiceId}`}
-					id={`MatchBox-${practiceId}`}
-					className="MatchBox w-full flex justify-between gap-4 mb-8"
-				>
-					<div className="Match_left flex items-center">
-						{handleGetComponentForm(left)}
-						{currentAnswer ? (
-							renderMatchCard({
-								children: currentAnswer,
-								className: "ml-8",
-								onClick: () => {
-									handleCheckIfAlreadyMatched(
-										practiceId,
-										null,
-										handleRemoveAnswer,
-										null
-									);
-								},
-							})
-						) : (
-							<div
-								className={clsx(
-									"Match_hole w-24 h-10 px-8 py-2 ml-8",
-									"shadow-inner border-secondary-3 border",
-									"rounded-sm transition-colors",
-									active && active.id === practiceId
-										? "bg-success-1 hover:bg-success-2"
-										: "bg-white hover:bg-secondary-1"
-								)}
-								onClick={() => {
-									let terminate = false;
-
-									handleCheckIfAlreadyMatched(
-										practiceId,
-										null,
-										(key: string) => {
-											handleRemoveAnswer(key);
-											terminate = true;
-										},
-										null
-									);
-
-									if (active && active.type === "target") {
-										if (active.id === practiceId) {
-											setActive(null);
-										} else {
-											handleSetActive(
-												"target",
-												practiceId,
-												true
-											);
-										}
-										terminate = true;
-									}
-
-									if (terminate) return;
-
-									handleSetActive("target", practiceId);
-								}}
-							></div>
-						)}
-					</div>
-					{renderMatchCard({
-						children: right,
-						className: clsx(
-							!currentAnswer && "!bg-primary-2 rounded-sm",
-							Object.values(answer).includes(right) && "hidden",
-							active &&
-								active.answer === right &&
-								"!bg-primary-4 hover:bg-primary-5"
-						),
-						onClick: () => {
-							let terminate = false;
-
-							handleCheckIfAlreadyMatched(
-								null,
-								right,
-								null,
-								(key: string) => {
-									handleRemoveAnswer(key);
-
-									if (active && active.id) setActive(null);
-									terminate = true;
-								}
-							);
-
-							if (active && active.type === "source") {
-								if (active.answer === right) {
-									setActive(null);
-								} else {
-									handleSetActive("source", right, true);
-								}
-								terminate = true;
-							}
-							if (terminate) return;
-
-							handleSetActive("source", right);
-						},
-					})}
-				</div>
+				<MatchBox
+					key={identifier}
+					id={identifier}
+					practiceId={practiceId}
+					active={active}
+					answer={answer}
+					left={left}
+					right={right}
+					handleClickMatchedCard={() =>
+						handleClickMatchedCard(practiceId)
+					}
+					handleClickDrop={() => handleClickDrop(practiceId)}
+					handleClickUnmatchedCard={() =>
+						handleClickUnmatchedCard(right)
+					}
+					handleGetComponentForm={handleGetComponentForm}
+				/>
 			);
 		},
 		[
 			active,
 			answer,
-			handleCheckIfAlreadyMatched,
+			handleClickDrop,
+			handleClickMatchedCard,
+			handleClickUnmatchedCard,
 			handleGetComponentForm,
-			handleRemoveAnswer,
-			handleSetActive,
-			renderMatchCard,
 		]
 	);
 
