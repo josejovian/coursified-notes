@@ -1,1 +1,2 @@
-export * from "./ProgressVertical";
+export * from "./CourseProgressVertical";
+export * from "./CourseProgressVerticalMilestone";

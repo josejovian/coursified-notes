@@ -1,25 +1,15 @@
 # Continuity of a Function
 
-Let $f$ be a function defined on an open interval containing all values of $x$ close to $a$
-The function $f$ is continuous at $a$ if $\lim\limits_{x\rightarrow 0}f(x)=f(a)$.
-
----
-
-Suppose both $f$ and $g$ are continuous at $a$, then, the following functions are also continuous at $a$:
-
--   $f(x) \pm g(x)$
--   $f(x) \times g(x)$
--   $\frac{f(x)}{g(x)}$
--   $c . f(x)$, where $c$ is a constant
-
----
+> #theorem#
+> Let $f$ be a function defined on an open interval containing all values of $x$ close to $a$. Then,  
+> the function $f$ is continuous at $a$ if $\lim\limits_{x\rightarrow 0}f(x)=f(a)$.
 
 There are other specific terms to describe continuity:
 
--   $f$ is continuous from the left at $a$ if $\lim\limits_{x\rightarrow 0^-}f(x)=f(a)$
--   $f$ is continuous from the right at $a$ if $\lim\limits_{x\rightarrow 0^+}f(x)=f(a)$
--   $f$ is continuous on an open interval $(a, b)$ if $f$ is continuous for every number $k$, where $a < k < b$
--   $f$ is continuous on a closed interval $[a, b]$ if $f$ is continuous for every number $k$, where $a \le k \le b$
+- $f$ is continuous from the left at $a$ if $\lim\limits_{x\rightarrow 0^-}f(x)=f(a)$
+- $f$ is continuous from the right at $a$ if $\lim\limits_{x\rightarrow 0^+}f(x)=f(a)$
+- $f$ is continuous on an open interval $(a, b)$ if $f$ is continuous for every number $k$, where $a < k < b$
+- $f$ is continuous on a closed interval $[a, b]$ if $f$ is continuous for every number $k$, where $a \le k \le b$
 
 ===
 
@@ -51,7 +41,7 @@ This happens when $\lim\limits_{x\rightarrow a} f(x) = f(a)$, or $f(a)$ does not
 
 ===
 
-# Practice: Continuity of a Function
+# **Practice:** Continuity of a Function
 
 Given some functions $f$, $g$, and values of "$a$", determine the value of constants $c$ and $d$, so that both $f$ and $g$ are continuous on each function's value of $a$.
 
@@ -68,6 +58,28 @@ d \cos{x}& \text{, } x \geq \frac{\pi}{2}\\
 ---
 
 What is the value of $c$, so $f$ is continuous on $a = -3$?  
+`[input;continuity-1]-4`
+
+What is the value of $d$ (in degrees), so $g$ is continuous on $a = \frac{\pi}{2}$?
+`[input;continuity-2]90`
+
+===
+
+# **Practice:** Discontinuity of a Function
+
+$f(x)=\begin{cases}
+x+5& \text{, } x \leq-3\\ 
+c-2x& \text{, } x > -3\\
+\end{cases}$
+
+$g(x)=\begin{cases}
+d-x& \text{, } x <\frac{\pi}{2}\\ 
+d \cos{x}& \text{, } x \geq \frac{\pi}{2}\\
+\end{cases}$
+
+---
+
+What is the value of $c$, so $f$ is continuous on $a = -3$?
 `[input;continuity-1]-4`
 
 What is the value of $d$ (in degrees), so $g$ is continuous on $a = \frac{\pi}{2}$?

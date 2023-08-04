@@ -24,8 +24,8 @@ The **sum or difference** of the limit of two functions is equal when **adding o
 
 ---
 
-> #formula# $\lim\limits*{x\rightarrow a} f(x)g(x) =\lim\limits*{x\rightarrow a} f(x) \times \lim\limits\_{x\rightarrow a} g(x) $
->
+> #formula# $\lim\limits_{x\rightarrow a} f(x)g(x) =\lim\limits_{x\rightarrow a} f(x) \times \lim\limits_{x\rightarrow a} g(x)$  
+> &nbsp;
 > $\lim\limits*{x\rightarrow a} \frac{f(x)}{g(x)} = \large \frac{\lim\limits*{x\rightarrow a} f(x)}{\lim\limits\_{x\rightarrow a} g(x)}, \normalsize \text{where } g(x) \neq 0 $
 
 The **product or quotient** of the limit of two functions is equal when **multiplying or dividing** them individually.
@@ -36,19 +36,11 @@ The **product or quotient** of the limit of two functions is equal when **multip
 
 Given that $n$ is any real number, including fractions, the limit of **(the function $f$ to the power of $n$)** is equal to **(the limit of the function $f$)** to the power of $n$. Due to the previous law or property, this one should be self-explanatory.
 
----
-
-> #formula# $\lim\limits_{x\rightarrow 0} \frac{1}{|x|} = \infty$
->
-> $\lim\limits_{x\rightarrow \infty} \frac{1}{x} = 0$
-
-These are some other basic limits that may help you in calculating limits.
-
 ===
 
 # Properties of Limits: Easy Examples
 
-> #formula# **Example**  
+> #example# **Example**  
 > Evaluate $\lim\limits_{x\rightarrow 4} \left [ 4x^2 - 4x + 1 \right ] = ...$
 
 To simplify things, we can first think of this function as a combination of three different functions, then find the limit of each function, then apply the addition or subtraction like the following.
@@ -63,7 +55,9 @@ $$
 
 You may have realized that it is faster to think of this as substituting $x$ into $f(x)$. However, be warned that this is not **always the case**.
 
-> #formula# **Example**  
+---
+
+> #example# **Example**  
 > Evaluate $\lim\limits_{x\rightarrow -2} \frac{x^2 - 1} {9x^2 + 6x + 3}  = ...$
 
 Again, by thinking of this as doing a simple algebra, substituting $x$ into the function to find the value:
@@ -80,7 +74,7 @@ $$
 
 # Properties of Limits: Tricky Example #1
 
-> #formula# **Example**  
+> #example# **Example**  
 > Evaluate $\lim\limits_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1}  = ...$
 
 When you plug in $x=1$ into the function, you get...
@@ -108,7 +102,7 @@ Now, we have learnt that **factorization** is one of the method that we can use 
 
 # Properties of Limits: Tricky Example #2
 
-> #formula# **Example**  
+> #example# **Example**  
 > Evaluate $\lim\limits_{x\rightarrow \infty} \sqrt{x^2+6x-9}-\sqrt{x^2-8x+16}  = ...$
 
 Putting $x=\infty$ will yield an indeterminate form $\infty - \infty$. However, what if there is a way for us to manipulate the equation to avoid getting indeterminate forms? Let's try **rationalizing** it.
@@ -135,7 +129,7 @@ We can see that once we rationalize it, we can finally avoid getting indetermina
 
 # Properties of Limits: Tricky Example #3
 
-> #formula# **Example**  
+> #example# **Example**  
 > Evaluate $\lim\limits_{x\rightarrow 1} \frac{2x-\sqrt{x + 3}}{x - 1}  = ...$
 
 Once again, putting $x=1$ will yield $\frac{0}{0}$. However, trying to factor this directly may be not a simple task. However, let us try **rationalizing** the numerator.
@@ -156,7 +150,7 @@ We can see that once we rationalize the numerator, we are fortunate enough to se
 
 # Piecewise Function: An Example
 
-> #formula# **Example**  
+> #example# **Example**  
 > Given $f(x) = \begin{cases} x + 4 & \text{ if } x < -4 \\ x^2 + 5x + 4 & \text{ if } x \geq -4  \end{cases}$  
 > Evaluate $\lim\limits_{x\rightarrow -4} f(x)$
 
@@ -192,6 +186,23 @@ $$
 $$
 
 We can also see that if one of the limits had different values, then $f(x)$ would not have a limit at that point ($x = -4$).
+
+===
+
+# Practice: Calculating Limits
+
+Evaluate $\lim\limits_{x\rightarrow 2} \frac{x^2-4}{x^2+3x+2}  = ...$.  
+If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
+
+`[input;compute-limit-basic-1]0`
+
+> #explanation# **Correct!** This requires no special trick whatsoever.
+>
+> $$
+> \begin{align*}
+> \lim_{x\rightarrow 2} \frac{x^2-4}{x^2+3x+2}&=\frac{0}{12}\\&=0
+> \end{align*}
+> $$
 
 ===
 
@@ -239,8 +250,3 @@ If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
 > &= -3 \\
 > \end{align*}
 > $$
->
-> You may find these steps a little bit repetetive, so here is a little trick:
->
-> > #formula# Given $f(x) = \sqrt{ax^2 + bx + c} - \sqrt{px^2 + qx + r}$,  
-> > then, $\lim_{x\rightarrow \infty} f(x) = \begin{cases} \infty & \text{ if } a > p \\ \frac{b-q}{2\sqrt{a}} & \text{ if } a = p \\ -\infty & \text{ if } a < p \\ \end{cases}$

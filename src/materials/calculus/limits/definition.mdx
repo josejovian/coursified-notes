@@ -35,3 +35,19 @@ Sometimes, we may get something like the above $g(x) = \frac{1}{x}$. What would 
 `[graph]function:1/[x]`
 
 This case is a little bit deifferent than the last one. This time, we have $h(x) = \frac{1}{|x|}$ . As you may have guessed, this one function does have a limit as $x$ approaches $0$ because the limit as $x$ approaches $0$ from the right and from the left is the same. Therefore, we can say that $\lim\limits_{x\rightarrow 0} \frac{1}{|x|} = \infty$
+
+===
+
+# ✏️ Practice: Determining Limits
+
+Suppose we have a function $f(x)$ that we do not exactly know of, but we only have the following information;
+
+| x    | -2.1 | -2.01 | -2.001 | -1.998 | -1.98 | -1.8 |
+| ---- | ---- | ----- | ------ | ------ | ----- | ---- |
+| f(x) | 5.11 | 5.09  | 5.005  | 5.006  | 5.01  | 5.12 |
+
+What integer would be the most reasonable estimate for $\lim\limits_{x\rightarrow -2} f(x)$?
+
+`[input;estimate-limit]5`
+
+> #explanation# **That's right!** From the left ($x=-2.1$ to $x=-2.001$), the value of $f(x)$ approaches $5$. Likewise, from the right ($x=-1.8$ to $x=-1.998$), the value of $f(x)$ also approaches $5$. The most reasonable guess for $\lim\limits_{x\rightarrow -2} f(x)$ is $5$.

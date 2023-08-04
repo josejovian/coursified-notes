@@ -1,4 +1,3 @@
-export * from "./basic";
-export * from "./courses";
-export * from "./materials";
-export * from "./template";
+export * from "./Basic";
+export * from "./Courses";
+export * from "./Template";
