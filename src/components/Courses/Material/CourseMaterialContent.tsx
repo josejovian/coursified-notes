@@ -10,7 +10,9 @@ import {
   HTMLAttributes,
   useEffect,
   ReactNode,
+  MutableRefObject,
 } from "react";
+import { getMDXComponent } from "mdx-bundler/client";
 import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
@@ -97,6 +99,8 @@ export function CourseMaterialContent({
   >({});
 
   const { practice } = addreses;
+
+  const Content = useMemo(() => getMDXComponent(markdown), [markdown]);
 
   const addToast = useToast();
 
@@ -767,7 +771,6 @@ export function CourseMaterialContent({
             },
           };
 
-          console.log(props);
           return (
             <div id={containerId} className="NewCustomMaterialInvoker hidden">
               {children}
@@ -790,7 +793,7 @@ export function CourseMaterialContent({
           trueLoading && "hidden"
         )}
       >
-        <ReactMarkdown
+        {/* <ReactMarkdown
           className="CourseMaterial_content"
           // eslint-disable-next-line react/no-children-prop
           components={{
@@ -802,16 +805,59 @@ export function CourseMaterialContent({
           rehypePlugins={[rehypeKatex, rehypeRaw]}
         >
           {markdown}
-        </ReactMarkdown>
+        </ReactMarkdown> */}
+        <div className="CourseMaterial_content">
+          <Content
+            components={{
+              Graph: (props) => {
+                const { functions = "", points = "" } = props;
+                return <Graph id={`Graph_${functions}_${points}`} {...props} />;
+              },
+              TeX,
+              Practice: ({ id, answer }) => (
+                <Input
+                  key={`InputBox-${id}`}
+                  id={`InputBox-${id}`}
+                  onBlur={(e) => {
+                    setSolved(1);
+                    // if (answer !== accept) {
+                    // 	setSubmmited(false);
+                    // 	setAnswer((prev) => ({
+                    // 		...prev,
+                    // 		[id]: e.target.value,
+                    // 	}));
+                    // }
+                  }}
+                  defaultValue={answer[id]}
+                  disabled={solved === 1 || userAnswerStatus(id) === "success"}
+                  state={submitted ? userAnswerStatus(id) : undefined}
+                />
+              ),
+              Explanation: ({ children }) => (
+                <>
+                  {solved === 1 && (
+                    <Blockquote preset="explanation">{children}</Blockquote>
+                  )}
+                </>
+              ),
+              Formula: ({ children }) => (
+                <Blockquote preset="formula">{children}</Blockquote>
+              ),
+              Example: ({ children }) => (
+                <Blockquote preset="example">{children}</Blockquote>
+              ),
+              Theorem: ({ children }) => (
+                <Blockquote preset="theorem">{children}</Blockquote>
+              ),
+              TexBlock: ({ children }) => {
+                return <TeX block>{children}</TeX>;
+              },
+            }}
+          />
+        </div>
       </article>
     ),
-    [
-      handlePreTransformBlockquote,
-      handlePreTransformCode,
-      handleTransformDivBlocks,
-      markdown,
-      trueLoading,
-    ]
+    [Content, setSolved, solved, submitted, trueLoading, userAnswerStatus]
   );
 
   return (

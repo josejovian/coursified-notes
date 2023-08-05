@@ -7,6 +7,8 @@ import React, {
 } from "react";
 import clsx from "clsx";
 import "katex/dist/katex.min.css";
+import { getMDXComponent } from "mdx-bundler/client";
+import Graph from "@/src/components/Courses/Material/Components/Graph/CourseMaterialGraph";
 import { useRouter } from "next/router";
 import { AnswerType } from "@/src/type/Material";
 import { ChapterAddressType, CourseType } from "@/src/type";
@@ -18,15 +20,27 @@ import {
 import { Button, CourseMaterialContent, Side } from "@/src/components";
 import { useSwapPage } from "@/src/hooks";
 import { SwapPageContext } from "@/src/contexts";
+import {
+  readAllChapters,
+  readAllSections,
+  readAllCourses,
+  readChapter,
+  getDetailedCourse,
+  readChapterMd,
+} from "@/src/lib/mdx";
+import { bundleMDX } from "mdx-bundler";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 interface CourseMaterialProps {
-  markdown: any;
+  markdown: any[];
   chapterAddress: ChapterAddressType;
   rawCourseDetail: any;
 }
 
 const CourseMaterial = ({
-  markdown = "",
+  markdown = [],
   chapterAddress,
   rawCourseDetail,
 }: CourseMaterialProps) => {
@@ -51,6 +65,7 @@ const CourseMaterial = ({
   const stateChecking = useState(false);
   const [checking, setChecking] = stateChecking;
   const [submitted, setSubmmited] = stateSubmitted;
+  const [initialized, setInitialized] = useState(false);
 
   const answerInputBoxParentElement = useRef<
     { parentElement: HTMLElement; string: string }[]
@@ -61,14 +76,13 @@ const CourseMaterial = ({
   const [errors, setErrors] = useState<any[]>([]);
 
   const courseDetail: CourseType = useMemo(
-    () => JSON.parse(rawCourseDetail),
+    () => JSON.parse(rawCourseDetail) as CourseType,
     [rawCourseDetail]
   );
 
-  const chapterContent = useMemo(
-    () => markdown.split("===")[page],
-    [markdown, page]
-  );
+  const markdownContents = useRef("");
+
+  const chapterContent = useMemo(() => markdown[page], [markdown, page]);
 
   const trueLoading = useMemo(
     () => swapPages || swapChapters || loading,
@@ -174,7 +188,7 @@ const CourseMaterial = ({
   );
 
   useEffect(() => {
-    setMaxPage(markdown.split("===").length);
+    setMaxPage(markdown.length);
   }, [markdown]);
 
   const handleCleanUpStates = useCallback(() => {
@@ -364,11 +378,7 @@ const CourseMaterial = ({
 };
 
 export const getStaticPaths = async () => {
-  const {
-    readAllChapters,
-    readAllSections,
-    readAllCourses,
-  } = require("../../../../src/lib/mdx.tsx");
+  const {} = require("../../../../src/lib/mdx.tsx");
   const courses: string[] = await readAllCourses();
 
   const strings = await Promise.all(
@@ -401,20 +411,16 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (req: any) => {
   const { course, section, chapter } = req.params;
-  const {
-    getDetailedCourse,
-    readChapter,
-  } = require("../../../../src/lib/mdx.tsx");
 
   const params = { course, section, chapter };
 
-  const chapterMD = await readChapter(course, section, chapter);
+  const { pages } = await readChapterMd(course, section, chapter);
 
   const courseDetail = await getDetailedCourse(course);
 
   return {
     props: {
-      markdown: chapterMD,
+      markdown: pages,
       chapterAddress: params,
       rawCourseDetail: JSON.stringify(courseDetail),
     },
