@@ -98,6 +98,20 @@ export function CourseMaterialContent({
     >
   >({});
 
+  const matchRef = useRef<
+    Record<
+      string,
+      {
+        left: string;
+        right: string;
+        ready?: boolean;
+      }
+    >
+  >({});
+  const initializeFormulaCard = useRef<"initial" | "ready" | "finish">(
+    "initial"
+  );
+
   const { practice } = addreses;
 
   const Content = useMemo(() => getMDXComponent(markdown), [markdown]);
@@ -150,10 +164,7 @@ export function CourseMaterialContent({
       vessel.id = `${group}-${id}`;
       vessel.classList.add(group);
 
-      parentElement.parentElement?.insertBefore(
-        vessel,
-        parentElement.nextSibling
-      );
+      parentElement.insertBefore(vessel, parentElement.nextSibling);
 
       ReactDOM.render(targetElement, vessel);
     },
@@ -217,6 +228,7 @@ export function CourseMaterialContent({
 
   const handleRemoveCustomComponents = useCallback((className: string) => {
     const previousRenders = document.querySelectorAll(`.${className}`);
+    matchRef.current = {};
     previousRenders.forEach((element) => {
       /** @todos Something MIGHT be wrong with this unmount method. */
       element.parentElement?.removeChild(element);
@@ -249,7 +261,7 @@ export function CourseMaterialContent({
       onKeyMatch: null | ((key: string) => void),
       onValueMatch: null | ((key: string) => void)
     ) => {
-      if (solved) return;
+      if (solved === 1) return;
       Object.entries(answer).forEach(([key, value]) => {
         if (onKeyMatch && key === currentKey) {
           onKeyMatch(key);
@@ -348,15 +360,24 @@ export function CourseMaterialContent({
   const renderMatchBox = useCallback(
     (practiceId: string, left: string, right: string) => {
       const identifier = `MatchBox-${practiceId}`;
+
+      //.replaceAll("\\{", "{").replaceAll("\\}", "}")
+      if (!matchRef.current[practiceId])
+        matchRef.current[practiceId] = {
+          left: left.replaceAll("\\{", "{").replaceAll("\\}", "}"),
+          right: right.replaceAll("\\{", "{").replaceAll("\\}", "}"),
+          ready: true,
+        };
+
       return (
         <MatchBox
-          key={identifier}
+          // key={identifier}
           id={identifier}
           practiceId={practiceId}
           active={active}
           answer={answer}
-          left={left}
-          right={right}
+          left={matchRef.current[practiceId].left}
+          right={matchRef.current[practiceId].right}
           handleClickMatchedCard={() => handleClickMatchedCard(practiceId)}
           handleClickDrop={() => handleClickDrop(practiceId)}
           handleClickUnmatchedCard={() => handleClickUnmatchedCard(right)}
@@ -469,6 +490,63 @@ export function CourseMaterialContent({
     handleRemoveUndefinedAnswers();
   }, [answer, handleRemoveUndefinedAnswers]);
 
+  // const handleMountFormula = useCallback(() => {
+  //   console.log("Execute>> ");
+
+  //   Object.entries(matchRef.current).forEach(([id, entry]) => {
+  //     const identifier = `MatchBox-${id}`;
+
+  //     const left = document.querySelector(`#${identifier} .Match_left span`);
+  //     const leftExisting = document.querySelector(
+  //       `#${identifier} .Match_left span span`
+  //     );
+  //     const right = document.querySelector(`#${identifier} .Match_right span`);
+  //     const rightExisting = document.querySelector(
+  //       `#${identifier} .Match_right span span`
+  //     );
+
+  //     console.log(left);
+
+  //     while (left && left.firstChild) {
+  //       left.removeChild(left.firstChild);
+  //     }
+
+  //     console.log(leftExisting);
+
+  //     if (left && !leftExisting) ReactDOM.render(<TeX>{entry.left}</TeX>, left);
+
+  //     while (right && right.firstChild) {
+  //       right.removeChild(right.firstChild);
+  //     }
+
+  //     if (right && !rightExisting)
+  //       ReactDOM.render(<TeX>{entry.right}</TeX>, right);
+  //   });
+  // }, []);
+
+  // const handleUnmountFormula = useCallback(() => {
+  // 	Object.entries(matchRef.current).forEach(([id, entry])=> {
+  // 		const left = document.querySelector(`#${id} .Match_left span`);
+  // 		const right = document.querySelector(`#${id} .Match_right span`);
+
+  // 		while (left && left.firstChild) {
+  // 			left.removeChild(left.firstChild);
+  // 		}
+
+  // 		ReactDOM.render(<TeX>{entry.left}</TeX>, left);
+
+  // 		while (right && right.firstChild) {
+  // 			right.removeChild(right.firstChild);
+  // 		}
+
+  // 		ReactDOM.render(<TeX>{entry.right}</TeX>, right);
+  // 	});
+  // }, []);
+
+  // useEffect(() => {
+  //   handleMountFormula();
+  // });
+
   const handleGetExistingAnswerIfAny = useCallback(() => {
     const existingAnswers = checkChapterProgress(practice);
     const practiceIds = Object.keys(accept);
@@ -534,37 +612,11 @@ export function CourseMaterialContent({
       const string = element.innerHTML;
       const parentElement = element.parentElement;
 
-      let mathFuncs: MathFunction[] = [];
-      let mathPoints: MathPoint[] = [];
-
-      if (container && parentElement && string.match(regexPracticeInput)) {
-        const [currentId, currentAnswer] = [
-          getPracticeId(string),
-          getPracticeAnswer(string),
-        ];
-
-        if (currentId && currentAnswer) {
-          answerKeys = {
-            ...answerKeys,
-            [currentId]: currentAnswer,
-          };
-
-          answerInputBoxParentElement.current = [
-            ...answerInputBoxParentElement.current,
-            {
-              parentElement,
-              string,
-            },
-          ];
-
-          inputElementsRendered++;
-        }
-      }
       if (container && parentElement && string.match(/\[match\]/g)) {
         const detectedPair = string.toString().split("@");
 
-        if (detectedPair && detectedPair.length === 5) {
-          const [tag, id, left, right, space] = detectedPair;
+        if (detectedPair && detectedPair.length === 4) {
+          const [tag, id, left, right] = detectedPair;
           matchParentElement.current = [
             ...matchParentElement.current,
             {
@@ -584,20 +636,20 @@ export function CourseMaterialContent({
       }
     });
 
-    Object.entries(customElementQueue.current).forEach(
-      ([key, { containerId, element, props }]) => {
-        const target = document.getElementById(containerId);
-        if (target)
-          renderCustomElement(
-            target,
-            <div className="GraphContainer">
-              <Graph id={key} {...props} />
-            </div>,
-            CUSTOM_MATERIAL["graph"],
-            key
-          );
-      }
-    );
+    // Object.entries(customElementQueue.current).forEach(
+    //   ([key, { containerId, element, props }]) => {
+    //     const target = document.getElementById(containerId);
+    //     if (target)
+    //       renderCustomElement(
+    //         target,
+    //         <div className="GraphContainer">
+    //           <Graph id={key} {...props} />
+    //         </div>,
+    //         CUSTOM_MATERIAL["graph"],
+    //         key
+    //       );
+    //   }
+    // );
 
     if (matchParentElement.current.length > 0 && solved !== 1) {
       matchParentElement.current.sort(() => Math.random() - 0.5);
@@ -629,7 +681,6 @@ export function CourseMaterialContent({
     loading,
     handleRemoveAllCustomComponents,
     solved,
-    renderCustomElement,
     setSolved,
     setAccept,
     handleRenderAnswerBoxes,
@@ -651,7 +702,7 @@ export function CourseMaterialContent({
 
   useEffect(() => {
     handlePrepareNewPage();
-  }, [page, handlePrepareNewPage, handleRemoveAllCustomComponents]);
+  }, [page, handlePrepareNewPage]);
 
   const handleCheckForCodeInvokedElements = useCallback(
     (element: any, specific: string = "") => {
@@ -734,8 +785,8 @@ export function CourseMaterialContent({
 
   const handleRouteChangeStart = useCallback(() => {
     onChapterChange && onChapterChange();
-    handleRemoveAllCustomComponents();
-  }, [handleRemoveAllCustomComponents, onChapterChange]);
+    // handleRemoveAllCustomComponents();
+  }, [onChapterChange]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", handleRouteChangeStart);
@@ -852,6 +903,9 @@ export function CourseMaterialContent({
               TexBlock: ({ children }) => {
                 return <TeX block>{children}</TeX>;
               },
+              Match: ({ id, left, right }) => (
+                <span className="CustomMaterialInvoker hidden">{`[match]@${id}@${left}@${right}`}</span>
+              ),
             }}
           />
         </div>
