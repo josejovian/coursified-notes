@@ -108,6 +108,7 @@ export function CourseMaterialContent({
       }
     >
   >({});
+  const inputRef = useRef<Record<string, boolean>>({});
   const initializeFormulaCard = useRef<"initial" | "ready" | "finish">(
     "initial"
   );
@@ -612,6 +613,29 @@ export function CourseMaterialContent({
       const string = element.innerHTML;
       const parentElement = element.parentElement;
 
+      if (container && parentElement && string.match(/\<Practice/g)) {
+        const detectedPair = string.toString().split("@");
+
+        if (detectedPair && detectedPair.length === 4) {
+          const [tag, id, left, right] = detectedPair;
+          matchParentElement.current = [
+            ...matchParentElement.current,
+            {
+              parentElement,
+              pair: [left, right],
+              id,
+            },
+          ];
+
+          answerKeys = {
+            ...answerKeys,
+            [id]: `${right}`,
+          };
+
+          inputElementsRendered++;
+        }
+      }
+
       if (container && parentElement && string.match(/\[match\]/g)) {
         const detectedPair = string.toString().split("@");
 
@@ -674,8 +698,6 @@ export function CourseMaterialContent({
       }));
       handleRenderAnswerBoxes();
       handleRenderMatch();
-    } else {
-      setSolved(-1);
     }
   }, [
     loading,
@@ -865,23 +887,44 @@ export function CourseMaterialContent({
                 return <Graph id={`Graph_${functions}_${points}`} {...props} />;
               },
               TeX,
-              Practice: ({ id, answer }) => (
+              Practice: ({ id, answer: answerKey }) => (
                 <Input
                   key={`InputBox-${id}`}
                   id={`InputBox-${id}`}
                   onBlur={(e) => {
-                    setSolved(1);
-                    // if (answer !== accept) {
-                    // 	setSubmmited(false);
-                    // 	setAnswer((prev) => ({
-                    // 		...prev,
-                    // 		[id]: e.target.value,
-                    // 	}));
-                    // }
+                    // setSolved(1);
+                    if (answer !== accept) {
+                      setSubmmited(false);
+                      setAnswer((prev) => ({
+                        ...prev,
+                        [id]: e.target.value,
+                      }));
+                    }
                   }}
                   defaultValue={answer[id]}
                   disabled={solved === 1 || userAnswerStatus(id) === "success"}
                   state={submitted ? userAnswerStatus(id) : undefined}
+                  mounted={inputRef.current[id]}
+                  onMount={() => {
+                    if (inputRef.current[id]) return;
+
+                    inputRef.current[id] = true;
+
+                    let answerKeys = {};
+
+                    answerKeys = {
+                      ...answerKeys,
+                      [id]: answerKey,
+                    };
+
+                    setSolved(0);
+                    console.log("Set Accept: ");
+                    console.log(answerKey);
+                    setAccept((prev) => ({
+                      ...prev,
+                      ...answerKeys,
+                    }));
+                  }}
                 />
               ),
               Explanation: ({ children }) => (
@@ -911,7 +954,19 @@ export function CourseMaterialContent({
         </div>
       </article>
     ),
-    [Content, setSolved, solved, submitted, trueLoading, userAnswerStatus]
+    [
+      Content,
+      accept,
+      answer,
+      setAccept,
+      setAnswer,
+      setSolved,
+      setSubmmited,
+      solved,
+      submitted,
+      trueLoading,
+      userAnswerStatus,
+    ]
   );
 
   return (

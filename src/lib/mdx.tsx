@@ -188,24 +188,13 @@ export async function getDetailedCourse(course: string) {
           const completePages = pages.map((page: any): PageType => {
             let pageType: RequirementCategoryType = "read";
 
-            const questions = (page.match(/\[input;([^\\])*([^\`])*/) ?? [])
-              .map((question: string) => {
-                pageType = "practice";
-                const [id, answer] = [
-                  getPracticeId(question),
-                  getPracticeAnswer(question),
-                ];
-                if (id && answer) countQuestions++;
-                return {
-                  id,
-                  answer,
-                };
-              })
-              .filter((q: PracticeType) => q.id && q.answer);
+            const questions = page.match(/\<Practice/g) ?? [];
+
+            countQuestions += questions.length;
 
             return {
               category: pageType,
-              problems: questions,
+              problemCount: questions.length,
             };
           }, []);
 

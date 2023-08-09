@@ -60,6 +60,8 @@ export function Section({ caption, courseId, index, section }: SectionProps) {
 
   const handleGetRequirementMessage = useCallback(
     (type: RequirementCategoryType | undefined, params?: any | undefined) => {
+      console.log(params);
+
       const progress =
         params &&
         params.progress &&
@@ -161,16 +163,8 @@ export function Section({ caption, courseId, index, section }: SectionProps) {
             title={title}
             milestones={chapters.map((chapter) => `${chapter.title}`)}
             indexTemplate={(idx) => `Chapter ${index}.${idx}`}
-            captions={chapters.map((chapter) =>
-              renderChapterRequirements(
-                chapter.title,
-                arraifyRequirements(chapter.requirements) ?? []
-              )
-            )}
             progress={lastFinishedChapter}
-            stylings={chapters.map((chapter, idx) =>
-              handleGetStylingForChapter(idx)
-            )}
+            stylings={chapters.map((_, idx) => handleGetStylingForChapter(idx))}
             links={chapters.map((chapter, idx) =>
               idx === 0 || chaptersComplete[idx] || chaptersComplete[idx - 1]
                 ? `/course/${courseId}/${section.id}/${chapter.id}`
