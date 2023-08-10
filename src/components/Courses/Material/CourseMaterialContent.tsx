@@ -903,7 +903,7 @@ export function CourseMaterialContent({
                   }}
                   defaultValue={answer[id]}
                   disabled={solved === 1 || userAnswerStatus(id) === "success"}
-                  state={submitted ? userAnswerStatus(id) : undefined}
+                  state={submitted && solved ? userAnswerStatus(id) : undefined}
                   mounted={inputRef.current[id]}
                   onMount={() => {
                     if (inputRef.current[id]) return;

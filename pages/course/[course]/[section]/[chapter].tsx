@@ -179,7 +179,6 @@ const CourseMaterial = ({
           ...existingData,
           [practiceId]: userAnswer,
         });
-        setSolved(1);
       }
 
       return result;
@@ -261,6 +260,10 @@ const CourseMaterial = ({
             size="l"
             onClick={() => {
               setSubmmited(true);
+              console.log("Submitted Answers");
+              console.log(answer);
+              console.log("Accepted Answer:");
+              console.log(accept);
               if (
                 Object.values(answer).length === Object.values(accept).length
               ) {
@@ -269,6 +272,8 @@ const CourseMaterial = ({
                     return !handleCheckAnswer(answer ?? "", key);
                   }
                 );
+
+                console.log("Correct? ", correct);
 
                 if (correct) setSolved(1);
               }
