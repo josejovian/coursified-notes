@@ -183,7 +183,7 @@ const CourseMaterial = ({
 
       return result;
     },
-    [accept, practice, setChecking, setSolved]
+    [accept, practice, setChecking]
   );
 
   useEffect(() => {
