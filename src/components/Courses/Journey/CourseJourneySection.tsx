@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
 import { CourseJourneySectionChapter } from "./CourseJourneySectionChapter";
 import { useRouter } from "next/router";
+import { Paragraph } from "../../Basic";
 
 interface CourseJourneySectionProps {
   courseId: string;
@@ -55,10 +56,10 @@ export function CourseJourneySection({
       >
         <Icon IconComponent={MdOutlineExpandMore} className="mr-4" size="m" />
         <span className="w-full flex justify-between">
-          <span>{title}</span>
-          <span className="justify-self-end place-self-end">
+          <Paragraph>{title}</Paragraph>
+          <Paragraph className="justify-self-end place-self-end">
             {lastFinishedChapter} / {chapters.length}
-          </span>
+          </Paragraph>
         </span>
       </div>
       {open && (

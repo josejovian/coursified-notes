@@ -5,3 +5,4 @@ export * from "./Loader";
 export * from "./Quote";
 export * from "./Section";
 export * from "./ToggleLink";
+export * from "./Paragraph";

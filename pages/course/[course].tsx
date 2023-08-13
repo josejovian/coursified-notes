@@ -1,9 +1,5 @@
 import { Fragment, useMemo, useState, useEffect } from "react";
-import {
-  CourseJourney,
-  Section,
-  SlantedBackgroundTemplate,
-} from "@/src/components";
+import { CourseJourney, Paragraph } from "@/src/components";
 import { CourseType, SectionType } from "@/src/type";
 import { checkCourseProgress } from "@/src/utils";
 import { useProgress } from "@/src/hooks/materials/useProgress";
@@ -27,14 +23,14 @@ const Course = ({ details }: CourseProps) => {
     [course]
   );
 
-  return (
-    <div>
-      <div className="relative mx-auto w-full h-60 bg-black overflow-hidden">
+  const renderCourseBanner = useMemo(
+    () => (
+      <header className="relative mx-auto w-full h-60 bg-black overflow-hidden">
         <div
           className={clsx(
             "absolute top-0 h-60",
-            "flex flex-col justify-center gap-4",
-            "text-white mx-auto z-10"
+            "flex flex-col justify-center gap-5",
+            "mx-auto z-10"
           )}
           style={{
             width: "1024px",
@@ -42,24 +38,38 @@ const Course = ({ details }: CourseProps) => {
             transform: `translate(-50%, 0%)`,
           }}
         >
-          <h1>Calculus</h1>
-          <span>
-            My old calculus notes transformed into a course-like format.
-          </span>
-          <span>Jose Jovian</span>
+          <Paragraph as="h1" size="xl" weight="bold" color="secondary-1">
+            {title}
+          </Paragraph>
+          <Paragraph size="l-alt" color="secondary-1">
+            {description}
+          </Paragraph>
+          <Paragraph size="m-alt" color="secondary-1">
+            Jose Jovian
+          </Paragraph>
         </div>
         <Image
           src="/train.jpg"
           width="1920"
           height="512"
           className="absolute top-0 left-0 object-none object-center opacity-20"
+          alt="Course Banner"
         />
-      </div>
-      <div className="mx-auto py-16" style={{ width: "1024px" }}>
-        <h2 className="font-bold mb-8">Contents</h2>
+      </header>
+    ),
+    [description, title]
+  );
+
+  return (
+    <main>
+      {renderCourseBanner}
+      <article className="mx-auto py-16" style={{ width: "1024px" }}>
+        <Paragraph as="h2" size="l-alt" weight="bold" className="mb-8">
+          Contents
+        </Paragraph>
         {renderCourseJourney}
-      </div>
-    </div>
+      </article>
+    </main>
   );
 };
 

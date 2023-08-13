@@ -17,8 +17,6 @@ export function CourseJourneySectionChapter({
   status,
   onClick,
 }: CourseJourneySectionChapterProps) {
-  const router = useRouter();
-
   return (
     <div
       className={clsx(ROW_STYLE, "flex items-center cursor-pointer")}
