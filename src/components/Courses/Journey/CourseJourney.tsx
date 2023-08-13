@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { CourseType, SectionType } from "@/src/type";
+import { ChapterAddressType, CourseType, SectionType } from "@/src/type";
 import clsx from "clsx";
 import { MdOutlineDescription, MdOutlineExpandMore } from "react-icons/md";
 import { Icon } from "../../Basic/Icon";
@@ -7,16 +7,18 @@ import { checkChaptersAreComplete, getLastFinishedChapter } from "@/src/utils";
 import { CourseJourneySection } from "./CourseJourneySection";
 
 interface CourseJourneyProps {
-  course: CourseType;
+  chapterAddress?: ChapterAddressType;
   className?: string;
-  noVerticalBorder?: boolean;
+  course: CourseType;
+  noBorder?: boolean;
   noPadding?: boolean;
 }
 
 export function CourseJourney({
   course,
   className,
-  noVerticalBorder,
+  chapterAddress,
+  noBorder,
   noPadding,
 }: CourseJourneyProps) {
   const { id, sections } = course;
@@ -27,6 +29,7 @@ export function CourseJourney({
         {sections.map((section) => (
           <CourseJourneySection
             key={section.title}
+            chapterAddress={chapterAddress}
             courseId={id}
             section={section}
             noPadding={noPadding}
@@ -34,15 +37,15 @@ export function CourseJourney({
         ))}
       </>
     ),
-    [id, noPadding, sections]
+    [chapterAddress, id, noPadding, sections]
   );
 
   return (
     <div
       className={clsx(
-        "border-t border-zinc-400",
+        "border-zinc-400",
         className,
-        !noVerticalBorder && "border-x"
+        !noBorder && "border-t border-x"
       )}
     >
       {renderSection}

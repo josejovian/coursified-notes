@@ -54,6 +54,25 @@
   .p-adapt-sm {
     @apply px-16 sm:px-16 md:px-32 lg:px-64;
   }
+  /* width */
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    border-left: 1px solid rgb(161 161 170);
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(113 113 122);
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(82 82 91);
+  }
 }
 @tailwind base;
 @layer components {
@@ -128,7 +147,10 @@
     list-style-type: disc;
   }
   .CourseMaterial_content li {
-    @apply ml-8 my-4;
+    @apply ml-4 my-2;
+  }
+  .CourseMaterial_content li::marker {
+    @apply font-bold;
   }
   .CourseMaterial_content img {
     @apply mx-auto;

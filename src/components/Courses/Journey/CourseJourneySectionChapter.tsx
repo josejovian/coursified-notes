@@ -12,6 +12,7 @@ interface CourseJourneySectionChapterProps {
   status: "locked" | "unlocked" | "completed";
   onClick?: () => void;
   className?: string;
+  active?: boolean;
 }
 
 export function CourseJourneySectionChapter({
@@ -19,20 +20,32 @@ export function CourseJourneySectionChapter({
   status,
   onClick,
   className,
+  active,
 }: CourseJourneySectionChapterProps) {
   return (
     <div
-      className={clsx("flex items-center cursor-pointer", className)}
+      className={clsx(
+        "flex items-center",
+        status === "completed" && [
+          "hover:bg-success-2 hover:bg-success-2",
+          active && "bg-success-1",
+        ],
+        status === "unlocked" && [
+          "hover:bg-orange-100",
+          active && "bg-orange-50",
+        ],
+        status !== "locked" && "cursor-pointer",
+        className
+      )}
       key={chapter.title}
       onClick={onClick}
     >
       <Icon IconComponent={MdOutlineDescription} className="mr-4" size="m" />
       <Paragraph
         className={clsx(
-          CHAPTER_BASE_STYLE,
-          status === "completed" && CHAPTER_COMPLETED_STYLE,
-          status === "locked" && CHAPTER_LOCKED_STYLE,
-          status === "unlocked" && CHAPTER_UNLOCKED_STYLE,
+          status === "completed" && "text-success-6",
+          status === "locked" && "text-secondary-4",
+          status === "unlocked" && "text-orange-600",
           "truncate"
         )}
       >
@@ -41,9 +54,3 @@ export function CourseJourneySectionChapter({
     </div>
   );
 }
-
-const ROW_STYLE = clsx(["py-4 px-16"]);
-const CHAPTER_BASE_STYLE = "transition-colors";
-const CHAPTER_LOCKED_STYLE = "text-secondary-4";
-const CHAPTER_UNLOCKED_STYLE = "text-orange-600 underline";
-const CHAPTER_COMPLETED_STYLE = "text-success-6 hover:text-success-2";

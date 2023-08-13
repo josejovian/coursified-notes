@@ -26,9 +26,6 @@ export default function Graph({ id, functions = "", points = "" }: GraphProps) {
   const stateSwapPages = useSwapPage();
   const [swapPages, setSwapPages] = stateSwapPages;
 
-  console.log("Functions>>");
-  console.log(functions);
-
   const parsedFunctions = useMemo(
     () => functions.replace("function:", "").split(","),
     [functions]

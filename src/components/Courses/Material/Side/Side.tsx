@@ -153,13 +153,15 @@ export function Side({ courseDetail, chapterAddress, trueLoading }: SideProps) {
   });
 
   return (
-    <aside id="CourseMaterial_side" className="border-r border-zinc-400">
+    <aside
+      id="CourseMaterial_side"
+      className="border-r border-zinc-400 flex flex-col flex-grow"
+    >
       <div ref={headerWrapperRef} className="flex relative bg-black">
         <div
           ref={textWrapperRef}
           className="absolute top-0 p-8 flex flex-col gap-4 z-10"
         >
-          {/* <h2 className="font-bold mb-2">{title}</h2> */}
           <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
             {title}
           </Paragraph>
@@ -176,7 +178,18 @@ export function Side({ courseDetail, chapterAddress, trueLoading }: SideProps) {
           alt="Course Banner"
         />
       </div>
-      <CourseJourney course={courseDetail} noVerticalBorder noPadding />
+      <hr />
+      <div className="!h-full overflow-y-auto">
+        <CourseJourney
+          course={{
+            ...courseDetail,
+            sections: sectionData,
+          }}
+          chapterAddress={chapterAddress}
+          noBorder
+          noPadding
+        />
+      </div>
     </aside>
   );
 }

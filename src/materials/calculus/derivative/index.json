@@ -2,6 +2,8 @@
 	"title": "Derivative",
 	"overrideChapterTitles": {
 		"definition": "Definition of Derivative",
-		"properties": "Properties of Derivative"
+		"properties": "Properties of Derivative",
+		"trigonometric": "Derivative of Trigonometric Functions and Its Inverse",
+		"hopital": "L'Hôpital's Rule"
 	}
 }

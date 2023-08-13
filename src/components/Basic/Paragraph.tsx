@@ -83,6 +83,7 @@ const FONT_WEIGHT = {
 type FontWeight = keyof typeof FONT_WEIGHT;
 
 const FONT_COLOR = {
+  inherit: "text-inherit",
   "secondary-8": "text-gray-800",
   "secondary-7": "text-gray-700",
   "secondary-6": "text-gray-600",

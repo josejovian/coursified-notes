@@ -36,7 +36,7 @@ import {
   getPracticeId,
   regexPracticeInput,
 } from "@/src/utils";
-import { Blockquote, Input, Loader } from "@/src/components";
+import { Blockquote, Input, Loader, Paragraph } from "@/src/components";
 import { useRouter } from "next/router";
 import { BLOCKQUOTE_PRESETS, COLORS } from "@/src/style";
 import { useToast } from "@/src/hooks";
@@ -243,6 +243,8 @@ export function CourseMaterialContent({
     Object.values(CUSTOM_MATERIAL).forEach((group) => {
       handleRemoveCustomComponents(group);
     });
+
+    inputRef.current = {};
   }, [handleRemoveCustomComponents]);
 
   const handleRemoveAnswer = useCallback(
@@ -807,8 +809,8 @@ export function CourseMaterialContent({
 
   const handleRouteChangeStart = useCallback(() => {
     onChapterChange && onChapterChange();
-    // handleRemoveAllCustomComponents();
-  }, [onChapterChange]);
+    handleRemoveAllCustomComponents();
+  }, [handleRemoveAllCustomComponents, onChapterChange]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", handleRouteChangeStart);
@@ -938,10 +940,16 @@ export function CourseMaterialContent({
                 <Blockquote preset="formula">{children}</Blockquote>
               ),
               Example: ({ children }) => (
-                <Blockquote preset="example">{children}</Blockquote>
+                <Blockquote preset="example">
+                  <Paragraph weight="bold">Example</Paragraph>
+                  {children}
+                </Blockquote>
               ),
               Theorem: ({ children }) => (
-                <Blockquote preset="theorem">{children}</Blockquote>
+                <Blockquote preset="theorem">
+                  <Paragraph weight="bold">Theorem</Paragraph>
+                  {children}
+                </Blockquote>
               ),
               TexBlock: ({ children }) => {
                 return <TeX block>{children}</TeX>;

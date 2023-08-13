@@ -3,6 +3,8 @@
 	"description": "This is a course-ified version of my calculus notes.",
 	"sections": [
 		"limits",
-		"derivative"
+		"derivative",
+		"derivative-applications",
+		"multi-variable"
 	]
 }

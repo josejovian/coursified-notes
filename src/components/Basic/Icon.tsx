@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { HTMLProps, useMemo } from "react";
+import { CSSProperties, HTMLProps, useMemo } from "react";
 import { IconType, IconBaseProps as IconLibProps } from "react-icons";
 import { MdExpandMore } from "react-icons/md";
 
@@ -11,25 +11,28 @@ interface IconBaseProps {
 type IconProps = IconBaseProps & Omit<IconLibProps, keyof IconBaseProps>;
 
 export function Icon({ IconComponent, size, ...rest }: IconProps) {
-  const { className: classProps } = rest;
-
-  const className = useMemo(() => {
-    let sizeClass = "";
+  const style = useMemo<CSSProperties>(() => {
+    let sizePx = "16px";
 
     switch (size) {
       case "l":
-        sizeClass = "w-8 h-8";
+        sizePx = "32px";
         break;
       case "m":
-        sizeClass = "w-6 h-6";
+        sizePx = "24px";
         break;
       case "s":
-        sizeClass = "w-4 h-4";
+        sizePx = "16px";
         break;
     }
 
-    return clsx(classProps, sizeClass);
-  }, [classProps, size]);
+    return ({
+			minWidth: sizePx,
+			maxWidth: sizePx,
+			minHeight: sizePx,
+			maxHeight: sizePx,
+		});
+  }, [size]);
 
-  return <IconComponent {...rest} className={className} />;
+  return <IconComponent {...rest} style={style} />;
 }

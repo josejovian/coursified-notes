@@ -377,9 +377,9 @@ const CourseMaterial = ({
 
   return (
     <SwapPageContext.Provider value={stateSwapPages}>
-      <div id="CourseMaterial" className="flex w-full overflow-hidden">
+      <div id="CourseMaterial" className="flex w-full h-screen overflow-hidden">
         {renderCourseContents}
-        <main className="relative flex flex-col flex-auto justify-between w-full h-screen overflow-hidden">
+        <main className="relative flex flex-col flex-auto justify-between w-full overflow-hidden">
           {renderChapterContents}
           {renderPageControls}
         </main>
