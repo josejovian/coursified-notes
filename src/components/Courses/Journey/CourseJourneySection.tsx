@@ -11,11 +11,15 @@ import { Paragraph } from "../../Basic";
 interface CourseJourneySectionProps {
   courseId: string;
   section: SectionType;
+  className?: string;
+  noPadding?: boolean;
 }
 
 export function CourseJourneySection({
   courseId,
   section,
+  className,
+  noPadding,
 }: CourseJourneySectionProps) {
   const { title, chapters } = section;
 
@@ -47,14 +51,19 @@ export function CourseJourneySection({
     <>
       <div
         className={clsx(
-          ROW_STYLE,
+          noPadding ? ROW_STYLE_2 : ROW_STYLE,
           "relative flex items-center",
           "border-b border-zinc-400 bg-zinc-100",
-          "font-bold cursor-pointer"
+          "font-bold cursor-pointer",
+          className
         )}
         onClick={() => setOpen((prev) => !prev)}
       >
-        <Icon IconComponent={MdOutlineExpandMore} className="mr-4" size="m" />
+        <Icon
+          IconComponent={MdOutlineExpandMore}
+          className={noPadding ? "mr-5" : "mr-4"}
+          size="m"
+        />
         <span className="w-full flex justify-between">
           <Paragraph>{title}</Paragraph>
           <Paragraph className="justify-self-end place-self-end">
@@ -72,6 +81,7 @@ export function CourseJourneySection({
               onClick={() => {
                 router.push(`/course/${courseId}/${section.id}/${chapter.id}`);
               }}
+              className={clsx(className, noPadding ? ROW_STYLE_2 : ROW_STYLE)}
             />
           ))}
         </div>
@@ -80,9 +90,5 @@ export function CourseJourneySection({
   );
 }
 
-const ROW_STYLE = clsx(["py-4 px-16"]);
-const CHAPTER_BASE_STYLE = "transition-colors";
-const CHAPTER_LOCKED_STYLE = "text-secondary-4";
-const CHAPTER_UNLOCKED_STYLE =
-  "text-orange-600 hover:text-orange-700 underline";
-const CHAPTER_COMPLETED_STYLE = "text-success-6 hover:text-success-2";
+const ROW_STYLE = clsx(["py-4 pl-12 pr-16"]);
+const ROW_STYLE_2 = clsx(["py-4 pl-8 pr-12"]);

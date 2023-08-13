@@ -17,7 +17,12 @@ import {
   getSpecificChapterAddress,
   storeChapterProgress,
 } from "@/src/utils";
-import { Button, CourseMaterialContent, Side } from "@/src/components";
+import {
+  Button,
+  CourseMaterialContent,
+  Paragraph,
+  Side,
+} from "@/src/components";
 import { useSwapPage } from "@/src/hooks";
 import { SwapPageContext } from "@/src/contexts";
 import {
@@ -237,7 +242,8 @@ const CourseMaterial = ({
       <div
         className={clsx(
           "flex justify-center items-center p-8",
-          "gap-8 w-full bg-gray-100"
+          "gap-8 w-full bg-gray-100",
+          "border-t border-zinc-400"
         )}
       >
         <Button
@@ -248,9 +254,9 @@ const CourseMaterial = ({
         >
           Back
         </Button>
-        <span className="w-16 text-2xl text-center">
+        <Paragraph as="span" size="l">
           {page + 1} / {maxPage}
-        </span>
+        </Paragraph>
         {solved !== 0 ? (
           <Button size="l" onClick={handleNextPage}>
             Next
