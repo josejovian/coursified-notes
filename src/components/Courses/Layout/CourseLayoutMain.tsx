@@ -40,11 +40,11 @@ import { Blockquote, Input, Loader, Paragraph } from "@/src/components";
 import { useRouter } from "next/router";
 import { BLOCKQUOTE_PRESETS, COLORS } from "@/src/style";
 import { useToast } from "@/src/hooks";
-import { MatchBox } from "./Components/Match";
+import { MatchBox } from "../Entity/Match";
 
 import dynamic from "next/dynamic";
 
-const Graph = dynamic(() => import("./Components/Graph/CourseMaterialGraph"), {
+const Graph = dynamic(() => import("../Entity/Graph/CourseEntityGraph"), {
   ssr: false,
 });
 
@@ -63,7 +63,7 @@ interface CourseMaterialContentProps {
   onChapterChange?: () => void;
 }
 
-export function CourseMaterialContent({
+export function CourseLayoutMain({
   markdown,
   addreses,
   stateSolved,

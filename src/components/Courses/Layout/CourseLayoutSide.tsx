@@ -29,7 +29,11 @@ interface SideProps {
   trueLoading?: boolean;
 }
 
-export function Side({ courseDetail, chapterAddress, trueLoading }: SideProps) {
+export function CourseLayoutSide({
+  courseDetail,
+  chapterAddress,
+  trueLoading,
+}: SideProps) {
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const textWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -171,7 +175,7 @@ export function Side({ courseDetail, chapterAddress, trueLoading }: SideProps) {
           </Paragraph>
         </div>
         <Image
-          src="/train.jpg"
+          src="/calculus.jpg"
           width="512"
           height="512"
           className="fixed top-0 left-0 object-none object-center opacity-20"

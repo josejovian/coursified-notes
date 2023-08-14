@@ -1,8 +1,7 @@
-import { Fragment, useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
 import { CourseJourney, Paragraph } from "@/src/components";
-import { CourseType, SectionType } from "@/src/type";
-import { checkCourseProgress } from "@/src/utils";
-import { useProgress } from "@/src/hooks/materials/useProgress";
+import { CourseType } from "@/src/type";
+import { useProgress } from "@/src/hooks";
 import { readAllCourses, getDetailedCourse } from "@/src/lib/mdx";
 import Image from "next/image";
 import clsx from "clsx";
@@ -19,8 +18,15 @@ const Course = ({ details }: CourseProps) => {
   const sectionData = useProgress({ id, sections });
 
   const renderCourseJourney = useMemo(
-    () => <CourseJourney course={course} />,
-    [course]
+    () => (
+      <CourseJourney
+        course={{
+          ...course,
+          sections: sectionData,
+        }}
+      />
+    ),
+    [course, sectionData]
   );
 
   const renderCourseBanner = useMemo(
@@ -49,7 +55,7 @@ const Course = ({ details }: CourseProps) => {
           </Paragraph>
         </div>
         <Image
-          src="/train.jpg"
+          src="/calculus.jpg"
           width="1920"
           height="512"
           className="absolute top-0 left-0 object-none object-center opacity-20"
@@ -74,7 +80,6 @@ const Course = ({ details }: CourseProps) => {
 };
 
 export const getStaticPaths = async () => {
-  // const { readAllCourses } = require("../../src/lib/mdx.tsx");
   const courses: string[] = await readAllCourses();
 
   return {
@@ -89,7 +94,6 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (req: any) => {
   const { course } = req.params;
-  // const { readCourse, getDetailedCourse } = require("../../src/lib/mdx.tsx");
 
   const details = await getDetailedCourse(course);
 

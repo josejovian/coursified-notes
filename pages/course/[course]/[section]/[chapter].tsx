@@ -7,11 +7,8 @@ import React, {
 } from "react";
 import clsx from "clsx";
 import "katex/dist/katex.min.css";
-import { getMDXComponent } from "mdx-bundler/client";
-import Graph from "@/src/components/Courses/Material/Components/Graph/CourseMaterialGraph";
 import { useRouter } from "next/router";
-import { AnswerType } from "@/src/type/Material";
-import { ChapterAddressType, CourseType } from "@/src/type";
+import { AnswerType, ChapterAddressType, CourseType } from "@/src/type";
 import {
   checkChapterProgress,
   getSpecificChapterAddress,
@@ -19,24 +16,18 @@ import {
 } from "@/src/utils";
 import {
   Button,
-  CourseMaterialContent,
+  CourseLayoutMain,
+  CourseLayoutSide,
   Paragraph,
-  Side,
 } from "@/src/components";
-import { useSwapPage } from "@/src/hooks";
 import { SwapPageContext } from "@/src/contexts";
 import {
   readAllChapters,
   readAllSections,
   readAllCourses,
-  readChapter,
   getDetailedCourse,
   readChapterMd,
 } from "@/src/lib/mdx";
-import { bundleMDX } from "mdx-bundler";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
 
 interface CourseMaterialProps {
   markdown: any[];
@@ -312,7 +303,7 @@ const CourseMaterial = ({
 
   const renderChapterContents = useMemo(
     () => (
-      <CourseMaterialContent
+      <CourseLayoutMain
         addreses={addresses}
         markdown={chapterContent}
         stateAccept={stateAccept}
@@ -357,7 +348,7 @@ const CourseMaterial = ({
 
   const renderCourseContents = useMemo(
     () => (
-      <Side
+      <CourseLayoutSide
         courseDetail={courseDetail}
         chapterAddress={chapterAddress}
         trueLoading={trueLoading}
