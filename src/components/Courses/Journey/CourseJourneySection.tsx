@@ -1,9 +1,9 @@
 import { ChapterAddressType, SectionType } from "@/src/type";
-import { MdOutlineDescription, MdOutlineExpandMore } from "react-icons/md";
+import { MdOutlineExpandMore } from "react-icons/md";
 import { Icon } from "../../Basic/Icon";
 import { checkChaptersAreComplete, getLastFinishedChapter } from "@/src/utils";
 import clsx from "clsx";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { CourseJourneySectionChapter } from "./CourseJourneySectionChapter";
 import { useRouter } from "next/router";
 import { Paragraph } from "../../Basic";
@@ -12,6 +12,7 @@ interface CourseJourneySectionProps {
   courseId: string;
   section: SectionType;
   className?: string;
+  disabled?: boolean;
   chapterAddress?: ChapterAddressType;
   noPadding?: boolean;
 }
@@ -20,6 +21,7 @@ export function CourseJourneySection({
   courseId,
   section,
   className,
+  disabled,
   noPadding,
   chapterAddress,
 }: CourseJourneySectionProps) {
@@ -90,6 +92,7 @@ export function CourseJourneySection({
                 status={status}
                 onClick={() => {
                   status !== "locked" &&
+                    !disabled &&
                     router.push(
                       `/course/${courseId}/${section.id}/${chapter.id}`
                     );

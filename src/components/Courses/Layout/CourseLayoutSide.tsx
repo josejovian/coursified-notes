@@ -17,11 +17,13 @@ import {
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Badge, CourseJourney, Paragraph } from "@/src/components";
+import { Badge, Button, CourseJourney, Paragraph } from "@/src/components";
 import { checkCourseProgress } from "@/src/utils";
-import { useProgress } from "@/src/hooks";
+import { useProgress, useScreen } from "@/src/hooks";
 import { getLastFinishedChapter } from "@/src/utils/materials";
 import Image from "next/image";
+import { Icon } from "../../Basic/Icon";
+import { MdChevronLeft } from "react-icons/md";
 
 interface SideProps {
   courseDetail: CourseType;
@@ -36,131 +38,25 @@ export function CourseLayoutSide({
 }: SideProps) {
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const textWrapperRef = useRef<HTMLDivElement>(null);
+  const { width } = useScreen();
+  const [open, setOpen] = useState(false);
 
   const { id, title, sections, description } = courseDetail;
 
   const sectionData = useProgress({ id, sections });
 
-  const chapterIsActive = useCallback(
-    (section: string, chapter: string) => {
-      return (
-        section === chapterAddress.section && chapter === chapterAddress.chapter
-      );
-    },
-    [chapterAddress.chapter, chapterAddress.section]
-  );
-
-  const renderChapterEntry = useCallback(
-    (
-      idx1: number,
-      idx2: number,
-      name: string,
-      status: string,
-      active: boolean
-    ) => {
-      return (
-        <div
-          className={clsx("CourseMaterial_entry", [
-            status === "completed" && [
-              "border-r-4 border-r-green-200 hover:bg-success-2",
-              active && "bg-success-1 hover:bg-success-2",
-            ],
-            status === "ongoing" && [
-              "border-r-4 border-r-yellow-200 hover:bg-warning-2",
-              active && "bg-warning-1 hover:bg-warning-2",
-            ],
-            status === "locked" && [
-              "CourseMaterial_entry-locked bg-secondary-1",
-            ],
-          ])}
-        >
-          <div className="CourseMaterial_index">
-            {idx1}.{idx2}
-          </div>
-          {name}
-        </div>
-      );
-    },
-    []
-  );
-
-  const renderSections = useMemo(
-    () =>
-      sectionData &&
-      sectionData.map((section, idx1) => {
-        idx1++;
-
-        const _id = section.id ?? "";
-        const _title = section.title;
-        const chapters = section.chapters;
-        const sectionId = `Side_section-${_id}`;
-        const lastCompletedChapter = getLastFinishedChapter(chapters);
-
-        return (
-          <Fragment key={sectionId}>
-            <div className="CourseMaterial_header CourseMaterial_entry">
-              <>
-                <div className="CourseMaterial_index">{idx1}</div>
-                {_title}
-              </>
-              <Badge className="absolute right-8">
-                <>
-                  {lastCompletedChapter} / {chapters.length}
-                </>
-              </Badge>
-            </div>
-            {chapters.map((chapter, idx2) => {
-              idx2++;
-
-              const __id = chapter.id ?? "";
-              const __title = chapter.title;
-              const chapterId = `Side_section-${_id}-${__id}`;
-
-              let status = "locked";
-              if (lastCompletedChapter >= idx2) {
-                status = "completed";
-              } else if (lastCompletedChapter === idx2 - 1) {
-                status = "ongoing";
-              }
-
-              const active = chapterIsActive(_id, __id);
-
-              const entry = renderChapterEntry(
-                idx1,
-                idx2,
-                __title,
-                status,
-                active
-              );
-
-              return lastCompletedChapter >= idx2 - 1 || idx2 === 0 ? (
-                <Link
-                  href={`/course/${id}/${_id}/${__id}`}
-                  key={chapterId}
-                  passHref
-                >
-                  <a>{entry}</a>
-                </Link>
-              ) : (
-                <Fragment key={chapterId}>{entry}</Fragment>
-              );
-            })}
-          </Fragment>
-        );
-      }),
-    [sectionData, chapterIsActive, renderChapterEntry, id]
-  );
-
   useEffect(() => {
-    if (headerWrapperRef.current && textWrapperRef.current)
+    if (headerWrapperRef.current && textWrapperRef.current) {
       headerWrapperRef.current.style.height = `${textWrapperRef.current.offsetHeight}px`;
+    }
   });
 
-  return (
-    <aside
-      id="CourseMaterial_side"
-      className="border-r border-zinc-400 flex flex-col flex-grow"
-    >
+  useEffect(() => {
+    if (width < 1024) setOpen(false);
+  }, [width]);
+
+  const renderCourseHeader = useMemo(
+    () => (
       <div ref={headerWrapperRef} className="flex relative bg-black">
         <div
           ref={textWrapperRef}
@@ -169,7 +65,9 @@ export function CourseLayoutSide({
           <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
             {title}
           </Paragraph>
-          <Paragraph color="secondary-1">{description}</Paragraph>
+          <Paragraph as="p" color="secondary-1">
+            {description}
+          </Paragraph>
           <Paragraph size="m-alt" color="secondary-1">
             Jose Jovian
           </Paragraph>
@@ -182,7 +80,12 @@ export function CourseLayoutSide({
           alt="Course Banner"
         />
       </div>
-      <hr />
+    ),
+    [description, title]
+  );
+
+  const renderCourseContents = useMemo(
+    () => (
       <div className="!h-full overflow-y-auto">
         <CourseJourney
           course={{
@@ -194,6 +97,76 @@ export function CourseLayoutSide({
           noPadding
         />
       </div>
-    </aside>
+    ),
+    [chapterAddress, courseDetail, sectionData]
+  );
+
+  const renderSideToggleButton = useMemo(
+    () => (
+      <>
+        {/* <div
+        tabIndex={0}
+        role="button"
+        className={clsx(
+          "w-10 h-10 fixed left-4 top-4",
+          "flex items-center justify-center",
+          "transition-all cursor-pointer shadow-lg z-20",
+          open
+            ? "translate-x-60 text-zinc-700 bg-gray-50 hover:bg-gray-200"
+            : "text-white bg-zinc-700 hover:bg-zinc-600",
+          width >= 1024 && "hidden"
+        )}
+        onClick={() => setOpen((prev) => !prev)}
+				>
+					<Icon
+						className={clsx(!open && "rotate-180")}
+						size="l"
+						IconComponent={MdChevronLeft}
+					/>
+					</div> */}
+        <Button
+          className={clsx(
+            "fixed top-6",
+            "cursor-pointer shadow-lg z-20 transition-transform",
+            open ? "translate-x-64" : "translate-x-6",
+            width >= 1024 && "hidden"
+          )}
+          onClick={() => setOpen((prev) => !prev)}
+          color={open ? "tertiary" : "secondary"}
+          icon
+        >
+          <Icon
+            className={clsx(!open && "rotate-180")}
+            size="l"
+            IconComponent={MdChevronLeft}
+          />
+        </Button>
+      </>
+    ),
+    [open, width]
+  );
+
+  return (
+    <>
+      <aside
+        id="CourseMaterial_side"
+        className={clsx(
+          "border-r border-zinc-400 flex flex-col flex-grow overflow-hidden h-full bg-white z-10",
+          width >= 1024
+            ? "translate-x-0 !duration-0"
+            : [
+                open
+                  ? " absolute left-0 top-0 "
+                  : "absolute left-0 top-0 -translate-x-full",
+              ],
+          width < 1024 && "transition-all"
+        )}
+      >
+        {renderCourseHeader}
+        <hr />
+        {renderCourseContents}
+      </aside>
+      {renderSideToggleButton}
+    </>
   );
 }

@@ -1,13 +1,21 @@
 import { Toast } from "@/src/components";
-import { ToastType } from "@/src/type";
+import { ScreenSizeCategory, ScreenSizeType, ToastType } from "@/src/type";
 import { ToastContext } from "@/src/utils";
 import { render } from "katex";
 import type { AppProps } from "next/app";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles/globals.css";
+import { ContextWrapper } from "@/src/contexts";
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
   const [toasts, setToasts] = useState<ToastType[]>([]);
+
+  const [screen, setScreen] = useState<ScreenSizeType>({
+    width: 0,
+    size: "xs",
+  });
+
+  const initialize = useRef(false);
 
   const handleProcessNewToast = useCallback(() => {
     const toast = toasts.at(-1);
@@ -73,12 +81,38 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, [handleProcessDeadToast, handleProcessNewToast, toasts]);
 
+  const handleUpdateScreen = useCallback(() => {
+    const width = window.innerWidth;
+    let screenCategory: ScreenSizeCategory = "xs";
+
+    if (width >= 1536) screenCategory = "2xl";
+    else if (width >= 1280) screenCategory = "xl";
+    else if (width >= 1024) screenCategory = "lg";
+    else if (width >= 768) screenCategory = "md";
+    else if (width >= 640) screenCategory = "sm";
+
+    setScreen({
+      width,
+      size: screenCategory,
+    });
+  }, []);
+
+  const handleInitialize = useCallback(() => {
+    if (initialize.current) return;
+    window.addEventListener("resize", handleUpdateScreen);
+
+    handleUpdateScreen();
+    initialize.current = true;
+  }, [handleUpdateScreen]);
+
+  useEffect(() => {
+    handleInitialize();
+  }, [handleInitialize]);
+
   return (
-    <ToastContext.Provider value={setToasts}>
+    <ContextWrapper screen={screen} setToasts={setToasts}>
       {renderToasts}
       <Component {...pageProps} />
-    </ToastContext.Provider>
+    </ContextWrapper>
   );
 }
-
-export default MyApp;

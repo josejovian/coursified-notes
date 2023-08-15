@@ -4,8 +4,14 @@ export type SizeType = "s" | "m" | "l";
 
 export const BUTTON_SIZE_CLASS: StyleClassType<SizeType> = {
   s: "h-8 text-sm",
-  m: "h-10",
-  l: "h-12 text-lg-alt px-10",
+  m: "h-10 px-4",
+  l: "h-12 text-lg-alt px-6",
+};
+
+export const BUTTON_ICON_SIZE_CLASS: StyleClassType<SizeType> = {
+  s: "h-8 w-8",
+  m: "h-10 w-10",
+  l: "h-12 h-12",
 };
 
 export const INPUT_SIZE_CLASS: StyleClassType<SizeType> = {

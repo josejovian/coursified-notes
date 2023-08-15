@@ -10,6 +10,7 @@ interface CourseJourneyProps {
   chapterAddress?: ChapterAddressType;
   className?: string;
   course: CourseType;
+  disabled?: boolean;
   noBorder?: boolean;
   noPadding?: boolean;
 }
@@ -18,6 +19,7 @@ export function CourseJourney({
   course,
   className,
   chapterAddress,
+  disabled,
   noBorder,
   noPadding,
 }: CourseJourneyProps) {
@@ -31,13 +33,14 @@ export function CourseJourney({
             key={section.title}
             chapterAddress={chapterAddress}
             courseId={id}
+            disabled={disabled}
             section={section}
             noPadding={noPadding}
           />
         ))}
       </>
     ),
-    [chapterAddress, id, noPadding, sections]
+    [chapterAddress, disabled, id, noPadding, sections]
   );
 
   return (

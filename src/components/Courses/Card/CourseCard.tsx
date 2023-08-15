@@ -11,12 +11,12 @@ export function CourseCard({ course }: CourseCardProps) {
   const { id, title, thumbnail } = course;
 
   return (
-    <Link className="CourseCard_link" href={`/course/${id}`} legacyBehavior>
-      <a>
+    <Link href={`/course/${id}`} legacyBehavior>
+      <a className="CourseCard_link focus:outline-0">
         <article className="CourseCard flex flex-col w-60">
           {thumbnail && (
             <div
-              className="bg-black border border-zinc-400"
+              className="bg-black border border-zinc-400 overflow-hidden"
               style={{ height: "135px" }}
             >
               <Image

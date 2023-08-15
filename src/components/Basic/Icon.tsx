@@ -26,12 +26,12 @@ export function Icon({ IconComponent, size, ...rest }: IconProps) {
         break;
     }
 
-    return ({
-			minWidth: sizePx,
-			maxWidth: sizePx,
-			minHeight: sizePx,
-			maxHeight: sizePx,
-		});
+    return {
+      minWidth: sizePx,
+      maxWidth: sizePx,
+      minHeight: sizePx,
+      maxHeight: sizePx,
+    };
   }, [size]);
 
   return <IconComponent {...rest} style={style} />;

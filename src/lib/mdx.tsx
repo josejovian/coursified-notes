@@ -3,18 +3,10 @@ import {
   CourseType,
   ChapterType,
   PageType,
-  PracticeType,
   RequirementCategoryType,
   RequirementMap,
-  RequirementType,
   SectionType,
 } from "../type/Course";
-import { getPracticeAnswer, getPracticeId } from "../utils/course";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import rehypeFilter from "react-markdown/lib/rehype-filter";
-import rehypeRaw from "rehype-raw";
-import rehypeMathJax from "rehype-mathjax";
 import { bundleMDX } from "mdx-bundler";
 
 const { readdirSync, readFileSync } = require("fs");
@@ -97,7 +89,7 @@ export async function readChapterMd(
         const result = p1
           .replace(/\\\\/g, `\\\\\\\\`)
           .replace(/(\r\n|\n|\r)/gm, " ");
-        console.log(result);
+
         return `<TeX block>${result}</TeX>`;
       }
     )
@@ -110,18 +102,8 @@ export async function readChapterMd(
         source: page,
 
         mdxOptions(options, frontmatter) {
-          // this is the recommended way to add custom remark/rehype plugins:
-          // The syntax might look weird, but it protects you in case we add/remove
-          // plugins in the future.
-          options.remarkPlugins = [
-            ...(options.remarkPlugins ?? []),
-            remarkGfm,
-            // remarkMath,
-          ];
-          options.rehypePlugins = [
-            ...(options.rehypePlugins ?? []),
-            // rehypeKatex,
-          ];
+          options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkGfm];
+          options.rehypePlugins = [...(options.rehypePlugins ?? [])];
 
           return options;
         },
@@ -243,17 +225,7 @@ export async function getDetailedCourse(course: string) {
       const topicIndexees = Object.keys(overrideChapterTitles);
 
       sectionData.chapters = sortData(detectedChapters, topicIndexees);
-      // detectedChapters.sort((a, b) => {
-      // 	if (a.id && b.id) {
-      // 		const indexA = topicIndexees.indexOf(a.id);
-      // 		const indexB = topicIndexees.indexOf(b.id);
 
-      // 		if (indexA > indexB) return 1;
-      // 		if (indexA == indexB) return 0;
-      // 		if (indexA < indexB) return -1;
-      // 	}
-      // 	return 0;
-      // });
       return sectionData;
     })
   )
@@ -262,16 +234,6 @@ export async function getDetailedCourse(course: string) {
 
   const topicIndexes = Object.values(result.sections);
   result.sections = sortData(sectionsData, topicIndexes);
-  console.log(topicIndexes);
+
   return result;
 }
-
-// module.exports = {
-//   readCourse,
-//   readChapter,
-//   readChapterMd,
-//   readAllChapters,
-//   readAllCourses,
-//   readAllSections,
-//   getDetailedCourse,
-// };

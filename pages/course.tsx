@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import clsx from "clsx";
 import { CourseCard } from "@/src/components";
 import { CourseType } from "@/src/type";
 
@@ -45,12 +46,10 @@ export default function CourseMaterial() {
   );
 
   const distributedCourses = useMemo<CourseType[][]>(() => {
-    const columns = 3;
-
     const result = [];
 
-    for (let i = 0; i < courses.length; i += columns) {
-      result.push(courses.slice(i, i + columns));
+    for (let i = 0; i < courses.length; i += 3) {
+      result.push(courses.slice(i, i + 3));
     }
 
     return result;
@@ -62,7 +61,10 @@ export default function CourseMaterial() {
         {distributedCourses.map((row, idx) => (
           <div
             key={`Course-${idx}`}
-            className="flex justify-center gap-10 mb-10"
+            className={clsx(
+              "flex justify-center gap-10",
+              idx !== distributedCourses.length - 1 && "mb-10"
+            )}
           >
             {row.map((course) => (
               <CourseCard key={course.id} course={course} />
