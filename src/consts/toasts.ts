@@ -1,9 +1,9 @@
 import { ToastType } from "../type";
 
-export const TOAST_PHRASE: Record<ToastPhraseType, ToastType> = {
+export const TOAST_PHRASE: Record<ToastPhraseType, Partial<ToastType>> = {
   courseMaterialPracticeAnsweredCorrect: {
     variant: "success",
-    message: "Practice solved.",
+    message: "Correct answer!",
   },
   courseMaterialPracticeAnsweredIncorrect: {
     variant: "warning",

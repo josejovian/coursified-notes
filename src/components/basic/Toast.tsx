@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BsX } from "react-icons/bs";
 import { Icon } from "./Icon";
+import { TOAST_PHRASE } from "@/src/consts";
 
 interface ToastProps {
   toast: ToastActionType;
@@ -15,13 +16,24 @@ export function Toast(props: ToastProps) {
   const toastRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>();
 
-  const propsWithVariant: ToastProps = {
-    ...props,
-    toast: {
-      ...props.toast,
-      ...(props.toast.variant ? TOAST_VARIANT_CLASS[props.toast.variant] : {}),
-    },
-  };
+  const propsWithVariant: ToastProps = useMemo(() => {
+    const phraseProps = props.toast.phrase
+      ? TOAST_PHRASE[props.toast.phrase]
+      : {};
+
+    const variant = props.toast.variant || phraseProps.variant;
+
+    const variantProps = variant ? TOAST_VARIANT_CLASS[variant] : {};
+
+    return {
+      ...props,
+      toast: {
+        ...props.toast,
+        ...variantProps,
+        ...phraseProps,
+      },
+    };
+  }, [props]);
 
   const { toast, handleDeleteToast } = propsWithVariant;
 

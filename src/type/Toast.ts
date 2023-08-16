@@ -11,6 +11,7 @@ export interface ToastBaseType {
 
 export interface ToastUnspecifiedType {
   message: string;
+  phrase: never;
 }
 
 export interface ToastSpecifiedType {

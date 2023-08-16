@@ -57,7 +57,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <div
         className="fixed bottom-16 left-1/2 mx-auto z-50 flex flex-col-reverse"
         style={{
-          transform: "translate(50%)",
+          transform: "translate(-50%)",
         }}
       >
         {toasts
