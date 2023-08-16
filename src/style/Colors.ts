@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ButtonVariantType } from "./Variants";
+import { ButtonVariantType } from "./variants";
 
 export const COLORS = [
   "primary",

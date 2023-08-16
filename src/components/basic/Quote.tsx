@@ -9,16 +9,16 @@ import {
 import {
   ColorType,
   BLOCKQUOTE_COLOR_CLASS,
-  BLOCKQUOTE_PRESET_CLASS,
-  BlockquotePresetType,
+  BLOCKQUOTE_VARIANT_CLASS,
 } from "@/src/style";
+import { BlockquoteVariantType } from "@/src/style/variants";
 
 export interface BaseQuoteProps {
   className?: string;
   left?: ReactNode;
   right?: ReactNode;
   color?: ColorType;
-  preset?: BlockquotePresetType;
+  variant?: BlockquoteVariantType;
 }
 
 export interface QuoteProps
@@ -31,13 +31,13 @@ export interface QuoteProps
   left?: ReactNode;
   right?: ReactNode;
   color?: ColorType;
-  preset?: BlockquotePresetType;
+  variant?: BlockquoteVariantType;
 }
 
 export function Blockquote(props: QuoteProps) {
-  const propsWithPreset = {
+  const propsWithVariant = {
     ...props,
-    ...(props.preset ? BLOCKQUOTE_PRESET_CLASS[props.preset] : {}),
+    ...(props.variant ? BLOCKQUOTE_VARIANT_CLASS[props.variant] : {}),
   };
 
   const {
@@ -47,7 +47,7 @@ export function Blockquote(props: QuoteProps) {
     className,
     color = "primary",
     ...rest
-  } = propsWithPreset;
+  } = propsWithVariant;
 
   const renderContent = useMemo(() => {
     return (

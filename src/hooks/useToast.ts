@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import { ToastType } from "../type";
 import { ToastContext } from "../contexts/ContextWrapper";
 
@@ -22,5 +22,10 @@ export function useToast() {
     [setToasts]
   );
 
-  return addToast;
+  return useMemo(
+    () => ({
+      addToast,
+    }),
+    [addToast]
+  );
 }

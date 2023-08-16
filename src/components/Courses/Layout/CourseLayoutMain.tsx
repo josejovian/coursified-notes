@@ -38,7 +38,7 @@ import {
 } from "@/src/utils";
 import { Blockquote, Input, Loader, Paragraph } from "@/src/components";
 import { useRouter } from "next/router";
-import { BLOCKQUOTE_PRESETS, COLORS } from "@/src/style";
+import { BLOCKQUOTE_VARIANTS, COLORS } from "@/src/style";
 import { useToast } from "@/src/hooks";
 import { MatchBox } from "../Entity/Match";
 
@@ -117,24 +117,20 @@ export function CourseLayoutMain({
 
   const Content = useMemo(() => getMDXComponent(markdown), [markdown]);
 
-  const addToast = useToast();
+  const { addToast } = useToast();
 
   const hanldeShowAnswerFeedback = useCallback(() => {
     if (!checking || !submitted) return;
 
     if (solved === 1) {
       addToast({
-        title: "Correct!",
-        message: "You answered all questions correctly.",
-        preset: "success",
+        phrase: "courseMaterialPracticeAnsweredCorrect",
       });
       return;
     }
 
     addToast({
-      title: "Incorrect!",
-      message: "At least one answer is incorrect.",
-      preset: "warning",
+      phrase: "courseMaterialPracticeAnsweredIncorrect",
     });
   }, [addToast, checking, solved, submitted]);
 
@@ -791,14 +787,14 @@ export function CourseLayoutMain({
 
       let quoteProps = {};
 
-      const presets = BLOCKQUOTE_PRESETS.filter((c) =>
+      const variants = BLOCKQUOTE_VARIANTS.filter((c) =>
         handleCheckForSpecialBlockquote(children, c)
       );
 
-      if (presets.length === 1) {
+      if (variants.length === 1) {
         quoteProps = {
-          className: presets[0] === "explanation" && !solved && "hidden",
-          preset: presets[0],
+          className: variants[0] === "explanation" && !solved && "hidden",
+          variant: variants[0],
         };
       }
 
@@ -932,21 +928,21 @@ export function CourseLayoutMain({
               Explanation: ({ children }) => (
                 <>
                   {solved === 1 && (
-                    <Blockquote preset="explanation">{children}</Blockquote>
+                    <Blockquote variant="explanation">{children}</Blockquote>
                   )}
                 </>
               ),
               Formula: ({ children }) => (
-                <Blockquote preset="formula">{children}</Blockquote>
+                <Blockquote variant="formula">{children}</Blockquote>
               ),
               Example: ({ children }) => (
-                <Blockquote preset="example">
+                <Blockquote variant="example">
                   <Paragraph weight="bold">Example</Paragraph>
                   {children}
                 </Blockquote>
               ),
               Theorem: ({ children }) => (
-                <Blockquote preset="theorem">
+                <Blockquote variant="theorem">
                   <Paragraph weight="bold">Theorem</Paragraph>
                   {children}
                 </Blockquote>

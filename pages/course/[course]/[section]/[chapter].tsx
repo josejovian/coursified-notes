@@ -63,7 +63,7 @@ const CourseMaterial = ({
   const [checking, setChecking] = stateChecking;
   const setSubmmited = stateSubmitted[1];
 
-  const addToast = useToast();
+  const { addToast } = useToast();
 
   const courseDetail: CourseType = useMemo(
     () => JSON.parse(rawCourseDetail) as CourseType,
@@ -246,14 +246,7 @@ const CourseMaterial = ({
           <Button
             size="l"
             onClick={() => {
-              // handleNextPage();
-              console.log("hahaha");
-              addToast({
-                preset: "success",
-                title: "hahaha",
-                message: new Date().toLocaleTimeString(),
-                duration: 5,
-              });
+              handleNextPage();
             }}
             disabled={trueLoading}
           >
@@ -303,7 +296,7 @@ const CourseMaterial = ({
       checking,
       answer,
       accept,
-      addToast,
+      handleNextPage,
       setSubmmited,
       setSolved,
       handleCheckAnswer,

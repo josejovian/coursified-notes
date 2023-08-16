@@ -1,5 +1,10 @@
 import { Toast } from "@/src/components";
-import { ScreenSizeCategory, ScreenSizeType, ToastType } from "@/src/type";
+import {
+  ScreenSizeCategory,
+  ScreenSizeType,
+  ToastActionType,
+  ToastType,
+} from "@/src/type";
 import { render } from "katex";
 import type { AppProps } from "next/app";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -7,7 +12,7 @@ import "../styles/globals.css";
 import { ContextWrapper } from "@/src/contexts";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [toasts, setToasts] = useState<ToastType[]>([]);
+  const [toasts, setToasts] = useState<ToastActionType[]>([]);
 
   const [screen, setScreen] = useState<ScreenSizeType>({
     width: 0,
@@ -20,7 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
     const toast = toasts.at(-1);
     if (toast && !toast.standby) {
       const { id } = toast;
-      setToasts((prev: ToastType[]) =>
+      setToasts((prev: ToastActionType[]) =>
         prev.map((x) =>
           x.id === id
             ? {
@@ -33,7 +38,7 @@ export default function App({ Component, pageProps }: AppProps) {
     } else if (toast && !toast.dead) {
       const { id, duration = 10 } = toast;
       setTimeout(() => {
-        setToasts((prev: ToastType[]) =>
+        setToasts((prev: ToastActionType[]) =>
           prev.map((x) =>
             x.id === id
               ? {
@@ -60,7 +65,7 @@ export default function App({ Component, pageProps }: AppProps) {
           .map((toast, idx) => (
             <Toast
               key={toast.id}
-              {...toast}
+              toast={toast}
               handleDeleteToast={() => {
                 setToasts((prev) => {
                   return prev.map((x) =>
@@ -83,7 +88,7 @@ export default function App({ Component, pageProps }: AppProps) {
     toasts.map((toast) => {
       if (toast && toast.dead) {
         setTimeout(() => {
-          setToasts((prev: ToastType[]) =>
+          setToasts((prev: ToastActionType[]) =>
             prev.filter((x) => x.id !== toast.id)
           );
         }, 800);

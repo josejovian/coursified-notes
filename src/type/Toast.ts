@@ -1,14 +1,31 @@
-import { ColorType, ToastPresetType } from "../style";
+import { ToastPhraseType } from "../consts";
+import { ColorType, ToastVariantType } from "../style";
 import { IconType } from "react-icons";
 
-export interface ToastType {
-  id?: string;
+export interface ToastBaseType {
   title?: string;
-  message: string;
   color?: ColorType;
   icon?: IconType;
-  preset?: ToastPresetType;
+  variant?: ToastVariantType;
+}
+
+export interface ToastUnspecifiedType {
+  message: string;
+}
+
+export interface ToastSpecifiedType {
+  message?: string;
+  phrase: ToastPhraseType;
+}
+
+export type ToastType = ToastBaseType &
+  (ToastUnspecifiedType | ToastSpecifiedType);
+
+export interface ToastActionBaseType {
+  id?: string;
   standby?: boolean;
   dead?: boolean;
   duration?: number;
 }
+
+export type ToastActionType = ToastActionBaseType & ToastType;

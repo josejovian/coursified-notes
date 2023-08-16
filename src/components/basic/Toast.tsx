@@ -1,11 +1,12 @@
-import { TOAST_COLOR_CLASS, TOAST_PRESET_CLASS } from "@/src/style";
-import { ToastType } from "@/src/type";
+import { TOAST_COLOR_CLASS, TOAST_VARIANT_CLASS } from "@/src/style";
+import { ToastActionType, ToastType } from "@/src/type";
 import clsx from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BsX } from "react-icons/bs";
 import { Icon } from "./Icon";
 
-interface ToastProps extends ToastType {
+interface ToastProps {
+  toast: ToastActionType;
   handleDeleteToast: () => void;
   noBottomGap?: boolean;
 }
@@ -14,20 +15,17 @@ export function Toast(props: ToastProps) {
   const toastRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>();
 
-  const propsWithPreset = {
+  const propsWithVariant: ToastProps = {
     ...props,
-    ...(props.preset ? TOAST_PRESET_CLASS[props.preset] : {}),
+    toast: {
+      ...props.toast,
+      ...(props.toast.variant ? TOAST_VARIANT_CLASS[props.toast.variant] : {}),
+    },
   };
 
-  const {
-    icon,
-    title,
-    message,
-    color = "secondary",
-    handleDeleteToast,
-    dead,
-    standby,
-  } = propsWithPreset;
+  const { toast, handleDeleteToast } = propsWithVariant;
+
+  const { icon, message, color = "secondary", dead, standby } = toast;
 
   const renderToast = useMemo(
     () => (
