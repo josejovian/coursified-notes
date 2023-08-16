@@ -55,7 +55,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const renderToasts = useMemo(() => {
     return (
       <div
-        className="fixed bottom-16 left-1/2 mx-auto z-50 flex flex-col-reverse"
+        className="fixed bottom-16 left-1/2 mx-auto z-50 flex flex-col-reverse items-center justify-center"
         style={{
           transform: "translate(-50%)",
         }}
