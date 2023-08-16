@@ -13,15 +13,13 @@ interface UseProgressProps {
 }
 
 export function useProgress({ id, sections }: UseProgressProps) {
+  const [update, setUpdate] = useState(0);
   const [sectionData, setSectionData] = useState<SectionType[]>([]);
 
-  const sectionProgresses = useMemo(
-    () => checkCourseProgress(id, sections),
-    [id, sections]
-  );
+  const handleSetSectionData = useCallback(() => {
+    const sectionProgresses = checkCourseProgress(id, sections);
 
-  const completeSections = useMemo(
-    () =>
+    setSectionData(
       sections.map((section: SectionType, index: number) => ({
         ...section,
         chapters: section.chapters.map((chapter, index2: number) => {
@@ -32,13 +30,20 @@ export function useProgress({ id, sections }: UseProgressProps) {
             percentage,
           };
         }),
-      })),
-    [sectionProgresses, sections]
-  );
+      }))
+    );
+  }, [id, sections]);
+
+  const handleUpdateData = useCallback(() => {
+    setUpdate(new Date().getTime());
+  }, []);
 
   useEffect(() => {
-    setSectionData(completeSections);
-  }, [completeSections]);
+    handleSetSectionData();
+  }, [update, handleSetSectionData]);
 
-  return sectionData;
+  return {
+    sectionData,
+    updateData: handleUpdateData,
+  };
 }

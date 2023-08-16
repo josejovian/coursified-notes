@@ -43,8 +43,6 @@ export function CourseLayoutSide({
 
   const { id, title, sections, description } = courseDetail;
 
-  const sectionData = useProgress({ id, sections });
-
   useEffect(() => {
     if (headerWrapperRef.current && textWrapperRef.current) {
       headerWrapperRef.current.style.height = `${textWrapperRef.current.offsetHeight}px`;
@@ -92,17 +90,14 @@ export function CourseLayoutSide({
     () => (
       <div className="!h-full overflow-y-auto">
         <CourseJourney
-          course={{
-            ...courseDetail,
-            sections: sectionData,
-          }}
+          course={courseDetail}
           chapterAddress={chapterAddress}
           noBorder
           noPadding
         />
       </div>
     ),
-    [chapterAddress, courseDetail, sectionData]
+    [chapterAddress, courseDetail]
   );
 
   const renderSideToggleButton = useMemo(

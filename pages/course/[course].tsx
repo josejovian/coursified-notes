@@ -27,7 +27,7 @@ const Course = ({ details }: CourseProps) => {
     return "calc(100% - 4rem)";
   }, [width]);
 
-  const sectionData = useProgress({ id, sections });
+  const { sectionData } = useProgress({ id, sections });
 
   const renderCourseJourney = useMemo(
     () => (

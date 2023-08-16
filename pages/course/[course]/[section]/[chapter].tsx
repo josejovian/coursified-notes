@@ -28,7 +28,7 @@ import {
   getDetailedCourse,
   readChapterMd,
 } from "@/src/lib/mdx";
-import { useToast } from "@/src/hooks";
+import { useProgress, useToast } from "@/src/hooks";
 
 interface CourseMaterialProps {
   markdown: any[];
@@ -69,6 +69,22 @@ const CourseMaterial = ({
     () => JSON.parse(rawCourseDetail) as CourseType,
     [rawCourseDetail]
   );
+
+  const { id, sections } = courseDetail;
+
+  const { sectionData, updateData } = useProgress({ id, sections });
+
+  const courseDetailWithProgress: CourseType = useMemo(
+    () => ({
+      ...courseDetail,
+      sections: sectionData,
+    }),
+    [courseDetail, sectionData]
+  );
+
+  useEffect(() => {
+    console.log(sectionData);
+  }, [sectionData]);
 
   const chapterContent = useMemo(() => markdown[page], [markdown, page]);
 
@@ -178,7 +194,8 @@ const CourseMaterial = ({
 
   useEffect(() => {
     setMaxPage(markdown.length);
-  }, [markdown]);
+    updateData();
+  }, [markdown, updateData]);
 
   const handleCleanUpStates = useCallback(() => {
     setAccept({});
@@ -355,12 +372,12 @@ const CourseMaterial = ({
   const renderCourseContents = useMemo(
     () => (
       <CourseLayoutSide
-        courseDetail={courseDetail}
+        courseDetail={courseDetailWithProgress}
         chapterAddress={chapterAddress}
         trueLoading={trueLoading}
       />
     ),
-    [chapterAddress, courseDetail, trueLoading]
+    [chapterAddress, courseDetailWithProgress, trueLoading]
   );
 
   useEffect(() => {
