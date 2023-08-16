@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { CSSProperties, HTMLProps, ReactNode, useEffect, useMemo } from "react";
 
 interface ParagraphProps {
-  as?: "span" | "p" | "h1" | "h2" | "h3";
+  as?: "span" | "p" | "h1" | "h2" | "h3" | "a";
   weight?: FontWeight;
   size?: FontSize;
   color?: FontColor;
@@ -41,6 +41,8 @@ export function Paragraph({
 
   const render = useMemo(() => {
     switch (as) {
+      case "a":
+        return <a {...props} />;
       case "span":
         return <span {...props} />;
       case "p":

@@ -1,10 +1,14 @@
 import { useMemo } from "react";
 import { CourseJourney, Paragraph } from "@/src/components";
 import { CourseType } from "@/src/type";
-import { useProgress } from "@/src/hooks";
+import { useProgress, useScreen } from "@/src/hooks";
 import { readAllCourses, getDetailedCourse } from "@/src/lib/mdx";
 import Image from "next/image";
 import clsx from "clsx";
+import Link from "next/link";
+import { Icon } from "@/src/components/Basic/Icon";
+import { BsChevronRight } from "react-icons/bs";
+import { MdChevronRight } from "react-icons/md";
 
 interface CourseProps {
   details: string;
@@ -14,6 +18,14 @@ const Course = ({ details }: CourseProps) => {
   const course = useMemo<CourseType>(() => JSON.parse(details), [details]);
 
   const { id, title, description, sections = [] } = course;
+
+  const { width } = useScreen();
+
+  const mainContentWidth = useMemo(() => {
+    if (width >= 1280) return "1024px";
+    if (width >= 800) return "720px";
+    return "calc(100% - 4rem)";
+  }, [width]);
 
   const sectionData = useProgress({ id, sections });
 
@@ -39,11 +51,24 @@ const Course = ({ details }: CourseProps) => {
             "mx-auto z-10"
           )}
           style={{
-            width: "1024px",
+            width: mainContentWidth,
             left: "50%",
             transform: `translate(-50%, 0%)`,
           }}
         >
+          <span className="flex gap-2">
+            <Link href="/course/" legacyBehavior>
+              <a>
+                <Paragraph weight="bold" color="primary-2">
+                  Courses
+                </Paragraph>
+              </a>
+            </Link>
+            <Icon className="text-secondary-1" IconComponent={MdChevronRight} />
+            <Paragraph color="secondary-1" as="span">
+              {title}
+            </Paragraph>
+          </span>
           <Paragraph as="h1" size="xl" weight="bold" color="secondary-1">
             {title}
           </Paragraph>
@@ -56,20 +81,20 @@ const Course = ({ details }: CourseProps) => {
         </div>
         <Image
           src="/calculus.jpg"
-          width="1920"
-          height="512"
+          width={width}
+          height="320"
           className="absolute top-0 left-0 object-none object-center opacity-20"
           alt="Course Banner"
         />
       </header>
     ),
-    [description, title]
+    [description, mainContentWidth, title, width]
   );
 
   return (
     <main>
       {renderCourseBanner}
-      <article className="mx-auto py-16" style={{ width: "1024px" }}>
+      <article className="mx-auto py-16" style={{ width: mainContentWidth }}>
         <Paragraph as="h2" size="l-alt" weight="bold" className="mb-8">
           Contents
         </Paragraph>

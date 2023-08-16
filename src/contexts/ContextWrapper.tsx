@@ -10,7 +10,7 @@ export const ScreenContext = createContext(SCREEN_CONTEXT_DEFAULT);
 
 export const ToastContext = createContext<
   Dispatch<SetStateAction<ToastType[]>>
->(() => {});
+>(() => []);
 
 interface ContextWrapperProps {
   children: ReactNode;

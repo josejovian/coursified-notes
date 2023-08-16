@@ -62,9 +62,13 @@ export function CourseLayoutSide({
           ref={textWrapperRef}
           className="absolute top-0 p-8 flex flex-col gap-4 z-10"
         >
-          <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
-            {title}
-          </Paragraph>
+          <Link href={`/course/${id}`} legacyBehavior>
+            <a>
+              <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
+                {title}
+              </Paragraph>
+            </a>
+          </Link>
           <Paragraph as="p" color="secondary-1">
             {description}
           </Paragraph>
@@ -81,7 +85,7 @@ export function CourseLayoutSide({
         />
       </div>
     ),
-    [description, title]
+    [description, id, title]
   );
 
   const renderCourseContents = useMemo(

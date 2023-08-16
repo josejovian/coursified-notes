@@ -5,25 +5,26 @@ import Link from "next/link";
 
 interface CourseCardProps {
   course: CourseType;
+  width?: number;
 }
 
-export function CourseCard({ course }: CourseCardProps) {
+export function CourseCard({ course, width = 240 }: CourseCardProps) {
   const { id, title, thumbnail } = course;
 
   return (
     <Link href={`/course/${id}`} legacyBehavior>
       <a className="CourseCard_link focus:outline-0">
-        <article className="CourseCard flex flex-col w-60">
+        <article className="CourseCard flex flex-col">
           {thumbnail && (
             <div
-              className="bg-black border border-zinc-400 overflow-hidden"
-              style={{ height: "135px" }}
+              className="bg-black border border-zinc-400 aspect-video overflow-hidden"
+              style={{ width, aspectRatio: "16 / 9" }}
             >
               <Image
                 className="transition-opacity"
                 src={thumbnail}
-                width={240}
-                height={135}
+                width={width}
+                height={(width * 9) / 16}
                 alt="Course Thumbnail"
               />
             </div>

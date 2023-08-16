@@ -28,6 +28,7 @@ import {
   getDetailedCourse,
   readChapterMd,
 } from "@/src/lib/mdx";
+import { useToast } from "@/src/hooks";
 
 interface CourseMaterialProps {
   markdown: any[];
@@ -50,7 +51,7 @@ const CourseMaterial = ({
   const stateLoading = useState(true);
   const stateSwapChapters = useState(false);
   const stateSwapPages = useState(false);
-  const [swapPages, setSwapPages] = stateSwapPages;
+  const swapPages = stateSwapPages[0];
   const [loading, setLoading] = stateLoading;
   const [swapChapters, setSwapChapters] = stateSwapChapters;
   const stateAnswer = useState<Partial<AnswerType>>({});
@@ -60,23 +61,14 @@ const CourseMaterial = ({
   const stateSubmitted = useState(false);
   const stateChecking = useState(false);
   const [checking, setChecking] = stateChecking;
-  const [submitted, setSubmmited] = stateSubmitted;
-  const [initialized, setInitialized] = useState(false);
+  const setSubmmited = stateSubmitted[1];
 
-  const answerInputBoxParentElement = useRef<
-    { parentElement: HTMLElement; string: string }[]
-  >([]);
-  const matchParentElement = useRef<
-    { parentElement: HTMLElement; pair: [string, string]; id: string }[]
-  >([]);
-  const [errors, setErrors] = useState<any[]>([]);
+  const addToast = useToast();
 
   const courseDetail: CourseType = useMemo(
     () => JSON.parse(rawCourseDetail) as CourseType,
     [rawCourseDetail]
   );
-
-  const markdownContents = useRef("");
 
   const chapterContent = useMemo(() => markdown[page], [markdown, page]);
 
@@ -92,6 +84,7 @@ const CourseMaterial = ({
     }),
     [page, chapterAddress]
   );
+
   const addresses = useMemo(
     () => ({
       read: getSpecificChapterAddress(chapterBaseAddress, "read"),
@@ -99,6 +92,7 @@ const CourseMaterial = ({
     }),
     [chapterBaseAddress]
   );
+
   const nextDestination = useMemo(() => {
     const { sections } = courseDetail;
     let nextAddress: ChapterAddressType = chapterAddress;
@@ -241,7 +235,7 @@ const CourseMaterial = ({
           color="secondary"
           size="l"
           onClick={handlePreviousPage}
-          disabled={page <= 0}
+          disabled={page <= 0 || trueLoading}
         >
           Back
         </Button>
@@ -249,7 +243,20 @@ const CourseMaterial = ({
           {page + 1} / {maxPage}
         </Paragraph>
         {solved !== 0 ? (
-          <Button size="l" onClick={handleNextPage}>
+          <Button
+            size="l"
+            onClick={() => {
+              // handleNextPage();
+              console.log("hahaha");
+              addToast({
+                preset: "success",
+                title: "hahaha",
+                message: new Date().toLocaleTimeString(),
+                duration: 5,
+              });
+            }}
+            disabled={trueLoading}
+          >
             Next
           </Button>
         ) : (
@@ -276,6 +283,7 @@ const CourseMaterial = ({
               }
             }}
             disabled={
+              trueLoading ||
               checking ||
               Object.values(answer).length !== Object.values(accept).length ||
               Object.values(answer).filter((x) => x === "").length > 1
@@ -289,12 +297,13 @@ const CourseMaterial = ({
     [
       handlePreviousPage,
       page,
+      trueLoading,
       maxPage,
       solved,
-      handleNextPage,
       checking,
       answer,
       accept,
+      addToast,
       setSubmmited,
       setSolved,
       handleCheckAnswer,
@@ -334,14 +343,18 @@ const CourseMaterial = ({
     ]
   );
 
-  const handleRouteChangeStart = useCallback(() => {
-    console.log("Start");
-    setSwapChapters(true);
-    handleCleanUpStates();
-  }, [handleCleanUpStates, setSwapChapters]);
+  const handleRouteChangeStart = useCallback(
+    (next: string) => {
+      console.log("Next: ", next);
+      if (next === `/course/${chapterAddress.course}`) return;
+
+      setSwapChapters(true);
+      handleCleanUpStates();
+    },
+    [chapterAddress.course, handleCleanUpStates, setSwapChapters]
+  );
 
   const handleRouteChangeComplete = useCallback(() => {
-    console.log("Complete");
     setSwapChapters(false);
     handleCleanUpStates();
   }, [handleCleanUpStates, setSwapChapters]);

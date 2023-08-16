@@ -1,6 +1,5 @@
 import { Toast } from "@/src/components";
 import { ScreenSizeCategory, ScreenSizeType, ToastType } from "@/src/type";
-import { ToastContext } from "@/src/utils";
 import { render } from "katex";
 import type { AppProps } from "next/app";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -19,7 +18,19 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const handleProcessNewToast = useCallback(() => {
     const toast = toasts.at(-1);
-    if (toast && !toast.dead) {
+    if (toast && !toast.standby) {
+      const { id } = toast;
+      setToasts((prev: ToastType[]) =>
+        prev.map((x) =>
+          x.id === id
+            ? {
+                ...x,
+                standby: true,
+              }
+            : x
+        )
+      );
+    } else if (toast && !toast.dead) {
       const { id, duration = 10 } = toast;
       setTimeout(() => {
         setToasts((prev: ToastType[]) =>
@@ -32,32 +43,38 @@ export default function App({ Component, pageProps }: AppProps) {
               : x
           )
         );
-      }, duration * 1000);
+      }, duration * 1000 + 500);
     }
   }, [toasts]);
 
   const renderToasts = useMemo(() => {
     return (
-      <div className="fixed bottom-16 right-16 z-50 flex flex-col-reverse gap-4">
-        {toasts.map((toast) => (
-          <Toast
-            key={toast.id}
-            {...toast}
-            // title={toast.id}
-            handleDeleteToast={() => {
-              setToasts((prev) => {
-                return prev.map((x) =>
-                  x.id === toast.id
-                    ? {
-                        ...x,
-                        dead: true,
-                      }
-                    : x
-                );
-              });
-            }}
-          />
-        ))}
+      <div
+        className="fixed bottom-16 left-1/2 mx-auto z-50 flex flex-col-reverse"
+        style={{
+          transform: "translate(50%)",
+        }}
+      >
+        {toasts
+          // .filter((toast) => !toast.dead)
+          .map((toast, idx) => (
+            <Toast
+              key={toast.id}
+              {...toast}
+              handleDeleteToast={() => {
+                setToasts((prev) => {
+                  return prev.map((x) =>
+                    x.id === toast.id
+                      ? {
+                          ...x,
+                          dead: true,
+                        }
+                      : x
+                  );
+                });
+              }}
+            />
+          ))}
       </div>
     );
   }, [toasts]);

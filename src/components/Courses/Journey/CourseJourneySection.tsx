@@ -111,5 +111,5 @@ export function CourseJourneySection({
   );
 }
 
-const ROW_STYLE = clsx(["py-4 pl-12 pr-16"]);
-const ROW_STYLE_2 = clsx(["py-4 pl-8 pr-12"]);
+const ROW_STYLE = clsx(["py-4 pl-4 pr-8 md:pl-12 md:pr-16"]);
+const ROW_STYLE_2 = clsx(["py-4 pl-4 pr-6 md:pl-8 md:pr-12"]);

@@ -1,13 +1,14 @@
-import { ReactNode } from "react";
 import { ColorType, ToastPresetType } from "../style";
+import { IconType } from "react-icons";
 
 export interface ToastType {
-	id?: string;
-	title?: string;
-	message: string;
-	color?: ColorType;
-	icon?: ReactNode;
-	preset?: ToastPresetType;
-	dead?: boolean;
-	duration?: number;
+  id?: string;
+  title?: string;
+  message: string;
+  color?: ColorType;
+  icon?: IconType;
+  preset?: ToastPresetType;
+  standby?: boolean;
+  dead?: boolean;
+  duration?: number;
 }

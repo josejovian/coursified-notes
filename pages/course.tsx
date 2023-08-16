@@ -2,8 +2,16 @@ import React, { useMemo } from "react";
 import clsx from "clsx";
 import { CourseCard } from "@/src/components";
 import { CourseType } from "@/src/type";
+import { useScreen } from "@/src/hooks";
 
 export default function CourseMaterial() {
+  const { width } = useScreen();
+
+  const columns = useMemo(() => {
+    if (width >= 1280) return 3;
+    return 2;
+  }, [width]);
+
   const courses = useMemo<CourseType[]>(
     () => [
       {
@@ -48,12 +56,12 @@ export default function CourseMaterial() {
   const distributedCourses = useMemo<CourseType[][]>(() => {
     const result = [];
 
-    for (let i = 0; i < courses.length; i += 3) {
-      result.push(courses.slice(i, i + 3));
+    for (let i = 0; i < courses.length; i += columns) {
+      result.push(courses.slice(i, i + columns));
     }
 
     return result;
-  }, [courses]);
+  }, [columns, courses]);
 
   const renderGrid = useMemo(
     () => (
@@ -62,25 +70,29 @@ export default function CourseMaterial() {
           <div
             key={`Course-${idx}`}
             className={clsx(
-              "flex justify-center gap-10",
+              "flex justify-center",
               idx !== distributedCourses.length - 1 && "mb-10"
             )}
+            style={{
+              gap: width > 720 ? "2rem" : "1rem",
+            }}
           >
             {row.map((course) => (
-              <CourseCard key={course.id} course={course} />
+              <CourseCard
+                key={course.id}
+                course={course}
+                width={width > 720 ? 240 : 160}
+              />
             ))}
           </div>
         ))}
       </section>
     ),
-    [distributedCourses]
+    [distributedCourses, width]
   );
 
   return (
-    <main
-      className="m-auto h-full flex items-center justify-center"
-      style={{ width: "1024px" }}
-    >
+    <main className="m-auto h-full flex items-center justify-center">
       {renderGrid}
     </main>
   );
