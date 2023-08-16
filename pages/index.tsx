@@ -1,9 +1,99 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
+import React, { useMemo } from "react";
+import clsx from "clsx";
+import { CourseCard } from "@/src/components";
+import { CourseType } from "@/src/type";
+import { useScreen } from "@/src/hooks";
 
-const Home: NextPage = () => {
-	return <div className="p-8 flex flex-col gap-8"></div>;
-};
+export default function CourseList() {
+  const { width } = useScreen();
 
-export default Home;
+  const columns = useMemo(() => {
+    if (width >= 1280) return 3;
+    return 2;
+  }, [width]);
+
+  const courses = useMemo<CourseType[]>(
+    () => [
+      {
+        id: "calculus",
+        title: "Calculus",
+        description: "",
+        thumbnail: "/calculus.jpg",
+        sections: [],
+      },
+      {
+        id: "calculus-2",
+        title: "Calculus II",
+        description: "",
+        thumbnail: "/calculus-2.jpg",
+        sections: [],
+      },
+      {
+        id: "linear-algebra",
+        title: "Linear Algebra",
+        description: "",
+        thumbnail: "/linear-algebra.jpg",
+        sections: [],
+      },
+      {
+        id: "math",
+        title: "Matematika SMA",
+        description: "",
+        thumbnail: "/math.jpg",
+        sections: [],
+      },
+      {
+        id: "physics",
+        title: "Fisika SMA",
+        description: "",
+        thumbnail: "/physics.jpg",
+        sections: [],
+      },
+    ],
+    []
+  );
+
+  const distributedCourses = useMemo<CourseType[][]>(() => {
+    const result = [];
+
+    for (let i = 0; i < courses.length; i += columns) {
+      result.push(courses.slice(i, i + columns));
+    }
+
+    return result;
+  }, [columns, courses]);
+
+  const renderGrid = useMemo(
+    () => (
+      <section>
+        {distributedCourses.map((row, idx) => (
+          <div
+            key={`Course-${idx}`}
+            className={clsx(
+              "flex justify-center",
+              idx !== distributedCourses.length - 1 && "mb-10"
+            )}
+            style={{
+              gap: width > 720 ? "2rem" : "1rem",
+            }}
+          >
+            {row.map((course) => (
+              <CourseCard
+                key={course.id}
+                course={course}
+                width={width > 720 ? 240 : 160}
+              />
+            ))}
+          </div>
+        ))}
+      </section>
+    ),
+    [distributedCourses, width]
+  );
+
+  return (
+    <main className="m-auto h-full flex items-center justify-center">
+      {renderGrid}
+    </main>
+  );
+}
