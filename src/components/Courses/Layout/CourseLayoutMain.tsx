@@ -87,16 +87,6 @@ export function CourseLayoutMain({
   const matchParentElement = useRef<MatchBoxElementType[]>([]);
   const [active, setActive] = useState<any>(null);
   const checking = stateChecking[0];
-  const customElementQueue = useRef<
-    Record<
-      string,
-      {
-        containerId: string;
-        element: HTMLElement;
-        props: any;
-      }
-    >
-  >({});
 
   const matchRef = useRef<
     Record<
@@ -109,9 +99,6 @@ export function CourseLayoutMain({
     >
   >({});
   const inputRef = useRef<Record<string, boolean>>({});
-  const initializeFormulaCard = useRef<"initial" | "ready" | "finish">(
-    "initial"
-  );
 
   const { practice } = addreses;
 
@@ -272,28 +259,6 @@ export function CourseLayoutMain({
     [answer, solved]
   );
 
-  const renderMatchCard = useCallback(
-    ({
-      children,
-      className,
-      ...props
-    }: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => (
-      <div
-        {...props}
-        className={clsx(
-          "Match_right flex align-self-end justify-center items-center",
-          "w-24 px-8 py-2",
-          "text-center transition-colors rounded-sm",
-          solved === 1 ? "bg-success-2" : "bg-primary-2 hover:bg-primary-3",
-          className
-        )}
-      >
-        {handleGetComponentForm(children as string)}
-      </div>
-    ),
-    [handleGetComponentForm, solved]
-  );
-
   const handleClickMatchedCard = useCallback(
     (practiceId: string) =>
       handleCheckIfAlreadyMatched(practiceId, null, handleRemoveAnswer, null),
@@ -375,6 +340,7 @@ export function CourseLayoutMain({
           practiceId={practiceId}
           active={active}
           answer={answer}
+          solved={solved}
           left={matchRef.current[practiceId].left}
           right={matchRef.current[practiceId].right}
           handleClickMatchedCard={() => handleClickMatchedCard(practiceId)}
@@ -391,6 +357,7 @@ export function CourseLayoutMain({
       handleClickMatchedCard,
       handleClickUnmatchedCard,
       handleGetComponentForm,
+      solved,
     ]
   );
 
@@ -488,63 +455,6 @@ export function CourseLayoutMain({
   useEffect(() => {
     handleRemoveUndefinedAnswers();
   }, [answer, handleRemoveUndefinedAnswers]);
-
-  // const handleMountFormula = useCallback(() => {
-  //   console.log("Execute>> ");
-
-  //   Object.entries(matchRef.current).forEach(([id, entry]) => {
-  //     const identifier = `MatchBox-${id}`;
-
-  //     const left = document.querySelector(`#${identifier} .Match_left span`);
-  //     const leftExisting = document.querySelector(
-  //       `#${identifier} .Match_left span span`
-  //     );
-  //     const right = document.querySelector(`#${identifier} .Match_right span`);
-  //     const rightExisting = document.querySelector(
-  //       `#${identifier} .Match_right span span`
-  //     );
-
-  //     console.log(left);
-
-  //     while (left && left.firstChild) {
-  //       left.removeChild(left.firstChild);
-  //     }
-
-  //     console.log(leftExisting);
-
-  //     if (left && !leftExisting) ReactDOM.render(<TeX>{entry.left}</TeX>, left);
-
-  //     while (right && right.firstChild) {
-  //       right.removeChild(right.firstChild);
-  //     }
-
-  //     if (right && !rightExisting)
-  //       ReactDOM.render(<TeX>{entry.right}</TeX>, right);
-  //   });
-  // }, []);
-
-  // const handleUnmountFormula = useCallback(() => {
-  // 	Object.entries(matchRef.current).forEach(([id, entry])=> {
-  // 		const left = document.querySelector(`#${id} .Match_left span`);
-  // 		const right = document.querySelector(`#${id} .Match_right span`);
-
-  // 		while (left && left.firstChild) {
-  // 			left.removeChild(left.firstChild);
-  // 		}
-
-  // 		ReactDOM.render(<TeX>{entry.left}</TeX>, left);
-
-  // 		while (right && right.firstChild) {
-  // 			right.removeChild(right.firstChild);
-  // 		}
-
-  // 		ReactDOM.render(<TeX>{entry.right}</TeX>, right);
-  // 	});
-  // }, []);
-
-  // useEffect(() => {
-  //   handleMountFormula();
-  // });
 
   const handleGetExistingAnswerIfAny = useCallback(() => {
     const existingAnswers = checkChapterProgress(practice);
@@ -821,39 +731,6 @@ export function CourseLayoutMain({
     handleRouteChangeStart,
   ]);
 
-  const handleTransformDivBlocks = useCallback(
-    ({ node, children, ...props }: any) => {
-      const { className, functions = "", points = "" } = props;
-
-      switch (className) {
-        case "graph":
-          const newId = `Graph_${functions}_${points}_${
-            Object.keys(customElementQueue).length
-          }_${new Date()}`;
-          const containerId = `GraphContainer_${functions}_${points}_${
-            Object.keys(customElementQueue).length
-          }_${new Date()}`;
-          customElementQueue.current[newId] = {
-            containerId,
-            element: node,
-            props: {
-              functions,
-              points,
-            },
-          };
-
-          return (
-            <div id={containerId} className="NewCustomMaterialInvoker hidden">
-              {children}
-            </div>
-          );
-      }
-
-      return <div {...props}>{children}</div>;
-    },
-    []
-  );
-
   const renderContents = useMemo(
     () => (
       <article
@@ -864,19 +741,6 @@ export function CourseLayoutMain({
           trueLoading && "hidden"
         )}
       >
-        {/* <ReactMarkdown
-          className="CourseMaterial_content"
-          // eslint-disable-next-line react/no-children-prop
-          components={{
-            div: handleTransformDivBlocks,
-            code: handlePreTransformCode,
-            blockquote: handlePreTransformBlockquote,
-          }}
-          remarkPlugins={[remarkMath, remarkGfm]}
-          rehypePlugins={[rehypeKatex, rehypeRaw]}
-        >
-          {markdown}
-        </ReactMarkdown> */}
         <div className="CourseMaterial_content">
           <Content
             components={{

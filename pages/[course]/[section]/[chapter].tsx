@@ -174,7 +174,8 @@ const CourseMaterial = ({
         return Boolean(
           exactAnswer &&
             (exactAnswer === userAnswer ||
-              String(exactAnswer) === String(userAnswer) ||
+              String(exactAnswer.replace(" ", "")) ===
+                String(userAnswer.replace(" ", "")) ||
               exactAnswer.toLowerCase() === userAnswer.toLowerCase())
         );
       })();
