@@ -12,7 +12,7 @@ export function CourseCard({ course, width = 240 }: CourseCardProps) {
   const { id, title, thumbnail } = course;
 
   return (
-    <Link href={`/course/${id}`} legacyBehavior>
+    <Link href={`/${id}`} legacyBehavior>
       <a className="CourseCard_link focus:outline-0">
         <article className="CourseCard flex flex-col">
           {thumbnail && (

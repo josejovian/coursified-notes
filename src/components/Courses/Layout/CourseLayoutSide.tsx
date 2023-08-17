@@ -60,7 +60,7 @@ export function CourseLayoutSide({
           ref={textWrapperRef}
           className="absolute top-0 p-8 flex flex-col gap-4 z-10"
         >
-          <Link href={`/course/${id}`} legacyBehavior>
+          <Link href={`/${id}`} legacyBehavior>
             <a>
               <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
                 {title}

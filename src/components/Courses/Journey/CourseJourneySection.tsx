@@ -93,9 +93,7 @@ export function CourseJourneySection({
                 onClick={() => {
                   status !== "locked" &&
                     !disabled &&
-                    router.push(
-                      `/course/${courseId}/${section.id}/${chapter.id}`
-                    );
+                    router.push(`/${courseId}/${section.id}/${chapter.id}`);
                 }}
                 className={clsx(className, noPadding ? ROW_STYLE_2 : ROW_STYLE)}
                 active={

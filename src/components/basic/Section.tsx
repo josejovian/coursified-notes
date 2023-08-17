@@ -167,7 +167,7 @@ export function Section({ caption, courseId, index, section }: SectionProps) {
             stylings={chapters.map((_, idx) => handleGetStylingForChapter(idx))}
             links={chapters.map((chapter, idx) =>
               idx === 0 || chaptersComplete[idx] || chaptersComplete[idx - 1]
-                ? `/course/${courseId}/${section.id}/${chapter.id}`
+                ? `/${courseId}/${section.id}/${chapter.id}`
                 : "#"
             )}
           />

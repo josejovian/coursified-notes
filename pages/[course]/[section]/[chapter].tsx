@@ -146,12 +146,12 @@ const CourseMaterial = ({
     });
 
     if (lastSection) {
-      return `/course/${chapterAddress.course}`;
+      return `/${chapterAddress.course}`;
     }
 
     const { section, chapter } = nextAddress;
 
-    return `/course/${chapterAddress.course}/${section}/${chapter}`;
+    return `/${chapterAddress.course}/${section}/${chapter}`;
   }, [chapterAddress, courseDetail]);
 
   const { read, practice } = addresses;
@@ -356,7 +356,7 @@ const CourseMaterial = ({
   const handleRouteChangeStart = useCallback(
     (next: string) => {
       console.log("Next: ", next);
-      if (next === `/course/${chapterAddress.course}`) return;
+      if (next === `/${chapterAddress.course}`) return;
 
       setSwapChapters(true);
       handleCleanUpStates();
@@ -406,7 +406,7 @@ const CourseMaterial = ({
 };
 
 export const getStaticPaths = async () => {
-  const {} = require("../../../../src/lib/mdx.tsx");
+  const {} = require("../../../src/lib/mdx.tsx");
   const courses: string[] = await readAllCourses();
 
   const strings = await Promise.all(

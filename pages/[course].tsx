@@ -57,7 +57,7 @@ const Course = ({ details }: CourseProps) => {
           }}
         >
           <span className="flex gap-2">
-            <Link href="/course/" legacyBehavior>
+            <Link href="/" legacyBehavior>
               <a>
                 <Paragraph weight="bold" color="primary-2">
                   Courses
