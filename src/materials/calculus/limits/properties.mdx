@@ -1,55 +1,60 @@
 # Properties of Limits
 
-> #formula# $\lim\limits_{x\rightarrow a} c = c$
+<Formula>
+$\lim\limits_{x\rightarrow a} c = c$
+</Formula>
 
 **The limit of a constant function is the constant itself.** At any point $x$, the function will be always equal to the constant, so finding the limit of this function as $x$ approaches any point would result the same, that is, the constant itself.
 
 ---
 
-> #formula# $\lim\limits_{x\rightarrow a} x = a$
+<Formula>
+$\lim\limits_{x\rightarrow a} x = a$
+</Formula>
 
 Similar to the previous one, this is self-explanatory.
 
 ---
 
-> #formula# $\lim\limits_{x\rightarrow a} c \times f(x) = c \lim\limits_{x\rightarrow a} f(x)$
+<Formula>
+$\lim\limits_{x\rightarrow a} c \times f(x) = c \lim\limits_{x\rightarrow a} f(x)$
+</Formula>
 
 The limit of a function **multiplied by a constant** is equal to the constant multiplied by the limit of a function.
 
 ---
 
-> #formula# $\lim\limits*{x\rightarrow a} \left [f(x) \pm g(x) \right] =\lim\limits*{x\rightarrow a} f(x) \pm \lim\limits\_{x\rightarrow a} g(x) $
+<Formula>
+$\lim\limits*{x\rightarrow a} \left [f(x) \pm g(x) \right] =\lim\limits*{x\rightarrow a} f(x) \pm \lim\limits\_{x\rightarrow a} g(x) $
+</Formula>
 
 The **sum or difference** of the limit of two functions is equal when **adding or subtracting** them individually.
 
 ---
 
-> #formula# $\lim\limits*{x\rightarrow a} f(x)g(x) =\lim\limits*{x\rightarrow a} f(x) \times \lim\limits\_{x\rightarrow a} g(x) $
->
-> $\lim\limits*{x\rightarrow a} \frac{f(x)}{g(x)} = \large \frac{\lim\limits*{x\rightarrow a} f(x)}{\lim\limits\_{x\rightarrow a} g(x)}, \normalsize \text{where } g(x) \neq 0 $
+<Formula>
+$\lim\limits_{x\rightarrow a} f(x)g(x) =\lim\limits_{x\rightarrow a} f(x) \times \lim\limits_{x\rightarrow a} g(x)$  
+ &nbsp;
+$\lim\limits*{x\rightarrow a} \frac{f(x)}{g(x)} = \large \frac{\lim\limits*{x\rightarrow a} f(x)}{\lim\limits\_{x\rightarrow a} g(x)}, \normalsize \text{where } g(x) \neq 0 $
+</Formula>
 
 The **product or quotient** of the limit of two functions is equal when **multiplying or dividing** them individually.
 
 ---
 
-> #formula# $\lim\limits_{x\rightarrow a} \left [ f(x) \right ]^n = \left [ \lim\limits_{x\rightarrow a} f(x) \right ]^n$
+<Formula>
+$\lim\limits_{x\rightarrow a} \left [ f(x) \right ]^n = \left [ \lim\limits_{x\rightarrow a} f(x) \right ]^n$
+</Formula>
 
 Given that $n$ is any real number, including fractions, the limit of **(the function $f$ to the power of $n$)** is equal to **(the limit of the function $f$)** to the power of $n$. Due to the previous law or property, this one should be self-explanatory.
-
----
-
-> #formula# $\lim\limits_{x\rightarrow 0} \frac{1}{|x|} = \infty$
->
-> $\lim\limits_{x\rightarrow \infty} \frac{1}{x} = 0$
-
-These are some other basic limits that may help you in calculating limits.
 
 ===
 
 # Properties of Limits: Easy Examples
 
-> #formula# **Example**  
-> Evaluate $\lim\limits_{x\rightarrow 4} \left [ 4x^2 - 4x + 1 \right ] = ...$
+<Example>
+Evaluate $\lim\limits_{x\rightarrow 4} \left [ 4x^2 - 4x + 1 \right ] = ...$
+</Example>
 
 To simplify things, we can first think of this function as a combination of three different functions, then find the limit of each function, then apply the addition or subtraction like the following.
 
@@ -63,8 +68,11 @@ $$
 
 You may have realized that it is faster to think of this as substituting $x$ into $f(x)$. However, be warned that this is not **always the case**.
 
-> #formula# **Example**  
-> Evaluate $\lim\limits_{x\rightarrow -2} \frac{x^2 - 1} {9x^2 + 6x + 3}  = ...$
+---
+
+<Example>
+Evaluate $\lim\limits_{x\rightarrow -2} \frac{x^2 - 1} {9x^2 + 6x + 3}  = ...$
+</Example>
 
 Again, by thinking of this as doing a simple algebra, substituting $x$ into the function to find the value:
 
@@ -80,8 +88,9 @@ $$
 
 # Properties of Limits: Tricky Example #1
 
-> #formula# **Example**  
-> Evaluate $\lim\limits_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1}  = ...$
+<Example>
+Evaluate $\lim\limits_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1}  = ...$
+</Example>
 
 When you plug in $x=1$ into the function, you get...
 
@@ -108,8 +117,9 @@ Now, we have learnt that **factorization** is one of the method that we can use 
 
 # Properties of Limits: Tricky Example #2
 
-> #formula# **Example**  
-> Evaluate $\lim\limits_{x\rightarrow \infty} \sqrt{x^2+6x-9}-\sqrt{x^2-8x+16}  = ...$
+<Example>
+Evaluate $\lim\limits_{x\rightarrow \infty} \sqrt{x^2+6x-9}-\sqrt{x^2-8x+16}  = ...$
+</Example>
 
 Putting $x=\infty$ will yield an indeterminate form $\infty - \infty$. However, what if there is a way for us to manipulate the equation to avoid getting indeterminate forms? Let's try **rationalizing** it.
 
@@ -135,8 +145,9 @@ We can see that once we rationalize it, we can finally avoid getting indetermina
 
 # Properties of Limits: Tricky Example #3
 
-> #formula# **Example**  
-> Evaluate $\lim\limits_{x\rightarrow 1} \frac{2x-\sqrt{x + 3}}{x - 1}  = ...$
+<Example>
+Evaluate $\lim\limits_{x\rightarrow 1} \frac{2x-\sqrt{x + 3}}{x - 1}  = ...$
+</Example>
 
 Once again, putting $x=1$ will yield $\frac{0}{0}$. However, trying to factor this directly may be not a simple task. However, let us try **rationalizing** the numerator.
 
@@ -156,9 +167,10 @@ We can see that once we rationalize the numerator, we are fortunate enough to se
 
 # Piecewise Function: An Example
 
-> #formula# **Example**  
-> Given $f(x) = \begin{cases} x + 4 & \text{ if } x < -4 \\ x^2 + 5x + 4 & \text{ if } x \geq -4  \end{cases}$  
-> Evaluate $\lim\limits_{x\rightarrow -4} f(x)$
+<Example>
+Given $f(x) = \begin{cases} x + 4 & \text{ if } x < -4 \\ x^2 + 5x + 4 & \text{ if } x \geq -4  \end{cases}$  
+Evaluate $\lim\limits_{x\rightarrow -4} f(x)$
+</Example>
 
 Remember the definition of limit? The limit from the left and right side at a point must be equal, for a function to have a limit at that point. Let's calculate the left side. Since we're approaching from the left side, it means that $x < -4$, so we are using $f(x)$ when it is $x < -4$:
 
@@ -195,52 +207,74 @@ We can also see that if one of the limits had different values, then $f(x)$ woul
 
 ===
 
-# Practice: Calculating Limits
+# **Practice:** Calculating Limits
+
+Evaluate $\lim\limits_{x\rightarrow 2} \frac{x^2-4}{x^2+3x+2}  = ...$.  
+If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
+
+<Practice id="compute-limit-basic" answer="0" />
+
+<Explanation>
+**Correct!** This requires no special trick whatsoever.
+
+$$
+\begin{align*}
+\lim_{x\rightarrow 2} \frac{x^2-4}{x^2+3x+2}&=\frac{0}{12}\\&=0
+\end{align*}
+$$
+
+</Explanation>
+
+===
+
+# **Practice:** Calculating Limits
 
 Evaluate $\lim\limits_{x\rightarrow 4} \frac{8 - \sqrt{x^3}}{\sqrt{x} - 2}  = ...$.  
 If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
 
-`[input;compute-limit-easy-1]-12`
+<Practice id="compute-limit-easy-1" answer="-12" />
 
-> #explanation# **Correct!** This is just another example of limit that we can solve with factorization. Tbe square root might get in our way, but let us create a new variable $v$, such that $v = \sqrt{x}$. Since we're converting from one to another variable, the $x$ we're approaching in the limit also changes accordingly. Even if you do not subsitute, **the result will stay the same**.
->
-> $$
-> \begin{align*}
-> \lim_{x\rightarrow 4} \frac{8 - \sqrt{x^3}}{\sqrt{x} - 2} &= \lim_{v\rightarrow 2} \frac{8 - v^3}{v - 2} \\
-> &= \lim_{v\rightarrow 2} \frac{- (v^3 - 8)}{v - 2} \\
-> &= \lim_{v\rightarrow 2} \frac{- (v - 2)(v^2 + 2v + 4)}{v - 2} \\
-> &= \lim_{v\rightarrow 2} -(v^2 + 2v + 4) \\
-> &= \lim_{v\rightarrow 2} -(2^2 + 2\times2 + 4) \\
-> &= -12 \\
-> \end{align*}
-> $$
+<Explanation>
+**Correct!** This is just another example of limit that we can solve with factorization. Tbe square root might get in our way, but let us create a new variable $v$, such that $v = \sqrt{x}$. Since we're converting from one to another variable, the $x$ we're approaching in the limit also changes accordingly. Even if you do not subsitute, **the result will stay the same**.
+
+$$
+\begin{align*}
+\lim_{x\rightarrow 4} \frac{8 - \sqrt{x^3}}{\sqrt{x} - 2} &= \lim_{v\rightarrow 2} \frac{8 - v^3}{v - 2} \\
+&= \lim_{v\rightarrow 2} \frac{- (v^3 - 8)}{v - 2} \\
+&= \lim_{v\rightarrow 2} \frac{- (v - 2)(v^2 + 2v + 4)}{v - 2} \\
+&= \lim_{v\rightarrow 2} -(v^2 + 2v + 4) \\
+&= \lim_{v\rightarrow 2} -(2^2 + 2\times2 + 4) \\
+&= -12 \\
+\end{align*}
+$$
+
+</Explanation>
 
 ===
 
-# Practice: Calculating Limits
+# **Practice:** Calculating Limits
 
 Evaluate $\lim\limits_{x\rightarrow \infty }(\sqrt{9x^2+6x-3}-3x-4) $.  
 If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
 
-`[input;compute-limit-easy-2]-3`
+<Practice id="compute-limit-easy-2" answer="-3" />
 
-> #explanation# **Correct!** This is just another example of limit that we can solve with rationalization. However, you may find this one a little bit trickier than the example because you have to manipulate $-3x-4$ part of the equation into its root form, but that is it, the steps remain the same.
->
-> $$
-> \begin{align*}
-> \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-3x-4]  &= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-(3x+4)] \\
-> &= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-\sqrt{(3x+4)^2}] \\
-> &= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-\sqrt{9x^2+24x+16}] \\
-> &= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-\sqrt{9x^2+24x+16}] \times \frac{[\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}]}{[\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}]}  \\
-> &= \lim_{x\rightarrow \infty} \frac{(9x^2+6x-3) - (9x^2+24x+16)}{\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}} \\
-> &= \lim_{x\rightarrow \infty} \frac{(-18x - 19)}{\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}} \\
-> &= \lim_{x\rightarrow \infty} \frac{(-18 - \frac{19}{x})}{\sqrt{9+\frac{6}{x}-\frac{3}{x^2}}+\sqrt{9+\frac{24}{x}+\frac{16}{x^2}}} \\
-> &= \frac{-18}{6} \\
-> &= -3 \\
-> \end{align*}
-> $$
->
-> You may find these steps a little bit repetetive, so here is a little trick:
->
-> > #formula# Given $f(x) = \sqrt{ax^2 + bx + c} - \sqrt{px^2 + qx + r}$,  
-> > then, $\lim_{x\rightarrow \infty} f(x) = \begin{cases} \infty & \text{ if } a > p \\ \frac{b-q}{2\sqrt{a}} & \text{ if } a = p \\ -\infty & \text{ if } a < p \\ \end{cases}$
+<Explanation>
+**Correct!** This is just another example of limit that we can solve with rationalization. However, you may find this one a little bit trickier than the example because you have to manipulate $-3x-4$ part of the equation into its root form, but that is it, the steps remain the same.
+
+$$
+\begin{align*}
+&\lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-3x-4]\\
+&= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-(3x+4)] \\
+&= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-\sqrt{(3x+4)^2}] \\
+&= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-\sqrt{9x^2+24x+16}] \\
+&= \lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-\sqrt{9x^2+24x+16}] \times \frac{[\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}]}{[\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}]}  \\
+&= \lim_{x\rightarrow \infty} \frac{(9x^2+6x-3) - (9x^2+24x+16)}{\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}} \\
+&= \lim_{x\rightarrow \infty} \frac{(-18x - 19)}{\sqrt{9x^2+6x-3}+\sqrt{9x^2+24x+16}} \\
+&= \lim_{x\rightarrow \infty} \frac{(-18 - \frac{19}{x})}{\sqrt{9+\frac{6}{x}-\frac{3}{x^2}}+\sqrt{9+\frac{24}{x}+\frac{16}{x^2}}} \\
+&= \frac{-18}{6} \\
+&= -3 \\
+\end{align*}
+$$
+
+</Explanation>

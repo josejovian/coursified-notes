@@ -1,0 +1,9 @@
+{
+	"title": "Function of Two or More Variables",
+	"overrideChapterTitles": {
+		"definition": "Definition",
+		"partial": "Partial Derivative",
+		"extrema": "Extrema",
+		"gradient": "Gradient"
+	}
+}

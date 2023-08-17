@@ -1,0 +1,68 @@
+{
+	"limits/definition@read": [
+		true,
+		true,
+		true,
+		true,
+		true
+	],
+	"limits/definition@practice": {
+		"estimate-limit": "5",
+		"continuity-1": "-4",
+		"continuity-2": "90",
+		"compute-limit-easy-2": "-3"
+	},
+	"limits/definition": true,
+	"limits/properties@read": [
+		true,
+		true,
+		true,
+		true,
+		true,
+		true,
+		true,
+		true,
+		true
+	],
+	"limits/properties@practice": {
+		"compute-limit-easy-1": "-12",
+		"compute-limit-easy-2": "-3",
+		"compute-limit-basic-1": "0"
+	},
+	"limits/properties": true,
+	"limits/common@read": [
+		true,
+		true,
+		true,
+		true
+	],
+	"limits/continuity@read": [
+		true,
+		true,
+		true
+	],
+	"limits/continuity@practice": {
+		"continuity-1": "-4",
+		"continuity-2": "90"
+	},
+	"limits/continuity": true,
+	"derivative/definition@practice": {
+		"continuity-1": "-4",
+		"continuity-2": "90"
+	},
+	"derivative/definition@read": [
+		true,
+		true
+	],
+	"limits/common@practice": {
+		"continuity-1": "-4",
+		"continuity-2": "90",
+		"compute-limit-easy-2": "-3",
+		"limit-log-2": "$6$",
+		"limit-trig-5": "$5$",
+		"limit-trig-3": "$4$",
+		"limit-log-1": "$3$",
+		"limit-trig-4": "$2$",
+		"limit-trig-2": "$1$"
+	}
+}

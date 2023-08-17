@@ -1,25 +1,16 @@
 # Continuity of a Function
 
-Let $f$ be a function defined on an open interval containing all values of $x$ close to $a$
-The function $f$ is continuous at $a$ if $\lim\limits_{x\rightarrow 0}f(x)=f(a)$.
-
----
-
-Suppose both $f$ and $g$ are continuous at $a$, then, the following functions are also continuous at $a$:
-
--   $f(x) \pm g(x)$
--   $f(x) \times g(x)$
--   $\frac{f(x)}{g(x)}$
--   $c . f(x)$, where $c$ is a constant
-
----
+<Theorem>
+Let $f$ be a function defined on an open interval containing all values of $x$ close to $a$. Then,  
+the function $f$ is continuous at $a$ if $\lim\limits_{x\rightarrow 0}f(x)=f(a)$.
+</Theorem>
 
 There are other specific terms to describe continuity:
 
--   $f$ is continuous from the left at $a$ if $\lim\limits_{x\rightarrow 0^-}f(x)=f(a)$
--   $f$ is continuous from the right at $a$ if $\lim\limits_{x\rightarrow 0^+}f(x)=f(a)$
--   $f$ is continuous on an open interval $(a, b)$ if $f$ is continuous for every number $k$, where $a < k < b$
--   $f$ is continuous on a closed interval $[a, b]$ if $f$ is continuous for every number $k$, where $a \le k \le b$
+- $f$ is continuous from the left at $a$ if $\lim\limits_{x\rightarrow 0^-}f(x)=f(a)$
+- $f$ is continuous from the right at $a$ if $\lim\limits_{x\rightarrow 0^+}f(x)=f(a)$
+- $f$ is continuous on an open interval $(a, b)$ if $f$ is continuous for every number $k$, where $a < k < b$
+- $f$ is continuous on a closed interval $[a, b]$ if $f$ is continuous for every number $k$, where $a \le k \le b$
 
 ===
 
@@ -51,24 +42,82 @@ This happens when $\lim\limits_{x\rightarrow a} f(x) = f(a)$, or $f(a)$ does not
 
 ===
 
-# Practice: Continuity of a Function
+# **Practice:** Identifying Continuity
 
-Given some functions $f$, $g$, and values of "$a$", determine the value of constants $c$ and $d$, so that both $f$ and $g$ are continuous on each function's value of $a$.
+The functions $f$, $g$, $h$, $p$ and $q$ are defined below, along with some $x$ values.
 
-$f(x)=\begin{cases}
-x+5& \text{, } x \leq-3\\ 
-c-2x& \text{, } x > -3\\
-\end{cases}$
+$$
+f(x)=\frac{1}{x}\text{, at }x=0
+$$
 
-$g(x)=\begin{cases}
-d-x& \text{, } x <\frac{\pi}{2}\\ 
-d \cos{x}& \text{, } x \geq \frac{\pi}{2}\\
-\end{cases}$
+$$
+g(x)=\begin{cases}
+x^2& \text{, } x \leq2\\
+x& \text{, } x > 2\\
+\end{cases}\text{, at }x=2
+$$
+
+$$
+h(x)= \left \lfloor x \right \rfloor\text{, at }x=1
+$$
+
+$$
+p(x)=\begin{cases}
+x& \text{, } x < 4\\
+x^2-4x+3& \text{, } 4 \leq x < 5\\
+7.9& \text{, } x = 5\\
+\sqrt{x+ 59}& \text{, } x  > 5\\
+\end{cases}\text{, at }x=5
+$$
+
+$$
+q(x) = \frac{1}{x^{2}-6x+9} \text{, at }x=3
+$$
 
 ---
 
-What is the value of $c$, so $f$ is continuous on $a = -3$?  
-`[input;continuity-1]-4`
+In these input boxes, respectively, name all functions that have Jump, Infinite and Removable discontinuity, at the given $x$ value. Functions should be written alphabetically.
+
+<Practice id="discontinuity-1" answer="g, h" placeholder="Jump Discontinuity" />
+
+<Practice
+  id="discontinuity-2"
+  answer="f, q"
+  placeholder="Infinite Discontinuity"
+/>
+
+<Practice
+  id="discontinuity-3"
+  answer="p"
+  placeholder="Removable Discontinuity"
+/>
+
+===
+
+# **Practice:** Continuity of a Function
+
+Given some functions $f$, $g$, and values of "$a$", determine the value of constants $c$ and $d$, so that both $f$ and $g$ are continuous on each function's value of $a$.
+
+$$
+f(x)=\begin{cases}
+x+5& \text{, } x \leq-3\\
+c-2x& \text{, } x > -3\\
+\end{cases}
+$$
+
+$$
+g(x)=\begin{cases}
+d-x& \text{, } x \lt\frac{\pi}{2}\\
+d \cos{x}& \text{, } x \geq \frac{\pi}{2}\\
+\end{cases}
+$$
+
+---
+
+What is the value of $c$, so $f$ is continuous on $a = -3$?
+
+<Practice id="continuity-1" answer="-4" />
 
 What is the value of $d$ (in degrees), so $g$ is continuous on $a = \frac{\pi}{2}$?
-`[input;continuity-2]90`
+
+<Practice id="continuity-2" answer="90" />

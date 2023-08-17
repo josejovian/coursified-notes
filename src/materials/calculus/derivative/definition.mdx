@@ -1,53 +1,69 @@
 # Definitions
 
-## Precise Definition of Limit
+A function's derivative is related to the instantaneous rate of change of itself at a particular point, as well as the gradient of a tangent line to a function at a particular point. The derivative of the function $f$ with respect to $x$ is the function $f'$:
 
-Let $f$ be a function defined on an open interval containing $a$, with the possible exception of a itself (the function f does not need to be defined on a), then $\lim\limits_{x\rightarrow a} f(x)=L$ if for every number $\epsilon > 0$, exists a number $\delta > 0$ such that: $0 < |x - a| < \delta$ implies that $|f(x) - L| < \epsilon$.
+$$
+f'(x)=\lim_{h\rightarrow 0} \frac{f(x + h) - f(x)}{h}
+$$
 
-## General Definition of Limit
+Derivatives have different notations, but they still have the same meaning. The first derivative, second derivative, and the n-th derivative of a function are commonly written with these notations:
 
-Let $f$ be a function defined on an open interval containing $a$, with the possible exception of $a$ itself (the function $f$ does not need to be defined on $a$), then $\lim\limits_{x\rightarrow a} f(x)=L$ if $f(x)$ can be made as close to $L$ by making $x$ to be sufficiently close to $a$, from both right and left side: $\lim\limits_{x\rightarrow a^+} f(x)=\lim\limits_{x\rightarrow a^-} f(x)=L$.
+$$
+f',\enspace f'',\enspace f^{(n)}
+$$
 
+$$
+\frac{d}{dx} [f(x)],\enspace \frac{d^2}{dx^2} [f(x)],\enspace \frac{d^n}{dx^n} [f(x)],  
+$$
+
+$$
+D_x f(x),\enspace D_x^2f(x),\enspace D_x^n(x)
+$$
 ===
 
-# Determining Limits
+# Example of Derivative
 
-Let's use a simple function $f(x) = x^2$ below. `[graph]function:x*x`
+<Example>
+  Provided $f(x) = 4x^2 - 4x + 1$:
+	1. Calculate $f'(x)$.
+	2. At which rate is $f$
+  changing at $x = \frac{1}{4}$?
+	3. What is the equation of the tangent line to the graph of the function $f$ at $x = \frac{1}{4}$?
+</Example>
 
-If we set $x = -1$, we will have $f(-1)=1$. If we set $x = -0.1$, we will have $f(-0.1)=0.01$. If we set $x = -0.01$, we will have $f(-0.01)=0.0001$.
+Using the definition from before:
 
-As we can see, if we go from anywhere on the left side to $x = 0$, we can tell that as $x$ approaches $0$ from the left side, the value of $f(x)$ will eventually approach $0$. The same also happens if we look from the right side, that is, as $x$ approaches $0$ from the right side, the value $f(x)$ will also eventually approach $0$.
+$$
+\begin{align*}
+ f'(x)
+ &= \lim_{h\rightarrow 0} \frac{f(x + h) - f(x)}{h}\\
+ &= \lim_{h\rightarrow 0} \frac{\left [ 4(x + h)^2 - 4(x+h) + 1 \right ] - \left [ 4x^2 - 4x + 1 \right ]}{h}\\
+ &= \lim_{h\rightarrow 0} \frac{\left [ 4(x^2 + 2xh + h^2) - 4(x+h) + 1 \right ] - \left [ 4x^2 - 4x + 1 \right ]}{h}\\
+ &= \lim_{h\rightarrow 0} \frac{\left [ 8xh + 4h^2 - 4h \right ]}{h}\\
+ &= \lim_{h\rightarrow 0}  8x + 4h - 4\\
+ &= 8x - 4\\
+\end{align*}
+$$
 
-In this case, we can say that the limit of $f(x)$ as $x$ approaches $0$, is $0$. In other words, $\lim\limits_{x\rightarrow 0} (x^2) = 0$. Note that we do not necessarily always find the limit by substituting the $x$ directly to the function like in this case.
+Using this result, we can answer the second question. Substitute $x$ in to $f'(x)$, which allows us to obtain $f'(\frac{1}{4}) = -2$.  
 
+This is also the gradient, or the slope of the tanget line described in the third question. Since the question already provides us with a $x$ value, substituting it to $f$ yields the point $(\frac{1}{4}, \frac{1}{4})$.
+
+Thus, we can now construct the tangent line equation given the point of intersect and the gradient: 
+
+$$
+\begin{align*}
+y - y_1 &= m(x - x_1) \\
+y - \frac{1}{4} &= (-2)(x - \frac{1}{4}) \\
+y &= (-2)(x - \frac{1}{4}) + \frac{1}{4} \\
+y &= -2x + \frac{3}{4} \\
+\end{align*}
+$$
+
+<Graph functions="4*x*x-4*x+1,-2*x+0.75" points="0.25,0.25-solid" />
 ===
 
-# Determining Limits
+# Differentiability of a Function
 
-`[graph]function:1/x`
+A function is said to be differentiable at $x=a$, if $f'(a)$ exists. Consequently, by being differentiable at $x=a$, $f(x)$ is also continuous at $x=a$.
 
-Sometimes, we may get something like the above $g(x) = \frac{1}{x}$. What would be the value of $\lim\limits_{x\rightarrow 0} \frac{1}{x}$? That's right, it doesn't exist. If we recall the definiton of limit, we can clearly see that if we try approaching $x = 0$ from the right side, $g(x)$ will eventually approach $-\infty$, whereas approaching $x = 0$ from the left side, $g(x)$ will eventually approach $\infty$. Therefore, it is true that $\lim\limits_{x\rightarrow 0^-} \frac{1}{x} = -\infty$ and $\lim\limits_{x\rightarrow 0^+} \frac{1}{x} = \infty$.
-
-===
-
-# Determining Limits
-
-`[graph]function:1/[x]`
-
-This case is a little bit deifferent than the last one. This time, we have $h(x) = \frac{1}{|x|}$ . As you may have guessed, this one function does have a limit as $x$ approaches $0$ because the limit as $x$ approaches $0$ from the right and from the left is the same. Therefore, we can say that $\lim\limits_{x\rightarrow 0} \frac{1}{|x|} = \infty$
-
-===
-
-# ✏️ Practice: Determining Limits
-
-Suppose we have a function $f(x)$ that we do not exactly know of, but we only have the following information;
-
-| x    | -2.1 | -2.01 | -2.001 | -1.998 | -1.98 | -1.8 |
-| ---- | ---- | ----- | ------ | ------ | ----- | ---- |
-| f(x) | 5.11 | 5.09  | 5.005  | 5.006  | 5.01  | 5.12 |
-
-What integer would be the most reasonable estimate for $\lim\limits_{x\rightarrow -2} f(x)$?
-
-`[input;estimate-limit]5`
-
-> #explanation# **That's right!** From the left ($x=-2.1$ to $x=-2.001$), the value of $f(x)$ approaches $5$. Likewise, from the right ($x=-1.8$ to $x=-1.998$), the value of $f(x)$ also approaches $5$. The most reasonable guess for $\lim\limits_{x\rightarrow -2} f(x)$ is $5$.

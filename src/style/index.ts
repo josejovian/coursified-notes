@@ -1,4 +1,3 @@
-export * from "./Colors";
-export * from "./Sizes";
-export * from "./Variants";
-export * from "./Presets";
+export * from "./colors";
+export * from "./sizes";
+export * from "./variants";
