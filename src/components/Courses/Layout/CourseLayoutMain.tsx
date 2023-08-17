@@ -749,7 +749,7 @@ export function CourseLayoutMain({
                 return <Graph id={`Graph_${functions}_${points}`} {...props} />;
               },
               TeX,
-              Practice: ({ id, answer: answerKey }) => (
+              Practice: ({ id, answer: answerKey, placeholder }) => (
                 <Input
                   key={`InputBox-${id}`}
                   id={`InputBox-${id}`}
@@ -787,6 +787,7 @@ export function CourseLayoutMain({
                       ...answerKeys,
                     }));
                   }}
+                  placeholder={placeholder}
                 />
               ),
               Explanation: ({ children }) => (
