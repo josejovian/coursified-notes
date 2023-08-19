@@ -1,21 +1,22 @@
 import clsx from "clsx";
-import { DetailedHTMLProps, HTMLAttributes, ReactNode } from "react";
+import { DetailedHTMLProps, ForwardedRef, HTMLAttributes, ReactNode, forwardRef } from "react";
 
 export interface MatchCardProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  children: ReactNode;
+  children?: ReactNode;
   className: string;
   solved?: number;
 }
-export function MatchCard({
+export const MatchCard = forwardRef(function Content({
   children,
   className,
   solved = 0,
   ...props
-}: MatchCardProps) {
+} : MatchCardProps, ref) {
   return (
     <div
       {...props}
+			ref={ref as ForwardedRef<HTMLDivElement>}
       className={clsx(
         "Match_right flex align-self-end justify-center items-center",
         "w-24 px-8 py-2",
@@ -29,4 +30,4 @@ export function MatchCard({
       {children}
     </div>
   );
-}
+});

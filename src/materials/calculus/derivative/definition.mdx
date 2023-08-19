@@ -67,3 +67,39 @@ $$
 
 A function is said to be differentiable at $x=a$, if $f'(a)$ exists. Consequently, by being differentiable at $x=a$, $f(x)$ is also continuous at $x=a$.
 
+<Example>
+Is $f(x)=|x|$ differentiable at $x=0$?
+</Example>
+
+Using the definition from before:
+
+$$
+\begin{align*}
+ f'(x) &= \lim_{h\rightarrow 0} \frac{f(x + h) - f(x)}{h}\\
+ &= \lim_{h\rightarrow 0} \frac{|x+h| - |x|}{h}\\
+ &= \lim_{h\rightarrow 0} \frac{|h|}{h}\\
+\end{align*}
+$$
+
+Depending on whether we approach the limit from the left or the right side, the result (limit) is different:
+
+$$
+\begin{align*}
+ \lim_{h\rightarrow 0^+} \frac{|h|}{h} &= \lim_{h\rightarrow 0^+} \frac{h}{h}=1\\
+ \lim_{h\rightarrow 0^-} \frac{|h|}{h} &= \lim_{h\rightarrow 0^-} -\frac{h}{h}=-1\\
+\end{align*}
+$$
+
+Since the left and right side limit are different, the limit doesn't exist, and $f'(0)$ does not exist. Although the function $f$ may have been continuous at $x=0$, this does not mean the function will be differentiable at that point. Since $f'(0)$ does not exist, $f$ is not differentiable at $x=0$.
+
+===
+
+# **Practice:** Differentiability of a Function
+
+Let $f(x)=\sqrt{\left | x \right |}$. Select all the statements below that are TRUE.
+
+<Option id="differentiability-1" content="#f# is continuous at #x=0#." truth />
+<Option id="differentiability-2" content="#f# is continuous at #x#, where #- \infty \lt x \lt \infty #." truth />
+<Option id="differentiability-3" content="#f# is differentiable at #x=0#." />
+<Option id="differentiability-4" content="#f# is differentiable at #x#, where #- \infty \lt x \lt \infty #." />
+<Option id="differentiability-5" content="#f# is differentiable at #x#, where #- \infty \lt x \lt 0# and #0 \lt x \lt \infty#" truth />

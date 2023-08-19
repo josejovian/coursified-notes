@@ -27,6 +27,7 @@ import {
   MatchBoxElementType,
   MathFunction,
   MathPoint,
+  OptionElementType,
   StateType,
 } from "@/src/type";
 import {
@@ -43,6 +44,7 @@ import { useToast } from "@/src/hooks";
 import { MatchBox } from "../Entity/Match";
 
 import dynamic from "next/dynamic";
+import { Option } from "../Entity/Option/CourseEntityOption";
 
 const Graph = dynamic(() => import("../Entity/Graph/CourseEntityGraph"), {
   ssr: false,
@@ -85,6 +87,7 @@ export function CourseLayoutMain({
   const [submitted, setSubmmited] = stateSubmitted;
   const answerInputBoxParentElement = useRef<InputBoxElementType[]>([]);
   const matchParentElement = useRef<MatchBoxElementType[]>([]);
+  const optionParentElement = useRef<OptionElementType[]>([]);
   const [active, setActive] = useState<any>(null);
   const checking = stateChecking[0];
 
@@ -99,6 +102,7 @@ export function CourseLayoutMain({
     >
   >({});
   const inputRef = useRef<Record<string, boolean>>({});
+  const optionCount = useRef(0);
 
   const { practice } = addreses;
 
@@ -120,10 +124,6 @@ export function CourseLayoutMain({
       phrase: "courseMaterialPracticeAnsweredIncorrect",
     });
   }, [addToast, checking, solved, submitted]);
-
-  useEffect(() => {
-    hanldeShowAnswerFeedback();
-  }, [checking, hanldeShowAnswerFeedback]);
 
   const userAnswerStatus = useCallback(
     (practiceId: string) => {
@@ -165,9 +165,26 @@ export function CourseLayoutMain({
     }
   }, [active, setAnswer]);
 
+  const handleToggleOption = useCallback(
+    (questionId: string) => {
+      if (solved) return;
+
+      setAnswer((prev) => ({
+        ...prev,
+        [questionId]: prev[questionId] && prev[questionId] === "1" ? "0" : "1",
+      }));
+    },
+    [setAnswer, solved]
+  );
+
   useEffect(() => {
     handleOnePairMatch();
   }, [active, handleOnePairMatch]);
+
+  useEffect(() => {
+    console.log("KKKKKKKKKK");
+    console.log(answer);
+  }, [answer]);
 
   const handleGetComponentForm = useCallback((str: string): ReactNode => {
     if (str.match(/\$([^\$])*\$/g)) {
@@ -321,6 +338,25 @@ export function CourseLayoutMain({
     [active, handleCheckIfAlreadyMatched, handleRemoveAnswer, handleSetActive]
   );
 
+  const renderOption = useCallback(
+    (practiceId: string, content: string) => {
+      const identifier = `Option-${practiceId}`;
+
+      return (
+        <Option
+          id={identifier}
+          content={content}
+          selected={Boolean(answer[practiceId] && answer[practiceId] === "1")}
+          onSelect={() => {
+            handleToggleOption(practiceId);
+          }}
+          solved={solved}
+        />
+      );
+    },
+    [answer, handleToggleOption, solved]
+  );
+
   const renderMatchBox = useCallback(
     (practiceId: string, left: string, right: string) => {
       const identifier = `MatchBox-${practiceId}`;
@@ -422,9 +458,23 @@ export function CourseLayoutMain({
     });
   }, [handleRemoveCustomComponents, renderCustomElement, renderMatchBox]);
 
+  const handleRenderOptions = useCallback(() => {
+    handleRemoveCustomComponents("Option");
+
+    optionParentElement.current.forEach(({ parentElement, content, id }) => {
+      renderCustomElement(
+        parentElement,
+        renderOption(id, content),
+        CUSTOM_MATERIAL["option"],
+        id
+      );
+    });
+  }, [handleRemoveCustomComponents, renderCustomElement, renderOption]);
+
   useEffect(() => {
     handleRenderAnswerBoxes();
     handleRenderMatch();
+    handleRenderOptions();
   }, [
     page,
     active,
@@ -434,6 +484,7 @@ export function CourseLayoutMain({
     userAnswerStatus,
     handleRenderAnswerBoxes,
     handleRenderMatch,
+    handleRenderOptions,
   ]);
 
   const handleRemoveUndefinedAnswers = useCallback(() => {
@@ -516,6 +567,7 @@ export function CourseLayoutMain({
 
     answerInputBoxParentElement.current = [];
     matchParentElement.current = [];
+    optionParentElement.current = [];
 
     elements.forEach((element, index) => {
       const string = element.innerHTML;
@@ -566,6 +618,30 @@ export function CourseLayoutMain({
           inputElementsRendered++;
         }
       }
+
+      if (container && parentElement && string.match(/\[option\]/g)) {
+        const detectedPair = string.toString().split("@");
+
+        if (detectedPair && detectedPair.length === 4) {
+          const [tag, id, content, truth] = detectedPair;
+          optionParentElement.current = [
+            ...optionParentElement.current,
+            {
+              parentElement,
+              content,
+              id,
+              truth: Number(truth),
+            },
+          ];
+
+          answerKeys = {
+            ...answerKeys,
+            [id]: `${truth}`,
+          };
+
+          inputElementsRendered++;
+        }
+      }
     });
 
     // Object.entries(customElementQueue.current).forEach(
@@ -598,6 +674,24 @@ export function CourseLayoutMain({
       );
     }
 
+    if (optionParentElement.current.length > 0 && solved !== 1) {
+      if (!solved) optionParentElement.current.sort(() => Math.random() - 0.5);
+
+      const defaultTruth = optionParentElement.current
+        .map((option) => option.id)
+        .reduce(
+          (prev, curr) => ({
+            ...prev,
+            [curr]: "0",
+          }),
+          {}
+        );
+      setAnswer((prev) => ({
+        ...prev,
+        ...defaultTruth,
+      }));
+    }
+
     if (inputElementsRendered > 0 && Object.values(answerKeys).length > 0) {
       setSolved(0);
       setAccept((prev) => ({
@@ -606,15 +700,18 @@ export function CourseLayoutMain({
       }));
       handleRenderAnswerBoxes();
       handleRenderMatch();
+      handleRenderOptions();
     }
   }, [
     loading,
     handleRemoveAllCustomComponents,
     solved,
+    setAnswer,
     setSolved,
     setAccept,
     handleRenderAnswerBoxes,
     handleRenderMatch,
+    handleRenderOptions,
   ]);
 
   const handlePrepareNewPage = useCallback(() => {
@@ -817,6 +914,20 @@ export function CourseLayoutMain({
               },
               Match: ({ id, left, right }) => (
                 <span className="CustomMaterialInvoker hidden">{`[match]@${id}@${left}@${right}`}</span>
+              ),
+              Option: ({ id, content, truth }) => (
+                <span className="CustomMaterialInvoker hidden">{`[option]@${id}@${content}@${
+                  truth ? 1 : 0
+                }`}</span>
+                // <Option
+                //   selected={
+                //     !answer[id] && answer[id] === "t"
+                //   }
+                //   onSelect={() => {
+                //     handleToggleOption(id);
+                //   }}
+                // 	content={content}
+                // />
               ),
             }}
           />

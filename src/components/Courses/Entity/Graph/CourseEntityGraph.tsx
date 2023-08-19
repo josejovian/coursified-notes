@@ -119,5 +119,7 @@ export default function Graph({ id, functions = "", points = "" }: GraphProps) {
     handleInitializeGraph();
   }, [build, handleInitializeGraph]);
 
-  return <div id={id} style={{ width: 480, height: 480 }}></div>;
+  return (
+    <div className="mx-auto" id={id} style={{ width: 480, height: 480 }}></div>
+  );
 }
