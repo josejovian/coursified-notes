@@ -276,6 +276,7 @@ const CourseMaterial = ({
           <Button
             size="l"
             onClick={() => {
+              setChecking(true);
               setSubmmited(true);
               console.log("Submitted Answers");
               console.log(answer);
@@ -303,6 +304,9 @@ const CourseMaterial = ({
                   });
                 }
               } else {
+                setTimeout(() => {
+                  setChecking(false);
+                }, 1000);
                 addToast({
                   phrase: "courseMaterialPracticeAnsweredIncorrect",
                 });
@@ -327,6 +331,7 @@ const CourseMaterial = ({
       solved,
       checking,
       handleNextPage,
+      setChecking,
       setSubmmited,
       answer,
       accept,

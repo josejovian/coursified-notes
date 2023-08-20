@@ -68,9 +68,9 @@ export function Option({
       role="option"
       aria-selected={selected}
       className={clsx(
-        "flex align-self-end justify-center items-center",
-        "w-fit px-8 py-2",
-        "text-center transition-all rounded-sm",
+        "flex",
+        "w-full 2xl:w-1/2 px-8 py-2",
+        "transition-all rounded-sm",
         selected
           ? solved
             ? "bg-success-1 border border-success-5"
@@ -84,11 +84,11 @@ export function Option({
     >
       <div
         className={clsx(
-          "w-4 h-4 mr-4 flex items-center justify-center",
+          "w-4 h-4 min-w-4 mr-4 flex items-center justify-center",
           solved && selected ? "text-success-5" : "text-primary-5"
         )}
       >
-        {selected && <Icon size="s" IconComponent={MdCheck} />}
+        <Icon className={clsx(!selected && "invisible")} size="s" IconComponent={MdCheck} />
       </div>
       <span ref={contentRef} />
     </div>
