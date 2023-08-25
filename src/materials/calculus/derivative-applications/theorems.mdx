@@ -1,0 +1,80 @@
+# Rolle's Theorem and Mean Value Theorem
+
+<Theorem title="Rolle's Theorem">
+Let $f$ be a continuous function on $[a,b]$ and differentiable on $(a,b)$. If $f(a) = f(b)$, then there exists one number $c$ in $(a,b)$ such that $f'(c) = 0$.
+</Theorem>
+
+<Theorem title="Mean Value Theorem">
+Let $f$ be a continuous function on $[a,b]$ and differentiable on $(a,b)$. There exists one number $c$ in $(a,b)$ such that $f'(c)=\frac{f(b)-f(a)}{b-a}$, which means that:
+- if $f'(c) = 0$ for all $x$ in interval $(a,b)$ then $f$ is constant on $(a,b)$.
+- if $f'(x) = g'(x)$ for all $x$ in interval $(a,b)$ then $f$ and $g$ differ by a consant on $(a,b)$. Or in other words, there exists a constant $c$ such that $f(x) = g(x) + c$ for all $x$ in $(a,b)$.
+</Theorem>
+
+===
+
+# Rolle's Theorem: Example
+
+<Example>
+Show that $f(x)=x^3-3x$ on $[-\sqrt{3}, \sqrt{3}]$ fulfills Rolle's Theorem, and find the $c$ values.
+</Example>
+
+Since $f$ is a polynomial function, it is continuous and differentiable at the given interval, and $f(-\sqrt{3})=f(\sqrt{3})=0$. This fulfills the conditions of Rolle's Theorem.  
+
+$$
+\begin{align*}
+f(x)&=x^3-3x\\
+f'(x)&=3x^2-3\\
+3&=3x^2\\
+x&=\pm 1
+\end{align*}
+$$
+
+The $c$ values are $1$ and $-1$.
+
+<Graph functions="x*x*x-3*x" />
+
+===
+
+# Mean Value Theorem: Example
+
+<Example>
+Show that $f(x)=x^3-3x$ on $[-2, 2]$ fulfills Mean Value Theorem, and find the $c$ values.
+</Example>
+
+Since $f$ is a polynomial function, it is continuous and differentiable at the given interval. This fulfills the conditions of Mean Value Theorem.
+
+$$
+\begin{align*}
+f(x)&=x^3-3x\\
+f'(x)&=3x^2-3\\
+\\
+f'(c)&=\frac{f(b) - f(a)}{b - a}\\
+3c^2-3&=\frac{2 - (-2)}{2 - (-2)}\\
+3c^2&= 4\\
+c&=\pm \sqrt{\frac{4}{3}}
+\end{align*}
+$$
+
+The $c$ values are $\sqrt{\frac{4}{3}}$ and $-\sqrt{\frac{4}{3}}$.
+
+<Graph functions="x*x*x-3*x" />
+
+===
+
+# **Practice:** Rolle's Theorem
+
+Consider $f(x) = 4\sin^{2}x-\cos^{2}x$. Select all statements below that are TRUE.
+
+<Option id="rolle-1" content="#f# is continuous on its domain." truth />
+<Option id="rolle-2" content="#f# is continuous on #\left [ 0, \pi \right ]#." truth />
+<Option id="rolle-3" content="#f# is NOT differentiable on #\left [ 0, \pi \right ]#." />
+<Option id="rolle-4" content="Relating to Rolle's Theorem, #f# has exactly one #c# values on #\left [ \tan^{-1}\left ( \frac{1}{2} \right ),  \pi - \tan^{-1}\left ( \frac{1}{2} \right ) \right ]#" truth/>
+<Option id="rolle-5" content="Relating to Rolle's Theorem, #f#'s #c# values on the provided interval are #\tan^{-1}\left ( \frac{1}{2} \right )# and # \pi -\tan^{-1}\left (\frac{1}{2} \right )#." />
+
+===
+
+# **Practice:** Mean Value Theorem
+
+Consider $f(x) = 4\sin^{2}x-\cos^{2}x$ on $\left [ 0, \frac{\pi}{2} \right ]$. Relating to the Mean Value Theorem, what is the $c$ value? Round your answer to the nearest hundredths.
+
+<Practice id="mean-1" answer="3.18" />

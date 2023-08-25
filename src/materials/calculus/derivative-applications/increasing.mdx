@@ -1,0 +1,87 @@
+# The Increasing and Decreasing of a Function
+
+If $f$ is differentiable on $(a, b)$:
+- If $f'(x) > 0$ for all $x$ on $(a, b)$, then it's increasing on that interval.
+- If $f'(x) < 0$ for all $x$ on $(a, b)$, then it's decreasing on that interval.
+- If $f'(x) = 0$ for all $x$ on $(a, b)$, then it's constant on that interval.
+
+To find at which intervals a function become increasing or decreasing:
+1. Find $f'(x)$.
+2. Find any $c$ values so that $f'(c)=0$ or $f'(c)$ does not exist.
+3. Separate $f$'s domain into intervals using these values.
+4. For every intervals, test any value $c$ within that interval. The result $f'(c)$ will indicate whether $f$ is increasing/decreasing/constant on that interval.
+
+---
+
+<Theorem title="The First Derivative Test">
+Let $c$ be $f$'s critical number on $(a, b)$, and $f$ is differentiable on $(a, b)$ with the possible exception of $c$.
+-  If $f'(x)>0$ on $(a,c)$ and$f'(x)\<0$ on $(c,b)$, then $f$ has a relative maximum at $c$.
+-  If $f'(x)\<0$ on $(a,c)$ and$f'(x)>0$ on $(c,b)$, then $f$ has a relative minimum at $c$.
+-  If $f'(x)$ has the same sign on both intervals, then $c$ is neither $f$'s relative maximum nor minimum.
+</Theorem>
+
+Using this, we can determine a function's relative maximum and minimum, if any.
+
+===
+
+# The Increasing and Decreasing of a Function: Example
+
+<Example>
+Determine at which intervals $f(x)=x^3-3x^2$ become increasing and decreasing, as well as its relative maximum and minimum, if any.
+</Example>
+
+Derive $f$:
+$$
+\begin{align*}
+f(x)&=x^3-3x^2\\
+f'(x)&=3x^2-6x\\
+6x&=3x^2\\
+x^2&=2x\\
+\end{align*}
+$$
+
+$f$'s critical points are $x=0$ and $x=2$, so there are three intervals: $(-\infty, 0)$, $(0, 2)$ and $(2, \infty)$.
+
+To find out which intervals are increasing and decreasing, using $f'(x)$, we test a value $c$ in that interval.
+
+| Interval   | $c$ | $f'(c)$ | Verdict |
+| ---- | ---- | ---- | ---- |
+| $(-\infty, 0)$ |$-1$ | $9$ | Increasing |
+| $(0, 2)$ | $1$ | $-3$ | Decreasing |
+| $(2, \infty)$ | $3$ | $9$ | Increasing |
+
+Following the First Derivative Test,  we can see that $x=0$ is $f$'s relative maximum, and $x=2$ is $f$'s relative minimum.
+
+To verify the results we calculated, observe the following graph:
+
+<Graph functions="x*x*x-3*x*x" />
+
+===
+
+# Concavity of a Function
+
+Let $f$ be a function that has a second derivative on an open interval $I$, then
+- If $f''(x) > 0$ for all $x$ on $I$, then $f$ is concave upwards on $I$.
+- If $f''(x) < 0$ for all $x$ on $I$, then $f$ is concave downwards on $I$.
+
+To find at which intervals a function become increasing or decreasing:
+1. Find values $c$ so that etiher $f''(x) = 0$ or  $f''(x)$ does not exist.
+2. Separate $f$'s domain into intervals using these values.
+3. For every intervals, test any value $c$ within that interval. The result $f''(c)$ will indicate whether $f$ is concave upwards or downwards on that interval.
+
+---
+
+Let $f$ be a function continuous on an open interval that has the point $c$, and the function has a tangent line on point $P(c, f(c))$. If $f$'s graph concavity changes at $P$, then $P$ is said to be $f$'s inflection point.
+
+To find a function's inflection points, find $c$ such that etiher $f''(x) = 0$ or  $f''(x)$ does not exist. Then, check if $f$'s concavity changes at that point. If that is the case, then the tested $c$ is $f$'s inflection point, provided there is a tangent line of $f$ at $P$.
+
+---
+
+The second derivative of a function can also be used to find a function's relative extrema.
+
+<Theorem title="The Second Derivative Test">
+Suppose $f$ has a continuous second derivative on an interval that contains $f$'s critical number $c$.
+- If $f''(c) < 0$, then $c$ is $f$'s maximum relative.
+- If $f''(c) > 0$, then $c$ is $f$'s minimum relative.
+- If $f''(c) = 0$, then the test yields no result.
+</Theorem>

@@ -54,9 +54,7 @@ Provided $u$ and $v$ are functions.
 
 # Properties of Derivatives (1): Exampless
 
-<Example>
-If $f(x) = (x+2)^2$, calculate $f'(x)$.
-</Example>
+<Example>If $f(x) = (x+2)^2$, calculate $f'(x)$.</Example>
 
 Expand first, then calculate:
 
@@ -129,17 +127,16 @@ The chain rule is as above, provided $g$ and $h$ are functions, where $h$ is dif
 
 # Properties of Derivatives (2): Example
 
-<Example>
-If $f(x) = 2x^2 (4x+1)^5$, calculate $f'(x)$.
-</Example>
+<Example>If $f(x) = 2x^2 (4x+1)^5$, calculate $f'(x)$.</Example>
 
 Let $u = 2x^2$ and $v = (4x+1)^5$. Deriving these individually yields:
+
 $$
 \begin{align*}
 u &= 2x^2\\
 u' &= 4x\\
 v &= (4x+1)^5\\
-v' &= 20(4x+1)^4 
+v' &= 20(4x+1)^4
 \end{align*}
 $$
 
@@ -162,7 +159,7 @@ Let $f$ and $g$ be a function, such that $f(x) = \frac{\sqrt{x + 2}}{g(x)}$. The
 <Practice id="derivative-1" answer="-1.75" />
 
 <Explanation>
-Let $u = \sqrt{x + 2}$ and $v = g(x)$:
+Use the product rule, where $u = \sqrt{x + 2}$ and $v = g(x)$:
 $$
 \begin{align*}
 u &= \sqrt{x + 2}\\
@@ -183,6 +180,7 @@ f'(x)&= \frac{u'v + uv'}{v^2}\\
 $$
 
 Then, substitute all the known values:
+
 $$
 \begin{align*}
 f'(x) &= \frac{\frac{1}{2\sqrt{x + 2}}g(x) - \sqrt{x + 2} g'(x)}{(g'(x))^2}\\
@@ -192,6 +190,53 @@ f'(x) &= \frac{\frac{1}{2\sqrt{x + 2}}g(x) - \sqrt{x + 2} g'(x)}{(g'(x))^2}\\
 &= -1.75\\
 \end{align*}
 $$
+
+</Explanation>
+
+===
+
+# **Practice**: Derivative
+
+Let $f(x) = \left(4x+c\right)^{2}(x-2)$, where $c$ is an unknown constant no more than $17$. It is known that $f'\left (-\frac{1}{2} \right) = -64$. Determine the value of $c$.
+
+<Practice id="derivative-2" answer="6" />
+
+<Explanation>
+Let $u = \left(4x+c\right)^{2}$ and $v = x-2$:
+$$
+\begin{align*}
+u &= \left(4x+c\right)^{2}\\
+u' &= 2(4)(4x+c)\\
+v &= x - 2\\
+v' &= 1
+\end{align*}
+$$
+
+Then, calculate the main derivative. We don't necessarily have to know $c$ to do this.
+
+$$
+\begin{align*}
+f(x) &= uv\\
+f'(x)&= u'v + uv'\\
+&= 2(4)(4x+c)(x-2) + \left(4x+c\right)^{2}\\
+&= 8(4x^2 - 8x + cx -2c) + (16x^2 + 8cx + c^2)\\
+\end{align*}
+$$
+
+Then, substitute all the known values to get $c$.
+
+$$
+\begin{align*}
+f'(x)&= 8(4x^2 - 8x + cx -2c) + (16x^2 + 8cx + c^2)\\
+f'\left (-\frac{1}{2} \right) &= 8(1 + 4 - \frac{c}{2} - 2c) + (4 - 4c + c^2)\\
+-64 &= 8(1 + 4 - \frac{c}{2} - 2c) + (4 - 4c + c^2)\\
+-64 &= (40 - 20c) + (4 - 4c + c^2)\\
+0 &= c^2 - 24c + 108\\
+0 &= (c-6)(c-18)\\
+\end{align*}
+$$
+
+It appears there are two possible values for $c$. However, the question already declared that $c$ is less than $17$. In this case, the appropriate value for c is $6$.
 </Explanation>
 
 ===
@@ -200,7 +245,7 @@ $$
 
 A certain factory manufactures a specific type of product for $x$ days for the daily cost of $(4x + \frac{100}{x} + 40)$ million IDR. Calculate the cheapest daily cost possible. Answer in terms of million IDR.
 
-<Practice id="derivative-2" answer="80" />
+<Practice id="derivative-3" answer="80" />
 
 <Explanation>
 When a function reaches its maximum or minimum value, the rate of change at that point is zero. In other words, $f'(x)=0$.
@@ -224,4 +269,5 @@ f(5) &= 20 + 20 + 40\\
 f(5) &= 80\\
 \end{align*}
 $$
+
 </Explanation>

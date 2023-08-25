@@ -1,0 +1,75 @@
+# Derivatives of Inverse Trigonometric Functions
+
+<Formula>
+$$
+\begin{align*} 
+\text{1. }&f(x)=\sin^{-1}(u) \\ 
+&f'(x)=\frac{u'}{\sqrt{1-u^2}}\\ 
+\text{2. }&f(x)=\cos^{-1}(u)\\ 
+&f'(x)=-\frac{u'}{\sqrt{1-u^2}}\\ 
+\text{3. }&f(x)=\tan^{-1}(u) \\
+ &f'(x)=\frac{u'}{1+u^2}\\ 
+\text{4. }&f(x)=\csc^{-1}(u)\\ 
+&f'(x)=-\frac{u'}{|u| \sqrt{u^2-1}}\\ 
+\text{5. }&f(x)=\sec^{-1}(u)\\
+&f'(x)=\frac{u'}{|u| \sqrt{u^2-1}}\\ 
+\text{6. }&f(x)=\cot^{-1}(u)\\ 
+&f'(x)=\frac{-u'}{1+u^2}\\ 
+\end{align*}
+$$
+</Formula>
+
+The above derivations can be obtained by using implicit differentiation. 
+
+===
+
+# Derivatives of Inverse Trigonometric Functions: Proof Example
+
+<Example>
+Show that $\frac{d}{dx}\sin^{-1}{u} = \frac{u\'}{\sqrt{1-u^2}}$, where $u$ is a function.
+</Example>
+
+Recall the trigonometric identity $\sin^2{x} + \cos^2{x} = 1$.
+
+$$
+\begin{align*} 
+y &= \sin^{-1}{u} \\
+\sin{y} &= u \\
+\frac{d}{dx} \sin{y} &= \frac{d}{dx} u \\
+\frac{dy}{dx} \cos{y} &= \frac{du}{dx} \\
+\frac{dy}{dx}  &= \frac{\frac{du}{dx}}{\cos{y}} \\
+ &= \frac{\frac{du}{dx}}{\sqrt{1 - \sin^2{y}}} \\
+ &= \frac{u'}{\sqrt{1 - u^2}} \\
+\end{align*}
+$$
+
+===
+
+# Derivatives of Inverse Trigonometric Functions: Example
+
+<Example>
+If $f(x)=\tan^{-1}\left ( \sqrt{\frac{x-1}{x+1}} \right )$, calculate $f'(x)$.
+</Example>
+
+Let's focus on the square root's contents first. Recall the chain rule.
+
+$$
+\begin{align*} 
+u&=\sqrt{\frac{x-1}{x+1}}\\
+u'&=\frac{1}{2 \sqrt{\frac{x-1}{x+1}}} \times \left ( \frac{(x+1) - (x-1)}{(x+1)^2} \right )\\
+&=\frac{1}{2 \sqrt{\frac{x-1}{x+1}}} \times \left ( \frac{2}{(x+1)^2} \right )\\
+&=\frac{1}{(x+1)^2 \sqrt{\frac{x-1}{x+1}}}\\
+\end{align*}
+$$
+
+Continue to the main derivative:
+
+$$
+\begin{align*} 
+f(x)&=\tan^{-1}\left ( \sqrt{\frac{x-1}{x+1}} \right )\\
+f'(x)&=\frac{u'}{u^2+1}\\
+&=\frac{\frac{1}{(x+1)^2 \sqrt{\frac{x-1}{x+1}}}}{\frac{x-1}{x+1}+1}\\
+&=\frac{\frac{1}{(x+1)^2 \sqrt{\frac{x-1}{x+1}}}}{\frac{2x}{x+1}}\\
+&=\frac{1}{2x(x+1)\sqrt{\frac{x-1}{x+1}}}\\
+\end{align*}
+$$

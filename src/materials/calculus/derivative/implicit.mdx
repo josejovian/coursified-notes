@@ -1,18 +1,17 @@
 # Implicit Differentiation
 
-Sometimes a function is not defined as a function of $x$. Consider the circle equation $x^2+y^2=r^2$. While we can rearrange this to obtain the $y=$ form, this will not always be the case. Consider another example $x^3y^2+\tan{y}=x^2-4y$. By normal means, it is impossible to isolate $y$, which prevents us from calculating $\frac{dy}{dx}$.
+Sometimes a function is not defined as a function of $x$. Consider the circle equation $x^2+y^2=r^2$. While we can rearrange this to obtain the $y=$ form, this will not always be the case. Consider another example $x^4+4xy+y^2=5y^3$. By normal means, it is impossible to isolate $y$, which prevents us from calculating $\frac{dy}{dx}$.
 
 In this case, implitcit differentiation is a viable solution that allows us to do so. Differentiate both sides with respect to $x$, including functions.
 
 $$
 \begin{align*}
-x^3y^2+\tan{y}&=x^2-4y\\
-\frac{d}{dx} \left ( x^3y^2+\tan{y} \right )&= \frac{d}{dx} \left ( x^2-4y \right )\\
-3x^2 + 2\frac{dy}{dx}y + \frac{dy}{dx} \sec^2{y} &= 2x - 4 \frac{dy}{dx}\\
-3x^2 + \frac{dy}{dx} \left ( 2y + \sec^2{y} \right ) &= 2x - 4 \frac{dy}{dx}\\
-3x^2 + \frac{dy}{dx} \left ( 2y + \sec^2{y} + 4 \right ) &= 2x\\
-\frac{dy}{dx} \left ( 2y + \sec^2{y} + 4 \right ) &= 2x - 3x^2\\
-\frac{dy}{dx} &= \frac{2x - 3x^2}{2y + \sec^2{y} + 4}\\
+x^4+4xy+y^2&=5y^3\\
+4x^3+ 4 \left ( x\frac{dy}{dx} + y \right )+2y\frac{dy}{dx}&=15\frac{dy}{dx}y^2\\
+4x^3+ 4x\frac{dy}{dx} + 4y +2y\frac{dy}{dx}&=15\frac{dy}{dx}y^2\\
+4x^3+ 4y + \frac{dy}{dx} \left( 4x + 2y \right )&=15\frac{dy}{dx}y^2\\
+4x^3+ 4y + \frac{dy}{dx} \left( 4x + 2y - 15y^2 \right )&=0\\
+\frac{dy}{dx}&=\frac{-4x^3-4y}{4x + 2y - 15y^2}\\
 \end{align*}
 $$
 
@@ -20,8 +19,34 @@ $$
 
 # Implicit Differentiation: Example
 
-Oh by the
+<Example>
+Given $x^3y^2+\tan{y}=x^2-4y$, find $\frac{dy}{dx}$ using implicit differentiation.
+</Example>
 
-<Option>
-The function $f$ is continuous $x=0$.
-</Option>
+$$
+\begin{align*}
+x^3y^2+\tan{y}&=x^2-4y\\
+\frac{d}{dx} \left ( x^3y^2+\tan{y} \right )&= \frac{d}{dx} \left ( x^2-4y \right )\\
+\left( 3x^2y^2 + 2x^3y\frac{dy}{dx} \right)+ 2\frac{dy}{dx}y + \frac{dy}{dx} \sec^2{y} &= 2x - 4 \frac{dy}{dx}\\
+3x^2y^2 + \frac{dy}{dx} \left ( 2x^3y + \sec^2{y} \right ) &= 2x - 4 \frac{dy}{dx}\\
+3x^2y^2 + \frac{dy}{dx} \left ( 2x^3y + \sec^2{y} + 4 \right ) &= 2x\\
+\frac{dy}{dx} \left ( 2x^3y + \sec^2{y} + 4 \right ) &= 2x - 3x^2y^2\\
+\frac{dy}{dx} &= \frac{2x - 3x^2y^2}{2x^3y + \sec^2{y} + 4}\\
+\end{align*}
+$$
+
+===
+
+# **Practice:** Implicit Differentiation
+
+The following describes an attempt on using implicit differentiation to find $\frac{dy}{dx}$ given $\ln{\sqrt{xy}}+\sin{xy}+5x^2y^3=0$.
+
+![Attempt of Implicit Differentiation](/materials/implicit_attempt.png "Attempt of Implicit Differentiation")
+
+Select all options below that are TRUE.
+
+<Option id="implicit-1" content="The attempt went wrong from step A onwards." />
+<Option id="implicit-2" content="The attempt went wrong from step B onwards." />
+<Option id="implicit-3" content="The attempt went wrong from step C onwards." />
+<Option id="implicit-4" content="Regardless of whether the past steps are correct or not, the final rewriting of the answer after step D is correct."  truth />
+<Option id="implicit-5" content="The attempt produced a correct answer in step D." truth />
