@@ -273,13 +273,13 @@ export function CourseLayoutMain({
               ),
               Example: ({ children }) => (
                 <Blockquote variant="example">
-                  <Paragraph weight="bold">Example</Paragraph>
+                  <Paragraph weight="bold">Example</Paragraph><br />
                   {children}
                 </Blockquote>
               ),
-              Theorem: ({ children }) => (
+              Theorem: ({ children, title }) => (
                 <Blockquote variant="theorem">
-                  <Paragraph weight="bold">Theorem</Paragraph>
+                  <Paragraph weight="bold">{title}</Paragraph>
                   {children}
                 </Blockquote>
               ),

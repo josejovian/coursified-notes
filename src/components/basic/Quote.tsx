@@ -63,7 +63,7 @@ export function Blockquote(props: QuoteProps) {
     <blockquote
       className={clsx(
         "min-w-0 w-fit my-8 px-8 py-2",
-        "border-0 border-l-4 leading-10",
+        "border leading-10",
         BLOCKQUOTE_COLOR_CLASS[color],
         className
       )}

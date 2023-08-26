@@ -143,7 +143,7 @@
     @apply pb-32;
   }
   .CourseMaterial_content > h1 {
-    @apply mb-8 text-xl;
+    @apply mb-8 text-xl leading-10;
   }
   .CourseMaterial_content > h2 {
     @apply mb-4 text-lg;
@@ -153,23 +153,31 @@
     font-size: 17px;
   }
   .CourseMaterial_content :is(table, th, td) {
-    @apply py-2 px-4 border-2 border-secondary-2;
+    @apply py-2 px-4 border-2 border-secondary-2 text-center;
   }
   .CourseMaterial_content th {
     @apply p-2 border-2 bg-secondary-1;
   }
   .CourseMaterial_content ol {
     list-style-type: decimal;
-    @apply ml-8;
   }
   .CourseMaterial_content ul {
     list-style-type: disc;
   }
-  .CourseMaterial_content li {
-    @apply ml-4 my-2;
+  .CourseMaterial_content :is(ul, ol) {
+		margin-left: 3rem;
+  }
+  .CourseMaterial_content > p + :is(ul, ol) {
+		margin-top: -1.5rem;
+  }
+  .CourseMaterial_content :is(ul, ol) li {
+    @apply pl-2 my-4 leading-7;
+  }
+  .CourseMaterial_content blockquote ul li {
+    @apply ml-6 my-4 leading-7;
   }
   .CourseMaterial_content li::marker {
-    @apply font-bold;
+    @apply font-bold pr-4;
   }
   .CourseMaterial_content img {
     @apply mx-auto;
@@ -179,6 +187,9 @@
   }
   .CourseMaterial_content > * {
     @apply mb-8;
+  }
+  .CourseMaterial_content .Option {
+    @apply !mb-4;
   }
   .MatchBox div {
     min-width: 12rem;

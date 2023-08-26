@@ -14,6 +14,41 @@ There are other specific terms to describe continuity:
 
 ===
 
+# Continuity of a Function (2)
+
+Suppose $f$ and $g$ are both functions that are continuous at $a$. Then, the following functions are also continuous at $a$:
+- $f \pm g$
+- $fg$
+- $\frac{f}{g}$, if $g(a) \neq 0$.
+- $cf$, where $c$ is a constant.
+- $f(g(a))$, if $f$ is continuous at $g(a)$. 
+
+The continuity of a few common functions:
+- A polynomial is continuous on $(-\infty, \infty)$.
+- A rational function is continuous on its domain.
+- The six trigonometric functions are continuous on their respective domains.
+
+The above information can be used to determine at which intervals is a function continuous on.
+
+===
+
+# Continuity of a Function: Example
+
+<Example>
+Identify at which intervals are the following functions continuous on:
+1. $f(x)=x^2+20x+100$
+2. $g(x)=\sqrt{x^2+5x+4}$
+3. $h(x)=\ln{\frac{x-3}{x+2}}$
+</Example>
+
+The function $f$ is a polynomial, so it's continuous on $(-\infty, \infty)$.
+
+To find where $g$ is continuous on, remember that **square roots cannot be negative**. We have to find at which intervals do the inner polynomial become negative. The inner quadratic polynomial can be broken into $(x+4)(x+1)$, which tells us where the roots are: $-4$ and $-1$. Test any $c$ values for each these intervals (which are obtained by splitting the domain using the roots): $(-\infty, -4)$, $(-4, -1)$, and $(-1, \infty)$. Whichever interval yields a non-negative value will be the answer to this problem. In this case, they are $(-\infty, -4]$ and $[-1, \infty)$.  
+
+To find where $h$ is continuous on, remember that **logarithms cannot be zero or negative**. We havve to find at which intervals do the inner rational function become negative or zero. The problematic $x$ values are $3$ and $-2$. Like before, test any $c$ values for each these intervals: $(-\infty, -2)$, $(-2, 3)$ and $(3, \infty)$. Whichever interval yields a positive value will be the answer to this problem. In this case, they are $(-\infty, -2)$ and $(3, \infty)$.
+
+===
+
 # Discontinuity of a Function
 
 There are three types of discontinuity:

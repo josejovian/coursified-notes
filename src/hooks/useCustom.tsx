@@ -280,10 +280,12 @@ export function useCustom({
     (practiceId: string, content: string) => {
       const identifier = `Option-${practiceId}`;
 
+			const parsed = content.replaceAll("\\{", "{").replaceAll("\\}", "}");
+
       return (
         <Option
           id={identifier}
-          content={content}
+          content={parsed}
           selected={Boolean(answer[practiceId] && answer[practiceId] === "1")}
           onSelect={() => {
             handleToggleOption(practiceId);

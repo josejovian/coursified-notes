@@ -42,7 +42,7 @@ First, we will refer to $\angle BOC$ as $x$ in radian, and the circle's radius a
 - $AD$'s length = $r \tan{x}$
 
 Next, we will extract three different shapes; the triangle $BOC$, the sector $BOA$, and the triangle $DOA$. Just by looking at the visualization, we can tell that:
-$$ \text{Area }BOC \lt \text{Area }BOA \lt \text{DOA} $$
+$$ \text{Area }BOC \leq \text{Area }BOA \leq \text{Area DOA} $$
 
 Before continuing, we must find each of the region's area:
 
@@ -54,10 +54,10 @@ Now that we know each of the area, we can plug the formula in:
 
 $$
 \begin{align*}
-\text{Area }BOC &<  \text{Area }BOA < \text{Area }DOA\\
-\frac{1}{2} r^2 \sin{x} \cos{x} &< \frac{1}{2} x r^2 < \frac{1}{2}r^2 \tan{x} \\
-\sin{x} \cos{x} &< x < \tan{x} \\
-\cos{x} &< \frac{x}{\sin{x}} < \frac{1}{\cos{x}} \\
+\text{Area }BOC &\leq  \text{Area }BOA \leq \text{Area }DOA\\
+\frac{1}{2} r^2 \sin{x} \cos{x} &\leq \frac{1}{2} x r^2 \leq \frac{1}{2}r^2 \tan{x} \\
+\sin{x} \cos{x} &\leq x \leq \tan{x} \\
+\cos{x} &\leq \frac{x}{\sin{x}} \leq \frac{1}{\cos{x}} \\
 \end{align*}
 $$
 
@@ -65,8 +65,8 @@ Next, we will take the limit of all terms:
 
 $$
 \begin{align*}
-\lim\limits_{x\rightarrow 0} \cos{x} &< \lim\limits_{x\rightarrow 0} \frac{1}{\sin{x}} < \lim\limits_{x\rightarrow 0} \cos{x} \\
-1 &< \lim\limits_{x\rightarrow 0} \frac{x}{\sin{x}} < 1 \\
+\lim\limits_{x\rightarrow 0} \cos{x} &\leq \lim\limits_{x\rightarrow 0} \frac{1}{\sin{x}} \leq \lim\limits_{x\rightarrow 0} \frac{1}{\cos{x}} \\
+1 &\leq \lim\limits_{x\rightarrow 0} \frac{x}{\sin{x}} \leq 1 \\
 \end{align*}
 $$
 
