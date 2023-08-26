@@ -2,8 +2,8 @@
 	"title": "Applications of Derivative",
 	"overrideChapterTitles": {
 		"extrema": "Global and Local Extrema of a Function",
+		"theorems": "Rolle's Theorem and Mean Value Theorem",
 		"increasing": "Increasing and Decreasing of a Function",
-		"tangent": "Tangent Lines",
-		"rates": "Related Rates"
+		"examples": "Other Applications of Derivative"
 	}
 }

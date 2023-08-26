@@ -3,7 +3,10 @@
 	"overrideChapterTitles": {
 		"definition": "Definition of Derivative",
 		"properties": "Properties of Derivative",
-		"trigonometric": "Derivative of Trigonometric Functions and Its Inverse",
+		"trigonometric": "Derivative of Trigonometric Functions",
+		"exponential": "Derivative of Exponential and Logarithmic Functions",
+		"implicit": "Implicit Differentiation",
+		"inverse": "Derivative of Inverse and Hyperbolic Trigonometric Functions",
 		"hopital": "L'Hôpital's Rule"
 	}
 }

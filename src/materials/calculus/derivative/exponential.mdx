@@ -1,0 +1,84 @@
+# Derivatives of Logarithmic and Exponential Functions
+
+<Formula>
+$$
+\begin{align*}
+f(x)&=\log_a{u}\\
+f'(x)&=\frac{u'}{u \ln{a}}
+\end{align*}
+$$
+</Formula>
+
+Provided $u$ is a function, and $a$ is a constant ($a \neq 1$).
+
+---
+
+<Formula>
+$$
+\begin{align*}
+f(x)&=u^v\\
+f'(x)&=u^v (v \ln{u})'
+\end{align*}
+$$
+</Formula>
+
+Provided both $u$ and $v$ are functions, and $a$ is a constant.
+
+===
+
+# Derivatives of Logarithmic and Exponential Functions: Example
+
+<Example>
+If $f(x) = - \ln{\left | \cos{2x} \right |}$, calculate $f'(x)$.
+</Example>
+
+Remember the chain rule. Consider $p(x) = \cos{2x}$ and $q(x) = \ln{\left | x \right |}$. Then,  
+$$
+\begin{align*}
+p(x)&=\cos{2x}\\
+p'(x)&=-2\sin{2x}\\
+q(x)&=\ln{\left | x \right |}\\
+q'(x)&=\frac{1}{x}\\
+\end{align*}
+$$
+
+Do the main derivation:
+$$
+\begin{align*}
+f(x)&=- \ln{\left | \cos{2x} \right |}\\
+&=- q(p(x)) \\
+f'(x)&=- q'(p(x)) . p'(x) \\
+&=- \frac{1}{\cos{2x}} \times -2\sin{2x} \\
+&=- \frac{-2\sin{2x}}{\cos{2x}}\\
+&=2 \tan{2x}
+\end{align*}
+$$
+
+===
+
+# **Practice:** Logarithmic and Exponential Derivatives
+
+Let $f(x)=e^{x^2}\ln{\left|x\right|}$.  Calculate $f'(2)$. Express your answer using the following approximation: $e^4=54.6$ and $\ln(2)=0.69$.
+
+<Practice id="logarithmic-derivative-1" answer="177.996" />
+
+<Explanation>
+Use the product rule.
+$$
+\begin{align*}
+u&=e^{x^2}\\
+u'&=2x e^{x^2}\\
+v&=\ln{|x|}\\
+v'&=\frac{1}{x}\\
+\\
+f(x)&=e^{x^2}\ln{\left|x\right|}\\
+&=uv\\
+f'(x)&=u'v+uv'\\
+&=2x e^{x^2} \ln{|x|} + \frac{e^{x^2}}{x}\\
+f'(2)&=2(2) e^{2^2} \ln{|2|} + \frac{e^{2^2}}{2}\\
+&=4 e^{4} \ln{|2|} + \frac{e^{4}}{2}\\
+&=4 (54.6) (0.69) + \frac{54.6}{2}\\
+&=177.996\\
+\end{align*}
+$$
+</Explanation>

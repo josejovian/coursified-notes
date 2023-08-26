@@ -5,7 +5,7 @@ import { MdExpandMore } from "react-icons/md";
 
 interface IconBaseProps {
   IconComponent: IconType;
-  size?: "s" | "m" | "l-alt" | "l";
+  size?: "s" | "s-alt" | "m" | "l-alt" | "l";
 }
 
 type IconProps = IconBaseProps & Omit<IconLibProps, keyof IconBaseProps>;
@@ -27,6 +27,9 @@ export function Icon({ IconComponent, size, ...rest }: IconProps) {
       case "s":
         sizePx = "16px";
         break;
+				case "s-alt":
+					sizePx = "8px";
+					break;
     }
 
     return {

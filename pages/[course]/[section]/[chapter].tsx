@@ -180,6 +180,8 @@ const CourseMaterial = ({
         );
       })();
 
+      console.log("Result: ", result);
+
       if (result && updateCheckingState) {
         const existingData = checkChapterProgress(practice) ?? {};
         storeChapterProgress(practice, {
@@ -274,6 +276,7 @@ const CourseMaterial = ({
           <Button
             size="l"
             onClick={() => {
+              setChecking(true);
               setSubmmited(true);
               console.log("Submitted Answers");
               console.log(answer);
@@ -290,14 +293,29 @@ const CourseMaterial = ({
 
                 console.log("Correct? ", correct);
 
-                if (correct) setSolved(1);
+                if (correct) {
+                  setSolved(1);
+                  addToast({
+                    phrase: "courseMaterialPracticeAnsweredCorrect",
+                  });
+                } else {
+                  addToast({
+                    phrase: "courseMaterialPracticeAnsweredIncorrect",
+                  });
+                }
+              } else {
+                setTimeout(() => {
+                  setChecking(false);
+                }, 1000);
+                addToast({
+                  phrase: "courseMaterialPracticeAnsweredIncorrect",
+                });
               }
             }}
             disabled={
-              trueLoading ||
-              checking ||
-              Object.values(answer).length !== Object.values(accept).length ||
-              Object.values(answer).filter((x) => x === "").length > 1
+              trueLoading || checking
+              // Object.values(answer).length !== Object.values(accept).length ||
+              // Object.values(answer).filter((x) => x === "").length > 1
             }
           >
             Check
@@ -312,12 +330,14 @@ const CourseMaterial = ({
       maxPage,
       solved,
       checking,
+      handleNextPage,
+      setChecking,
+      setSubmmited,
       answer,
       accept,
-      handleNextPage,
-      setSubmmited,
-      setSolved,
       handleCheckAnswer,
+      setSolved,
+      addToast,
     ]
   );
 

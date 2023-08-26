@@ -1,0 +1,80 @@
+# Tangent Lines and Normal Lines
+
+The line passing through a function $f$ (that's differentiable at $c$) at $P(c, f(c))$, while having the slope $m$ where $f'(c)=m$, is $f$'s tangent line at the point $P$.  
+
+Normal line at a point is a line that is perpendicular to the tanget line at that point.  
+
+Two curves are orthogonal if their tangent lines are perpendicular at each point of intersections of the curves.
+
+===
+
+# Tangent Lines and Normal Lines: Example
+
+<Example>
+Given $f(x)=\frac{x^2}{2}-2$, find the equation of the tangent line to $f$ on $x=2$, as well as the normal line.
+</Example>
+
+Derive $f$:
+$$
+\begin{align*}
+f(x)&=\frac{x^2}{2}-2\\
+f'(x)&=x\\
+f'(2)&=2\\
+\end{align*}
+$$
+
+Based on this, we know now that the gradient of the tangent line on $x=2$, is $2$. The tangent line and the function will intersect at $(2, f(2))$, or $(2, 0)$, so we can know construct the equation:
+
+$$
+\begin{align*}
+y-y_1&=m(x-x_1)\\
+y&=2(x-2)\\
+y&=2x-4
+\end{align*}
+$$
+
+The gradient of the lines that are perpendicular to each other is $-1$, so the gradient of the normal line is $-\frac{1}{2}$. Use this to construct the equation of the normal line:
+
+$$
+\begin{align*}
+y-y_1&=m(x-x_1)\\
+y&=-\frac{1}{2}(x-2)\\
+y&=-\frac{1}{2}x+1
+\end{align*}
+$$
+
+<Graph functions="(x*x)/2-2,2*x-4" points="2,0-solid" />
+
+===
+
+# Optimization Problems
+
+To solve optimization problems, you need to be able to identify the correct variables from the story or problem, as well as constructing the function. After doing so, you will be able to perform standard differentiation to obtain the maximum/minimum result.
+
+===
+
+# Optimization Problems: Example
+
+<Example>
+Suppose you have a wire that is $40\text{ cm}$ long to form a rectangle. What is its largest possible area?
+</Example>
+
+We know that the resulting rectangle's perimeter will always be $40\text{ cm}$, thus $2w+2l=40$, which can be simplified into $l=20-w$.
+
+Since we want to maximize the area, the function will be the area of the rectangle. We can use the above equation to limit the function to only one variable, so we can proceed with standard derivation:
+
+$$
+\begin{align*}
+y&=wl\\
+&=w(20-w)\\
+&=20w-w^2\\
+y'&=20-2w\\
+0&=20-2w\\
+w&=10
+\end{align*}
+$$
+
+We are not finished yet, as this result only shows at which width will the rectangle achieve its maximum area. Substituting this into our initial equality yields us the length $10$\text{ cm}. Therefore, the maximum possible area is $100\text{ cm}^2$.
+
+
+

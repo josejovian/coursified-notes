@@ -1,0 +1,115 @@
+# L'Hôpital's Rule
+
+<Theorem title="L'Hôpital's Rule">
+Let $f$ and $g$ are functions which are differentable on an open interval $L$ that conains $a$, with the possible exception of $a$ itself, and $g(x) \neq 0$ for all $x$ in $L$. If $\lim_{x \rightarrow a}\frac{f(x)}{g(x)}$ is an indeterminate form, then: $\lim_{x \rightarrow a}\frac{f(x)}{g(x)} = \lim_{x \rightarrow a}\frac{f'(x)}{g'(x)}$, provided the limit on the RHS exists or is infinite.
+</Theorem>
+
+Derivatives can be used to calculate limits that have indeterminate form. There are seven indeterminate forms: $\frac{0}{0}$, $\frac{\infty}{\infty}$, $0 \times \infty$, $\infty - \infty$, $\infty^0$, $0^0$, and $1^{\infty}$.
+
+===
+
+# L'Hôpital's Rule: Examples (1)
+
+<Example>
+Calculate $\lim\limits_{x\rightarrow 0}{\frac{e^{x^2}-1}{\cos{x}-1}}$
+</Example>
+
+Substituting it directly yields an indeterminate form $\frac{0}{0}$. Use the Hôpital's Rule. 
+
+$$
+\begin{align*}
+&\lim_{x\rightarrow 0}{\frac{e^{x^2}-1}{\cos{x}-1}}\\
+&=\lim_{x\rightarrow 0}-{\frac{e^{x^2}2x}{\sin{x}}}\quad\text{Apply Hôpital's Rule}\\
+&=\left ( \lim_{x\rightarrow 0}-2e^{x^2} \right ) \left ( \lim_{x\rightarrow 0}\frac{x}{\sin{x}} \right )\\
+&=-2\\
+\end{align*}
+$$
+
+---
+
+<Example>
+Calculate $\lim\limits_{x\rightarrow \infty} \frac{x^2}{e^{2x}}$
+</Example>
+
+Substituting it directly yields an indeterminate form $\frac{\infty}{\infty}$. Use the Hôpital's Rule. 
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow \infty} \frac{x^2}{e^{2x}} &= \lim\limits_{x\rightarrow \infty} \frac{2x}{2e^{2x}} \quad\text{Apply Hôpital's Rule}\\
+&= \lim\limits_{x\rightarrow \infty} \frac{2}{4e^{2x}} \quad\text{Apply Hôpital's Rule}\\
+&= 0\\
+\end{align*}
+$$
+
+===
+
+# L'Hôpital's Rule: Examples (2)
+
+<Example>
+Calculate $\lim_{x\rightarrow 0^+}\ln{x}\sin{x}$
+</Example>
+
+Substituting it directly yields an indeterminate form $-\infty \times 0$. Use the Hôpital's Rule. 
+
+$$
+\begin{align*}
+\lim_{x\rightarrow 0^+}\ln{x}\sin{x}&=  \lim_{x\rightarrow 0^+}\frac{\ln{x}}{\csc{x}}\\
+&=  \lim_{x\rightarrow 0^+}\frac{\frac{1}{x}}{-\cot{x}\csc{x}}  \quad\text{Apply Hôpital's Rule}\\
+&=  \lim_{x\rightarrow 0^+}\frac{1}{-x\cot{x}\csc{x}}\\
+&=  \lim_{x\rightarrow 0^+} \left ( -\tan{x} \times \frac{\sin{x}}{x} \right ) \\
+&=  \left ( \lim_{x\rightarrow 0^+} -\tan{x} \right ) \left ( \lim_{x\rightarrow 0^+} \frac{\sin{x}}{x} \right )\\
+&=  0
+\end{align*}
+$$
+
+---
+
+<Example>
+Calculate $\lim\limits_{x\rightarrow 0} \left ( x + 1\right )^\frac{1}{x}$
+</Example>
+
+Substituting it directly yields an indeterminate form $1^\infty$. The Hôpital's Rule cannot be used yet. Firstly, we need to somehow convert this into a fraction. Recall these laws of logarithms.
+
+$$
+\begin{align*}
+e^{\ln{y}}&=y\\
+\ln{a^b}&=b\ln{a}\\
+\\
+\lim_{x\rightarrow 0} \left ( x + 1\right )^\frac{1}{x}&=  e^{\ln \left ( \lim_{x\rightarrow 0} {\left ( x + 1\right )^\frac{1}{x}} \right )}\\
+&=  e^{\lim_{x\rightarrow 0} \ln{\left ( x + 1\right )^\frac{1}{x}}}\\
+&=  e^{\lim_{x\rightarrow 0} \frac{1}{x} \ln{\left ( x + 1\right )}}\\
+&=  e^{\lim_{x\rightarrow 0} \frac{\ln{\left ( x + 1\right )}}{x}}\\
+&=  e^{\lim_{x\rightarrow 0} \frac{1}{x + 1}}\quad\text{Apply Hôpital's Rule}\\
+&=  e
+\end{align*}
+$$
+
+
+===
+
+# **Practice:** L'Hôpital's Rule
+
+Calculate $\lim_{x\rightarrow 0^+}(\csc{x}+\cot{x})^{\sin{x}}$. Express your answer using the following approximation: $e=2.7$.
+
+<Practice id="hopital-1" answer="1" />
+
+<Explanation>
+Substituting it directly yields an indeterminate form $\infty^0$. The Hôpital's Rule isn't immediately usable, so the current equation has to be modified. Recall the laws of logarithms mentioned in the example.
+
+$$
+\begin{align*}
+&\lim_{x\rightarrow 0^+}(\csc{x}+\cot{x})^{\sin{x}}\\
+&=\lim_{x\rightarrow 0^+}e^{\ln{(\csc{x}+\cot{x})^{\sin{x}}}}\\
+&=e^{\lim_{x\rightarrow 0^+}\ln{(\csc{x}+\cot{x})^{\sin{x}}}}\\
+&=e^{\lim_{x\rightarrow 0^+}\sin{x}\ln{(\csc{x}+\cot{x})}}\\
+&=e^{\lim_{x\rightarrow 0^+}\frac{\ln{(\csc{x}+\cot{x})}}{\csc{x}}}\\
+&=e^{\lim_{x\rightarrow 0^+}\frac{\frac{-\csc{x}\cot{x}-\csc^2{x}}{(\csc{x}+\cot{x})}}{-\csc{x}\cot{x}}}\quad\text{Apply Hôpital's Rule}\\
+&=e^{\lim_{x\rightarrow 0^+}\frac{\csc{x}\cot{x}+\csc^2{x}}{(\csc{x}+\cot{x})(\csc{x}\cot{x})}}\\
+&=e^{\lim_{x\rightarrow 0^+}\frac{\cot{x}+\csc{x}}{(\csc{x}+\cot{x})(\cot{x})}}\\
+&=e^{\lim_{x\rightarrow 0^+}\frac{\cot{x}+\csc{x}}{(\csc{x}+\cot{x})(\cot{x})}\times \frac{\sin{x}}{\sin{x}}} \\
+&=e^{\lim_{x\rightarrow 0^+}\frac{\cos{x}+1}{(1+\cos{x})(\cot{x})}}\\
+&=e^{\lim_{x\rightarrow 0^+}\tan{x}}\\
+&=1
+\end{align*}
+$$
+</Explanation>
