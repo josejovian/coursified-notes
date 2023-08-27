@@ -12,11 +12,13 @@ import {
   drawGraphAxes,
   drawGraphAxesArrows,
   drawGraphFunction,
+  drawGraphAxesMarker,
   drawGraphGrids,
   drawGraphPoints,
   evaluateMath,
 } from "@/src/utils";
 import { useSwapPage } from "@/src/hooks";
+import TeX from "@matejmazur/react-katex";
 
 interface GraphProps {
   id: string;
@@ -61,7 +63,7 @@ export default function Graph({
       right,
       up,
       vertical,
-      color: "blue",
+      color: "orange",
     };
   }, [down, left, right, up]);
   const {
@@ -82,6 +84,8 @@ export default function Graph({
   const stateSwapPages = useSwapPage();
   const [swapPages, setSwapPages] = stateSwapPages;
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const xAxisRef = useRef<HTMLDivElement>(null);
+  const yAxisRef = useRef<HTMLDivElement>(null);
 
   const parsedFunctions = useMemo(
     () => functions.replace("function:", "").split(";"),
@@ -146,45 +150,6 @@ export default function Graph({
     setPts(convertedPoints);
   }, [parsedPoints]);
 
-  /*
-  const handleInitializeGraph = useCallback(() => {
-    if (!loading) return;
-
-    if (!document.getElementById(id)) return;
-
-    const board = JXG.JSXGraph.initBoard(id, {
-      keepAspectRatio: true,
-      offsetX: -99,
-      offsetY: -99,
-      boundingbox: [-5, 5, 5, -5],
-      axis: true,
-      showNavigation: false,
-      showInfobox: true,
-    });
-
-    funcs.forEach((mathFunction) => {
-      board.create("functiongraph", [mathFunction, -6, 6]);
-    });
-
-    pts.forEach((mathPoint) => {
-      let params = {};
-
-      switch (mathPoint.variant) {
-        case "solid":
-          params = { strokeColor: "blue", fillColor: "blue" };
-          break;
-        case "outline":
-          params = { strokeColor: "blue", fillColor: "white" };
-          break;
-      }
-
-      if (!isNaN(mathPoint.points[0]) && !isNaN(mathPoint.points[1]))
-        board.create("point", mathPoint.points, params);
-    });
-
-    if (build) setLoading(false);
-  }, [build, funcs, id, loading, pts]);*/
-
   const handleInitializeGraph = useCallback(() => {
     if (!loading) return;
     if (!document.getElementById(id)) return;
@@ -199,41 +164,11 @@ export default function Graph({
 
     ctx.strokeStyle = "black";
     ctx.lineWidth = 2;
+    drawGraphAxesMarker(ctx, graphParams);
     drawGraphAxes(ctx, graphParams);
     drawGraphAxesArrows(ctx, graphParams);
-    // const board = JXG.JSXGraph.initBoard(id, {
-    //   keepAspectRatio: true,
-    //   offsetX: -99,
-    //   offsetY: -99,
-    //   boundingbox: [-5, 5, 5, -5],
-    //   axis: true,
-    //   showNavigation: false,
-    //   showInfobox: true,
-    // });
-
-    // ctx.shadowBlur = 1;
     drawGraphFunction(ctx, graphParams, funcs);
     drawGraphPoints(ctx, graphParams, pts);
-
-    // ctx.strokeStyle = "white";
-    // ctx.lineWidth = 4;
-    // ctx.rect(0, 0, width + 8, height + 8);
-    // ctx.stroke();
-    // pts.forEach((mathPoint) => {
-    //   let params = {};
-
-    //   switch (mathPoint.variant) {
-    //     case "solid":
-    //       params = { strokeColor: "blue", fillColor: "blue" };
-    //       break;
-    //     case "outline":
-    //       params = { strokeColor: "blue", fillColor: "white" };
-    //       break;
-    //   }
-
-    //   if (!isNaN(mathPoint.points[0]) && !isNaN(mathPoint.points[1]))
-    //     board.create("point", mathPoint.points, params);
-    // });
 
     if (build) setLoading(false);
   }, [build, funcs, graphParams, hideGrid, id, loading, pts]);
@@ -252,13 +187,102 @@ export default function Graph({
     handleInitializeGraph();
   }, [build, handleInitializeGraph]);
 
+  const renderGraphNumbers = useMemo(
+    () => (
+      <>
+        <div
+          style={{
+            position: "absolute",
+            top: 32 * up + borderSize * 3,
+            left: borderSize,
+          }}
+          ref={xAxisRef}
+        >
+          {Array.from({ length: horizontal }, () => 0).map((_, idx) => {
+            const xValue = idx + left;
+
+            if (idx === 0 || xValue === -1 || xValue === 0) return <></>;
+
+            return (
+              <TeX
+                style={{
+                  width: "24px",
+                  textAlign: "right",
+                  position: "absolute",
+                  left: (idx - 1) * gridSize + 12,
+                }}
+                key={`GraphX_${functions}_${idx}`}
+              >{`${xValue}`}</TeX>
+            );
+          })}
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            top: borderSize,
+            left: 32 * (Math.abs(left) - 1),
+          }}
+          ref={xAxisRef}
+        >
+          {Array.from({ length: horizontal }, () => 0).map((_, idx) => {
+            const yValue = up - idx;
+
+            if (idx === 0 || yValue === -1 || yValue === 0) return <></>;
+
+            return (
+              <TeX
+                style={{
+                  width: "24px",
+                  textAlign: "right",
+                  position: "absolute",
+                  top: idx * gridSize - 12,
+                }}
+                key={`GraphY_${functions}_${idx}`}
+              >{`${yValue}`}</TeX>
+            );
+          })}
+        </div>
+      </>
+    ),
+    [borderSize, functions, gridSize, horizontal, left, up]
+  );
+
+  const renderGraphAxesCaption = useMemo(
+    () => (
+      <>
+        <div
+          style={{
+            position: "absolute",
+            top: 32 * up - 8,
+            left: 3 * borderSize + width,
+          }}
+        >
+          <TeX>x</TeX>
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            top: -6 * borderSize,
+            left: Math.abs(left) * 32,
+          }}
+        >
+          <TeX>y</TeX>
+        </div>
+      </>
+    ),
+    [borderSize, left, up, width]
+  );
+
   return (
-    <canvas
-      ref={canvasRef}
-      className="mx-auto"
-      id={id}
-      width={width + 8}
-      height={height + 8}
-    ></canvas>
+    <div className="relative w-fit mx-auto">
+      <canvas
+        ref={canvasRef}
+        id={id}
+        width={width + 8}
+        height={height + 8}
+      ></canvas>
+      {renderGraphNumbers}
+      {renderGraphAxesCaption}
+    </div>
   );
 }

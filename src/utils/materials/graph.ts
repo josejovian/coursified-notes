@@ -5,6 +5,7 @@ const graphColors: Record<GraphColors, string> = {
   blue: "#3498db",
   green: "#2ecc71",
   purple: "#9b59b6",
+  orange: "#e67e22",
 };
 
 export function drawGraphAxes(
@@ -102,6 +103,39 @@ export function drawGraphAxesArrows(
     borderSize + height - arrowSize
   );
   ctx.stroke();
+}
+
+export function drawGraphAxesMarker(
+  ctx: CanvasRenderingContext2D,
+  params: GraphParams
+) {
+  const {
+    up,
+    borderSize,
+    gridSize,
+    width,
+    height,
+    left,
+    vertical,
+    horizontal,
+  } = params;
+
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 2;
+
+  for (let i = 1; i < horizontal; i++) {
+    ctx.beginPath();
+    ctx.moveTo(Math.abs(left) * gridSize - borderSize, borderSize + i * 32);
+    ctx.lineTo(Math.abs(left) * gridSize + 3 * borderSize, borderSize + i * 32);
+    ctx.stroke();
+  }
+
+  for (let i = 1; i < vertical; i++) {
+    ctx.beginPath();
+    ctx.moveTo(borderSize + i * 32, Math.abs(up) * gridSize - borderSize);
+    ctx.lineTo(borderSize + i * 32, Math.abs(up) * gridSize + 3 * borderSize);
+    ctx.stroke();
+  }
 }
 
 export function drawGraphGrids(

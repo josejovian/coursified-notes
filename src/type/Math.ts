@@ -5,7 +5,7 @@ export interface MathPoint {
   variant?: string;
 }
 
-export type GraphColors = "purple" | "blue" | "green" | "red";
+export type GraphColors = "purple" | "blue" | "green" | "red" | "orange";
 
 export interface GraphParams {
   up: number;
