@@ -1,18 +1,18 @@
 import clsx from "clsx";
-import { useCallback, useState, useRef, useMemo, useEffect } from "react";
+import React, {
+  useCallback,
+  useState,
+  useRef,
+  useMemo,
+  useEffect,
+} from "react";
 import { getMDXComponent } from "mdx-bundler/client";
 import TeX from "@matejmazur/react-katex";
 import { AddressesType, AnswerType, StateType } from "@/src/type";
 import { checkChapterProgress } from "@/src/utils";
-import { Blockquote, Input, Loader, Paragraph } from "@/src/components";
+import { Blockquote, Graph, Input, Loader, Paragraph } from "@/src/components";
 import { useRouter } from "next/router";
 import { useCustom } from "@/src/hooks";
-
-import dynamic from "next/dynamic";
-
-const Graph = dynamic(() => import("../Entity/Graph/CourseEntityGraph"), {
-  ssr: false,
-});
 
 interface CourseMaterialContentProps {
   markdown: any;
@@ -51,6 +51,9 @@ export function CourseLayoutMain({
   const stateActive = useState<any>(null);
   const active = stateActive[0];
   const inputRef = useRef<Record<string, boolean>>({});
+  const graphRef = useRef<Record<string, string>>({});
+
+  const [executed, setExecuted] = useState(0);
 
   const {
     handleOnePairMatch,
@@ -72,7 +75,9 @@ export function CourseLayoutMain({
 
   const { practice } = addreses;
 
-  const Content = useMemo(() => getMDXComponent(markdown), [markdown]);
+  const Content = useMemo(() => {
+    return getMDXComponent(markdown);
+  }, [markdown]);
 
   const userAnswerStatus = useCallback(
     (practiceId: string) => {
@@ -169,6 +174,7 @@ export function CourseLayoutMain({
 
   const handlePrepareNewPage = useCallback(() => {
     if (loading) {
+      graphRef.current = {};
       handleRemoveAllCustomComponents();
       handleConvertCodeToComponents();
       setLoading(false);
@@ -202,8 +208,64 @@ export function CourseLayoutMain({
     handleRouteChangeStart,
   ]);
 
-  const renderContents = useMemo(
-    () => (
+  const handleConvertPractice = useCallback(
+    ({ id, answer: answerKey, placeholder, indent }: any) => {
+      return (
+        <Input
+          className={clsx(indent && "ml-14")}
+          key={`InputBox-${id}`}
+          id={`InputBox-${id}`}
+          onBlur={(e) => {
+            const { value } = e.target;
+
+            if (value !== "" && answer[id] !== value) {
+              setSubmmited(false);
+              setAnswer((prev) => ({
+                ...prev,
+                [id]: e.target.value,
+              }));
+            }
+          }}
+          defaultValue={answer[id]}
+          disabled={solved === 1 || userAnswerStatus(id) === "success"}
+          state={submitted && solved ? userAnswerStatus(id) : undefined}
+          mounted={inputRef.current[id]}
+          onMount={() => {
+            if (inputRef.current[id]) return;
+
+            inputRef.current[id] = true;
+
+            let answerKeys = {};
+
+            answerKeys = {
+              ...answerKeys,
+              [id]: answerKey,
+            };
+
+            setSolved(0);
+            setAccept((prev) => ({
+              ...prev,
+              ...answerKeys,
+            }));
+          }}
+          placeholder={placeholder}
+        />
+      );
+    },
+    [
+      answer,
+      setAccept,
+      setAnswer,
+      setSolved,
+      setSubmmited,
+      solved,
+      submitted,
+      userAnswerStatus,
+    ]
+  );
+
+  const renderContents = useMemo(() => {
+    return (
       <article
         className={clsx(
           "CourseMaterial_wrapper",
@@ -215,52 +277,33 @@ export function CourseLayoutMain({
         <div className="CourseMaterial_content">
           <Content
             components={{
+              Indent: ({ children }) => {
+                return <div className="ml-8">{children}</div>;
+              },
+              TwoColumns: ({ children }) => {
+                return (
+                  <div className="TwoColumns flex flex-wrap gap-4 w-fit mx-auto">
+                    {children}
+                  </div>
+                );
+              },
               Graph: (props) => {
-                const { functions = "", points = "" } = props;
-                return <Graph id={`Graph_${functions}_${points}`} {...props} />;
+                const { functions = "" } = props;
+                const identifier = getId(functions);
+                return (
+                  <Graph
+                    {...props}
+                    key={identifier}
+                    id={identifier}
+                    cache={graphRef.current[identifier]}
+                    onReady={(cache) => {
+                      graphRef.current[identifier] = cache;
+                    }}
+                  />
+                );
               },
               TeX,
-              Practice: ({ id, answer: answerKey, placeholder }) => (
-                <Input
-                  key={`InputBox-${id}`}
-                  id={`InputBox-${id}`}
-                  onBlur={(e) => {
-                    // setSolved(1);
-                    if (answer !== accept) {
-                      setSubmmited(false);
-                      setAnswer((prev) => ({
-                        ...prev,
-                        [id]: e.target.value,
-                      }));
-                    }
-                  }}
-                  defaultValue={answer[id]}
-                  disabled={solved === 1 || userAnswerStatus(id) === "success"}
-                  state={submitted && solved ? userAnswerStatus(id) : undefined}
-                  mounted={inputRef.current[id]}
-                  onMount={() => {
-                    if (inputRef.current[id]) return;
-
-                    inputRef.current[id] = true;
-
-                    let answerKeys = {};
-
-                    answerKeys = {
-                      ...answerKeys,
-                      [id]: answerKey,
-                    };
-
-                    setSolved(0);
-                    console.log("Set Accept: ");
-                    console.log(answerKey);
-                    setAccept((prev) => ({
-                      ...prev,
-                      ...answerKeys,
-                    }));
-                  }}
-                  placeholder={placeholder}
-                />
-              ),
+              Practice: handleConvertPractice,
               Explanation: ({ children }) => (
                 <>
                   {solved === 1 && (
@@ -273,7 +316,8 @@ export function CourseLayoutMain({
               ),
               Example: ({ children }) => (
                 <Blockquote variant="example">
-                  <Paragraph weight="bold">Example</Paragraph><br />
+                  <Paragraph weight="bold">Example</Paragraph>
+                  <br />
                   {children}
                 </Blockquote>
               ),
@@ -287,32 +331,23 @@ export function CourseLayoutMain({
                 return <TeX block>{children}</TeX>;
               },
               Match: ({ id, left, right }) => (
-                <span className="CustomMaterialInvoker hidden">{`[match]@${id}@${left}@${right}`}</span>
+                <div
+                  id={id}
+                  className="CustomMaterialInvoker hidden"
+                >{`[match]@${id}@${left}@${right}`}</div>
               ),
               Option: ({ id, content, truth }) => (
-                <span className="CustomMaterialInvoker hidden">{`[option]@${id}@${content}@${
-                  truth ? 1 : 0
-                }`}</span>
+                <div
+                  id={id}
+                  className="CustomMaterialInvoker hidden"
+                >{`[option]@${id}@${content}@${truth ? 1 : 0}`}</div>
               ),
             }}
           />
         </div>
       </article>
-    ),
-    [
-      Content,
-      accept,
-      answer,
-      setAccept,
-      setAnswer,
-      setSolved,
-      setSubmmited,
-      solved,
-      submitted,
-      trueLoading,
-      userAnswerStatus,
-    ]
-  );
+    );
+  }, [Content, handleConvertPractice, solved, trueLoading]);
 
   return (
     <div className="relative flex w-full h-full overflow-x-hidden overflow-y-scroll">
@@ -328,4 +363,11 @@ export function CourseLayoutMain({
       {renderContents}
     </div>
   );
+}
+
+function getId(props: any) {
+  // return encodeURIComponent(Object.values(props).join(""));
+  return Buffer.from(Object.values(props).join(""), "utf8")
+    .toString("base64")
+    .replace(/([^\w]+|\s+)/g, "");
 }

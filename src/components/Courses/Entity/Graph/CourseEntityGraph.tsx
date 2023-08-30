@@ -1,5 +1,5 @@
 import JXG from "jsxgraph";
-import {
+import React, {
   useEffect,
   useState,
   useCallback,
@@ -7,7 +7,12 @@ import {
   useMemo,
   createRef,
 } from "react";
-import { GraphParams, MathFunction, MathPoint } from "@/src/type";
+import {
+  GraphParams,
+  MathAsymptote,
+  MathFunction,
+  MathPoint,
+} from "@/src/type";
 import {
   drawGraphAxes,
   drawGraphAxesArrows,
@@ -16,56 +21,95 @@ import {
   drawGraphGrids,
   drawGraphPoints,
   evaluateMath,
+  drawGraphAsymptotes,
 } from "@/src/utils";
 import { useSwapPage } from "@/src/hooks";
 import TeX from "@matejmazur/react-katex";
+import clsx from "clsx";
+import Image from "next/image";
+
+type GraphGridSize = "md" | "sm";
 
 interface GraphProps {
   id: string;
   functions?: string;
   funcs?: any;
   points?: string;
-  ranges?: [number, number, number, number];
+  ranges?: string;
+  increments?: string;
   hideGrid?: boolean;
-}
-
-interface FunctionType {
-  function: (x: number) => number;
-  bounds?: [number, number];
-  color?: string;
+  asymptotes: string;
+  gridSize?: "md" | "sm";
+  mounted?: boolean;
+  cache?: string;
+  onReady?: (data: string) => void;
 }
 
 const GRAPH_OUTER_BORDER = 4;
-const GRAPH_GRID_SIZE = 32;
+const GRAPH_GRID_SIZE: Record<GraphGridSize, number> = {
+  md: 32,
+  sm: 24,
+};
 const GRAPH_ARROW_SIZE = 8;
+const GRAPH_RANGES = [5, 5, -5, -5];
 
-export default function Graph({
+export const Graph = ({
   id,
   functions = "",
   points = "",
-  ranges = [5, 5, -5, -5], //up right down left
+  ranges = "[5,5,-5,-5]",
+  increments = "",
   hideGrid,
-}: GraphProps) {
-  const [up, right, down, left] = ranges;
+  asymptotes = "",
+  gridSize: ovverrideGridSize = "sm",
+  mounted,
+  cache,
+  onReady,
+}: GraphProps) => {
+  const [image, setImage] = useState(cache);
+
+  const parsedBounds = useMemo<[number, number, number, number]>(() => {
+    if (!ranges || ranges === "") return GRAPH_RANGES;
+
+    const parsed = JSON.parse(ranges);
+
+    if (parsed && parsed.length === 4) return parsed;
+    return GRAPH_RANGES;
+  }, [ranges]);
+  const [up, right, down, left] = parsedBounds;
+
+  const parsedIncrements = useMemo<[number, number]>(() => {
+    if (!increments || increments === "") return [1, 1];
+
+    const parsed = JSON.parse(increments).split(",");
+
+    if (parsed.length === 2) return parsed as [number, number];
+
+    return [1, 2];
+  }, [increments]);
 
   const graphParams = useMemo<GraphParams>(() => {
     const vertical = Math.abs(up) + Math.abs(down);
     const horizontal = Math.abs(right) + Math.abs(left);
+    const gridXSize = GRAPH_GRID_SIZE[ovverrideGridSize] * parsedIncrements[1];
+    const gridYSize = GRAPH_GRID_SIZE[ovverrideGridSize] * parsedIncrements[0];
+
     return {
       arrowSize: GRAPH_ARROW_SIZE,
       borderSize: GRAPH_OUTER_BORDER,
       down,
-      gridSize: GRAPH_GRID_SIZE,
-      height: vertical * 32,
-      width: horizontal * 32,
+      height: vertical * gridYSize,
+      width: horizontal * gridXSize,
+      gridSize: [gridYSize, gridXSize],
       horizontal,
       left,
       right,
       up,
       vertical,
       color: "orange",
+      increments: parsedIncrements,
     };
-  }, [down, left, right, up]);
+  }, [down, left, ovverrideGridSize, parsedIncrements, right, up]);
   const {
     arrowSize,
     borderSize,
@@ -78,11 +122,11 @@ export default function Graph({
 
   const [loading, setLoading] = useState(true);
   const [build, setBuild] = useState(false);
+  const buildRef = useRef(false);
+  const initializeRef = useRef(false);
   const [success, setSuccess] = useState(false);
   const [funcs, setFuncs] = useState<MathFunction[]>([]);
   const [pts, setPts] = useState<MathPoint[]>([]);
-  const stateSwapPages = useSwapPage();
-  const [swapPages, setSwapPages] = stateSwapPages;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const xAxisRef = useRef<HTMLDivElement>(null);
   const yAxisRef = useRef<HTMLDivElement>(null);
@@ -97,40 +141,58 @@ export default function Graph({
     [points]
   );
 
+  const parsedAsymptotes = useMemo<MathAsymptote[]>(
+    () =>
+      asymptotes.split(",").map((instance) => {
+        return {
+          type: instance.startsWith("y=") ? "y" : "x",
+          value: Number(instance.slice(2)),
+        };
+      }),
+    [asymptotes]
+  );
+
   const handleInitializeFunctions = useCallback(() => {
-    const convertedFunctions = parsedFunctions.map((f: string) => {
-      const parsed = f.split("@");
-      if (parsed.length !== 2) {
-        return (x: number) => {
-          const value = evaluateMath(f.replace(/x/g, `(${x})`));
+    const convertedFunctions = parsedFunctions
+      .map((f: string) => {
+        const parsed = f.split("@");
+
+        if (parsed.length < 1 || parsed.length > 3) return null;
+
+        const [strFunc, strBounds, strColor] = parsed;
+        const bounds = strBounds
+          ? strBounds
+              .split("")
+              .filter((_, idx) => idx > 0 && idx < strBounds.length - 1)
+              .join("")
+              .split(",")
+              .map((num) => Number(num))
+          : [left, right];
+        const [l, r] = bounds;
+
+        const fun = (x: number) => {
+          if (x < l || x > r) return NaN;
+
+          const value = evaluateMath(strFunc.replace(/x/g, `(${x})`));
           return value;
         };
-      }
 
-      const [strFunc, strBounds] = parsed;
-      const bounds = strBounds
-        .split("")
-        .filter((_, idx) => idx > 0 && idx < strBounds.length - 1)
-        .join("")
-        .split(",")
-        .map((num) => Number(num));
-      const [left, right] = bounds;
-
-      return (x: number) => {
-        if (x < left || x > right) return NaN;
-
-        const value = evaluateMath(strFunc.replace(/x/g, `(${x})`));
-        return value;
-      };
-    });
+        return {
+          func: fun,
+          color: strColor ?? "orange",
+        };
+      })
+      .filter((f) => f) as MathFunction[];
 
     setFuncs(convertedFunctions);
-  }, [parsedFunctions]);
+
+    return convertedFunctions;
+  }, [left, parsedFunctions, right]);
 
   const handleInitializePoints = useCallback(() => {
     const convertedPoints: MathPoint[] = [];
     parsedPoints.forEach((point) => {
-      const parse = point.split("-");
+      const parse = point.split("~");
       if (parse.length === 2) {
         const variant = parse[1];
         const coords = parse[0].split(",").map((x) => Number(x));
@@ -144,48 +206,85 @@ export default function Graph({
       }
     });
 
-    console.log("Points:");
-    console.log(convertedPoints);
-
     setPts(convertedPoints);
+
+    return convertedPoints;
   }, [parsedPoints]);
 
-  const handleInitializeGraph = useCallback(() => {
-    if (!loading) return;
-    if (!document.getElementById(id)) return;
-
+  const handleDrawGraphTemplates = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    if (!hideGrid) drawGraphGrids(ctx, graphParams);
-
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 2;
     drawGraphAxesMarker(ctx, graphParams);
     drawGraphAxes(ctx, graphParams);
     drawGraphAxesArrows(ctx, graphParams);
-    drawGraphFunction(ctx, graphParams, funcs);
-    drawGraphPoints(ctx, graphParams, pts);
+  }, [graphParams]);
 
-    if (build) setLoading(false);
-  }, [build, funcs, graphParams, hideGrid, id, loading, pts]);
+  const handleDrawGraph = useCallback(
+    (directFunctions: MathFunction[], directPoints: MathPoint[]) => {
+      if (!loading) return;
+      if (funcs.length !== parsedFunctions.length) return;
+
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      if (initializeRef.current) return;
+
+      initializeRef.current = true;
+
+      if (!hideGrid) drawGraphGrids(ctx, graphParams);
+
+      handleDrawGraphTemplates();
+      drawGraphFunction(ctx, graphParams, directFunctions);
+      drawGraphPoints(ctx, graphParams, directPoints);
+      drawGraphAsymptotes(ctx, graphParams, parsedAsymptotes);
+      ctx.save();
+
+      setLoading(false);
+
+      const graph = canvas.toDataURL("image/png");
+      onReady && onReady(graph);
+      setImage(graph);
+    },
+    [
+      funcs.length,
+      graphParams,
+      handleDrawGraphTemplates,
+      hideGrid,
+      loading,
+      onReady,
+      parsedAsymptotes,
+      parsedFunctions.length,
+    ]
+  );
 
   const handleInitialize = useCallback(() => {
-    handleInitializeFunctions();
-    handleInitializePoints();
-    setBuild(true);
-  }, [handleInitializeFunctions, handleInitializePoints]);
+    if (cache) return;
+
+    handleDrawGraphTemplates();
+    const ogFunctions = handleInitializeFunctions();
+    const ogPoints = handleInitializePoints();
+    handleDrawGraph(ogFunctions, ogPoints);
+    // setBuild(true);
+  }, [
+    cache,
+    handleInitializeFunctions,
+    handleInitializePoints,
+    handleDrawGraphTemplates,
+    handleDrawGraph,
+  ]);
 
   useEffect(() => {
     handleInitialize();
   }, [handleInitialize]);
 
-  useEffect(() => {
-    handleInitializeGraph();
-  }, [build, handleInitializeGraph]);
+  const fontSize = useMemo(() => GRAPH_GRID_SIZE["md"] - 8, []);
 
   const renderGraphNumbers = useMemo(
     () => (
@@ -193,7 +292,7 @@ export default function Graph({
         <div
           style={{
             position: "absolute",
-            top: 32 * up + borderSize * 3,
+            top: gridSize[0] * up + borderSize * 3,
             left: borderSize,
           }}
           ref={xAxisRef}
@@ -206,10 +305,12 @@ export default function Graph({
             return (
               <TeX
                 style={{
-                  width: "24px",
+                  width: `${fontSize}px`,
                   textAlign: "right",
                   position: "absolute",
-                  left: (idx - 1) * gridSize + 12,
+                  left:
+                    (idx - 1) * gridSize[1] +
+                    (ovverrideGridSize === "md" ? 12 : 4),
                 }}
                 key={`GraphX_${functions}_${idx}`}
               >{`${xValue}`}</TeX>
@@ -220,7 +321,9 @@ export default function Graph({
           style={{
             position: "absolute",
             top: borderSize,
-            left: 32 * (Math.abs(left) - 1),
+            left:
+              gridSize[1] * (Math.abs(left) - 1) -
+              (ovverrideGridSize === "md" ? 0 : 12),
           }}
           ref={xAxisRef}
         >
@@ -232,10 +335,10 @@ export default function Graph({
             return (
               <TeX
                 style={{
-                  width: "24px",
+                  width: `${fontSize}px`,
                   textAlign: "right",
                   position: "absolute",
-                  top: idx * gridSize - 12,
+                  top: idx * gridSize[0] - 12,
                 }}
                 key={`GraphY_${functions}_${idx}`}
               >{`${yValue}`}</TeX>
@@ -244,7 +347,16 @@ export default function Graph({
         </div>
       </>
     ),
-    [borderSize, functions, gridSize, horizontal, left, up]
+    [
+      borderSize,
+      fontSize,
+      functions,
+      gridSize,
+      horizontal,
+      left,
+      ovverrideGridSize,
+      up,
+    ]
   );
 
   const renderGraphAxesCaption = useMemo(
@@ -253,7 +365,7 @@ export default function Graph({
         <div
           style={{
             position: "absolute",
-            top: 32 * up - 8,
+            top: gridSize[0] * up - 8,
             left: 3 * borderSize + width,
           }}
         >
@@ -263,26 +375,41 @@ export default function Graph({
           style={{
             position: "absolute",
             top: -6 * borderSize,
-            left: Math.abs(left) * 32,
+            left: Math.abs(left) * gridSize[1],
           }}
         >
           <TeX>y</TeX>
         </div>
       </>
     ),
-    [borderSize, left, up, width]
+    [borderSize, gridSize, left, up, width]
   );
 
   return (
-    <div className="relative w-fit mx-auto">
+    <div className="Graph relative w-fit mx-auto select-none">
       <canvas
+        className={clsx("invisible")}
         ref={canvasRef}
         id={id}
         width={width + 8}
         height={height + 8}
       ></canvas>
-      {renderGraphNumbers}
-      {renderGraphAxesCaption}
+      <div
+        className="absolute top-0 bg-gray-50"
+        style={{ width: width + 8, height: height + 8 }}
+      />
+      {image && (
+        <>
+          <img
+            className="!absolute !top-0"
+            src={image}
+            draggable={false}
+            alt={`Graph ${functions}`}
+          />
+          {renderGraphNumbers}
+          {renderGraphAxesCaption}
+        </>
+      )}
     </div>
   );
-}
+};

@@ -13,15 +13,82 @@ $$
 
 </Formula>
 
-Although the above limits are easy to remember, you may still wonder how are they possible.
+When calculating limits of functions that contain trigonometric functions, it is useful to recall basic trigonometric identities.
 
-Based on the above formulas, you can tell that the following limit is correct.
+===
+
+# Limits of Trigonometric Functions: Example
+
+<Example>
+Evaluate the following limits:
+1. $\lim\limits_{x\rightarrow 0} \frac{3\sin{4x}}{4\tan{3x}} = ...$
+2. $\lim\limits_{x\rightarrow 0} x \cot {x} = ...$
+3. $\lim\limits_{x\rightarrow 0} \frac{1-\cos{ax}}{bx}  = ...$
+4. $\lim\limits_{x\rightarrow 1} \frac{1-x}{\sin{\pi x}} = ...$
+5. $\lim\limits_{x\rightarrow 0} \frac{\left( 4\sin{2x}+\tan{x}\right)}{3\sin3x} = ...$
+</Example>
+
+**Limit 1**
 
 $$
-\lim\limits_{x\rightarrow 0}\frac{\sin{x}}{x}=1
+\begin{align*}
+\lim\limits_{x\rightarrow 0} \frac{3\sin{4x}}{4\tan{3x}} &= \frac{3}{4} \times \left ( \lim\limits_{x\rightarrow 0} \frac{\sin{4x}}{\tan{3x}} \right )\\
+ &= \frac{3}{4} \times \left ( \frac{4}{3} \right )\\
+ &= 1\\
+\end{align*}
 $$
 
-However, we will try to **prove** it, and there are many ways to prove this limit. This proof will require us to use the **Squeeze Theorem**.
+**Limit 2**
+
+Recall that $\cot{x} = \frac{\cos{x}}{\sin{x}}$.
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow 0} x \cot{x} &= \lim\limits_{x\rightarrow 0} \frac{x \cos{x}}{\sin{x}}\\
+ &= \left (  \lim\limits_{x\rightarrow 0} \cos{x} \right ) \left ( \lim\limits_{x\rightarrow 0} \frac{x}{\sin{x}} \right )\\
+ &= 1\\
+\end{align*}
+$$
+
+**Limit 3**
+
+Recall that $\sin^2{x} + \cos^2{x} = 1$.
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow 0} \frac{1-\cos{ax}}{bx}  &= \lim\limits_{x\rightarrow 0} \frac{1-\cos{ax}}{bx} \times \frac{1 + \cos{ax}}{1 + \cos{ax}}\\
+ &= \lim\limits_{x\rightarrow 0} \frac{1 - \cos^2{ax}}{bx(1 + \cos{ax})}\\
+ &= \lim\limits_{x\rightarrow 0} \frac{\sin^2{ax}}{bx(1 + \cos{ax})}\\
+ &= \left (  \lim\limits_{x\rightarrow 0} \frac{\sin{ax}}{bx} \right ) \left ( \lim\limits_{x\rightarrow 0} \frac{\sin{ax}}{1 + \cos{ax}} \right )\\
+ &= \frac{a}{b} \times \frac{0}{1}\\
+ &= 0
+\end{align*}
+$$
+
+**Limit 4**
+
+Recall that $\sin{x} = \sin{\pi - x}$. Let us alter the limit with a new variable $y$, such that $y = 1 - x$. In the new limit, instead of $y$ approaching $1$, now $y$ is approaching $0$.
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow 1} \frac{1 - x}{\sin{\pi x}} &= \lim\limits_{x\rightarrow 1} \frac{1 - x}{\sin{\pi - \pi x}}\\
+&= \lim\limits_{x\rightarrow 1} \frac{1 - x}{\sin{\pi (1 - x)}}\\
+&= \lim\limits_{y\rightarrow 0} \frac{y}{\sin{\pi y}}\\
+&= \frac{1}{\pi}\\
+\end{align*}
+$$
+
+**Limit 5**
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow 0} \frac{\left(4\sin{2x}+\tan{x}\right)}{3\sin{3x}} &=
+\lim\limits_{x\rightarrow 0} \frac{\left(4\sin{2x}+\tan{x}\right)}{3\sin{3x}} \times \frac{\frac{1}{x}}{\frac{1}{x}} \\
+&=\lim\limits_{x\rightarrow 0} \frac{\left(\frac{4\sin{2x}}{x}+\frac{\tan{x}}{x}\right)}{\frac{3\sin{3x}}{x}} \\
+&=\frac{4 \times 2 + 1}{3 \times 3}\\
+&= 1
+\end{align*}
+$$
 
 ===
 
@@ -31,6 +98,9 @@ However, we will try to **prove** it, and there are many ways to prove this limi
 Suppose that $f(x) ≤ g(x) ≤ h(x)$ for all $x$ in an open interval containing $a$, except possibly at $a$, and $\lim\limits_{x\rightarrow a}f(x)= \lim\limits_{x\rightarrow a} h(x)=L$. So, $\lim\limits_{x\rightarrow a} g(x)=L$.
 
 </Theorem>
+
+Recall the limits of trigonometric functions that were introduced few pages ago. We will use the Squeeze Theorem to prove that
+$\lim\limits_{x\rightarrow 0}\frac{\sin{x}}{x}=1$.
 
 ![Squeeze Theorem](/materials/squeeze_theorem_proof.png "Squeeze Theorem")
 
@@ -81,7 +151,13 @@ $$
 \end{align*}
 $$
 
-There we go! We have proven that $\lim\limits_{x\rightarrow 0}\frac{\sin{x}}{x} = 1$.
+There we go! We have proven that $\lim\limits_{x\rightarrow 0}\frac{\sin{x}}{x} = 1$. So that it makes more sense, see the graph below that shows the three functions: $y=\cos{x}$ in red, $y=\frac{x}{\sin{x}}$ in blue, and $y=\frac{1}{\cos{x}}$ in purple.
+
+<Graph
+  functions="\cos(x)@@red;x/(\sin(x))@@blue;1/(\cos(x))@@purple"
+  asymptotes="y=1"
+  ranges="[5,5,-5,-5]"
+/>
 
 ===
 
@@ -91,8 +167,9 @@ There we go! We have proven that $\lim\limits_{x\rightarrow 0}\frac{\sin{x}}{x} 
 Evaluate $\lim\limits_{x\rightarrow \infty} \frac{\sin{x}}{x}=...$
 </Example>
 
-To do this limit, we can use the Squeeze Theorem. Firstly, consider the $\sin{x}$ function, and its minimum and maximum possible value, which are $-1$ and $1$ respectively. Therefore, we can write the following:
+To do this limit, we can use the Squeeze Theorem. Firstly, consider the $\sin{x}$ function, and its range (minimum and maximum possible value), which are $-1$ and $1$ respectively. Therefore, we can write the following:
 $-1 \leq \sin{x} \leq 1$. Multiply all sides with $\frac{1}{x}$, then take the limit on all sides:
+
 $$
 \begin{align*}
 -1 &\leq \sin{x} \leq 1\\
@@ -101,11 +178,11 @@ $$
 \end{align*}
 $$
 
-We know that $\lim\limits_{x\rightarrow \infty} -\frac{1}{x} = 0$ and $\lim\limits_{x\rightarrow \infty} \frac{1}{x} = 0$. Therefore, by Squeeze Theorem, $\lim\limits_{x\rightarrow \infty} \frac{\sin{x}}{x} = 0$. 
+We know that $\lim\limits_{x\rightarrow \infty} -\frac{1}{x} = 0$ and $\lim\limits_{x\rightarrow \infty} \frac{1}{x} = 0$. Therefore, by Squeeze Theorem, $\lim\limits_{x\rightarrow \infty} \frac{\sin{x}}{x} = 0$.
 
 ===
 
-# Limits of Logarithmic-related Functions
+# Limit of Exponential Function
 
 <Formula>
 $\lim\limits_{x\rightarrow \infty} \left ( 1 + \frac{1}{x} \right) ^ x = e$
@@ -119,73 +196,79 @@ $$
 \lim\limits_{x\rightarrow \infty}\left ( 1 + \frac{k}{x} \right) ^ x
 &= \lim\limits_{x\rightarrow \infty}\left ( 1 + \frac{1}{\frac{x}{k}} \right) ^ x \\
 &= \lim\limits_{y\rightarrow \infty}\left ( 1 + \frac{1}{y} \right) ^ {yk} \\
-&= \lim\limits_{y\rightarrow \infty}\left [ \left ( 1 + \frac{1}{y} \right) ^ y \right ] k \\
+&= \lim\limits_{y\rightarrow \infty}\left [ \left ( 1 + \frac{1}{y} \right) ^ y \right ] ^ k \\
 &= e^k \\
 \end{align*}
 $$
 
-Since $x$ is approaching $\infty$, when we swap out the variables of the limit, $y$ is also approaching $\infty$ because $x$ and $y$ are proportional. Consequently, the above proof is possible.
-
----
-
-<Formula>
-Given the constant $a$, $\lim\limits\_{x\rightarrow 0} \frac{a^x - 1}{x} = \ln{a} $
-</Formula>
-
-To prove the above limit, we must first know that $a^x$ can be represented as a series, that is:  
-$$1 + x \ln{a} + \frac{\left ( x \ln{a} \right )^2}{2!} + \frac{\left ( x \ln{a} \right )^3}{3!} + ...$$
+Since $x$ is approaching $\infty$, when we swap out the variables of the limit, $y$ is also approaching $\infty$ because $x$ and $y$ are proportional. Consequently, the above proof is possible. Additionally, sligthly altering the limit will yield us another neat limit. Let us define another variable $z$ such that $z = \frac{1}{x}$, which means that $z$ is inversely proportional to $x$. In this case, instead of approaching infinity, $z$ is approaching $0$.
 
 $$
 \begin{align*}
-\lim\limits_{x\rightarrow 0} \frac{a^x - 1}{x}
-&= \lim\limits_{x\rightarrow 0} \frac{\left[ 1 + x \ln{a} + \frac{\left ( x \ln{a} \right )^2}{2!} + \frac{\left ( x \ln{a} \right )^3}{3!} + ... \right] - 1}{x} \\
-&= \lim\limits_{x\rightarrow 0} \left [ \frac{x \ln{a} + \frac{\left ( x \ln{a} \right )^2}{2!} + \frac{\left ( x \ln{a} \right )^3}{3!} + ...}{x} \right ] \\
-&= \lim\limits_{x\rightarrow 0} \left [ \frac{x \ln{a} + \frac{x^2 \left ( \ln{a} \right )^2}{2!} + \frac{x^3 \left ( \ln{a} \right )^3}{3!} + ...}{x} \right ] \\
-&= \lim\limits_{x\rightarrow 0} \left [ \ln{a} + \frac{x \left ( \ln{a} \right )^2}{2!} + \frac{x^2 \left ( \ln{a} \right )^3}{3!} + ... \right ] \\
-&= \ln{a} \\
+\lim\limits_{x\rightarrow \infty}\left ( 1 + \frac{k}{x} \right) ^ x
+&= \lim\limits_{z\rightarrow 0} \left ( 1 + z \right) ^ \frac{k}{z} \\
+&= e^k \\
 \end{align*}
 $$
 
-The remaining infinite terms would be zero due to $x$, so the only term that matters is the first one, that is $\ln{a}$, which would be the limit.
+===
+
+# Limit of Exponential Function: Example
+
+<Example>
+Evaluate the following limits:
+1. $\lim\limits_{x\rightarrow \infty} \left ( 1 + \frac{2}{x} \right ) ^ {5x} = ...$
+2. $\lim\limits_{x\rightarrow \infty} \left ( 1 - \frac{1}{x} \right ) ^ {3x} = ...$
+3. $\lim\limits_{x\rightarrow 0} \left ( 2x^2 + 1 \right ) ^ {\frac{1}{x^2}} = ...$
+</Example>
+
+**Limit 1**
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow \infty} \left ( 1 + \frac{2}{x} \right ) ^ {5x} 
+&= \left ( \lim\limits_{x\rightarrow \infty} \left [ 1 + \frac{2}{x} \right ] ^ x \right) ^ 5\\
+&= \left ( e^2 \right) ^ 5\\
+&= e^{10}
+\end{align*}
+$$
+
+**Limit 2**
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow \infty} \left ( 1 - \frac{1}{x} \right ) ^ { 3x }
+&= \left ( \lim\limits_{x\rightarrow \infty} \left [ 1 - \frac{1}{x} \right ] ^ x \right) ^ 3\\
+&= \left ( \lim\limits_{x\rightarrow \infty} \left [ 1 + \frac{(-1)}{x} \right ] ^ x \right) ^ 3\\
+&= \left ( e^{-1} \right) ^ 3\\
+&= e^{-3}
+\end{align*}
+$$
+
+**Limit 3**  
+Let $y=2x^2$. Since $y$ is proportional to $x$, the limit variable will also approach $0$.
+
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow 0} \left ( 2x^2 + 1 \right ) ^ {\frac{1}{x^2}} 
+&= \lim\limits_{y\rightarrow 0} \left ( y + 1 \right ) ^ {\frac{2}{y}} \\
+&= \left ( \lim\limits_{y\rightarrow  0} \left [ y + 1\right ] ^ {\frac{1}{y}} \right) ^ 2\\
+&= e^2
+\end{align*}
+$$
 
 ===
 
-# **Practice:** Limits of Trigonometric and Logarithmic Functions
+# **Practice:** Limits of Trigonometric and Exponential Functions
 
-Match the limits on the left side, with the numbers on the right side.
+1. Evaluate $\lim\limits_{h\rightarrow 0} \frac{\sec{(\pi + h)} - \sec{\pi}}{h}=...$
 
-<Match
-  id="limit-trig-1"
-  left="#\lim\limits_{x\rightarrow \infty} \frac{\csc^{-1}{(x)}}{x^2 - x}#"
-  right="#0#"
-/>
-<Match
-  id="limit-trig-2"
-  left="#\lim\limits_{a\rightarrow \infty} \frac{\tan^{-1}{a}}{a}#"
-  right="#1#"
-/>
-<Match
-  id="limit-trig-3"
-  left="#\lim\limits_{x\rightarrow 0} \frac{\left(1-\cos\left(4x\right)\right)}{2x\sin\left(x\right)}#"
-  right="#4#"
-/>
-<Match
-  id="limit-trig-4"
-  left="#\lim\limits_{x\rightarrow 0} \frac{\sin{x}+\tan{x}}{\tan{2x}-\sin{x}}#"
-  right="#2#"
-/>
-<Match
-  id="limit-trig-5"
-  left="#\lim\limits_{x\rightarrow 0} \frac{\cos{17x} - \cos{8x}}{\cos{7x} - \cos{2x}}#"
-  right="#5#"
-/>
-<Match
-  id="limit-log-1"
-  left="#\lim\limits_{x\rightarrow 0} \ln{ \left [ (1 + 3x)^{\frac{1}{x}} \right ] }#"
-  right="#3#"
-/>
-<Match
-  id="limit-log-2"
-  left="#\lim\limits_{x\rightarrow 0} \frac{3^{2x} - 2^{-x}3^x}{x 2^{-x} 3^x}#"
-  right="#6#"
-/>
+<Practice id="trig-exp-1" answer="0" indent />
+
+2. Evaluate $\lim_{x\rightarrow 0} \frac{\tan{2x}}{\sqrt{1-\sin{x}}-\sqrt{1+\sin{x}}}=...$ 
+
+<Practice id="trig-exp-2" answer="-2" indent />
+
+3. Evaluate $\lim\limits_{x\rightarrow \infty } \left ( \frac{4-2x}{6-2x} \right )^{1-x} =...$ (Express your answer accurate to 4 decimal places)
+
+<Practice id="trig-exp-3" answer="0.3678" indent />

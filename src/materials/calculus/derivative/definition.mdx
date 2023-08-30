@@ -13,22 +13,23 @@ f',\enspace f'',\enspace f^{(n)}
 $$
 
 $$
-\frac{d}{dx} [f(x)],\enspace \frac{d^2}{dx^2} [f(x)],\enspace \frac{d^n}{dx^n} [f(x)],  
+\frac{d}{dx} [f(x)],\enspace \frac{d^2}{dx^2} [f(x)],\enspace \frac{d^n}{dx^n} [f(x)],
 $$
 
 $$
 D_x f(x),\enspace D_x^2f(x),\enspace D_x^n(x)
 $$
+
 ===
 
 # Example of Derivative
 
 <Example>
-  Provided $f(x) = 4x^2 - 4x + 1$:
-	1. Calculate $f'(x)$.
-	2. At which rate is $f$
-  changing at $x = \frac{1}{4}$?
-	3. What is the equation of the tangent line to the graph of the function $f$ at $x = \frac{1}{4}$?
+  Provided $f(x) = 4x^2 - 4x + 1$: 1. Calculate $f'(x)$. 2. At which rate is $f$
+  changing at $x = \frac{1}
+  {4}$? 3. What is the equation of the tangent line to the graph of the function
+  $f$ at $x = \frac{1}
+  {4}$?
 </Example>
 
 Using the definition from before:
@@ -45,11 +46,11 @@ $$
 \end{align*}
 $$
 
-Using this result, we can answer the second question. Substitute $x$ in to $f'(x)$, which allows us to obtain $f'(\frac{1}{4}) = -2$.  
+Using this result, we can answer the second question. Substitute $x$ in to $f'(x)$, which allows us to obtain $f'(\frac{1}{4}) = -2$.
 
 This is also the gradient, or the slope of the tanget line described in the third question. Since the question already provides us with a $x$ value, substituting it to $f$ yields the point $(\frac{1}{4}, \frac{1}{4})$.
 
-Thus, we can now construct the tangent line equation given the point of intersect and the gradient: 
+Thus, we can now construct the tangent line equation given the point of intersect and the gradient:
 
 $$
 \begin{align*}
@@ -60,8 +61,7 @@ y &= -2x + \frac{3}{4} \\
 \end{align*}
 $$
 
-<Graph functions="4*x*x-4*x+1,-2*x+0.75" points="0.25,0.25-solid" />
-===
+# <Graph functions="4*x*x-4*x+1,-2*x+0.75" points="0.25,0.25~solid" />
 
 # Differentiability of a Function
 
@@ -69,9 +69,7 @@ A function is said to be differentiable at $x=a$, if $f'(a)$ exists. Consequentl
 
 ---
 
-<Example>
-Is $f(x)=|x|$ differentiable at $x=0$?
-</Example>
+<Example>Is $f(x)=|x|$ differentiable at $x=0$?</Example>
 
 Using the definition from before:
 
@@ -101,7 +99,18 @@ Since the left and right side limit are different, the limit doesn't exist, and 
 Let $f(x)=\sqrt{\left | x \right |}$. Select all the statements below that are TRUE.
 
 <Option id="differentiability-1" content="#f# is continuous at #x=0#." truth />
-<Option id="differentiability-2" content="#f# is continuous at #x#, where #- \infty \lt x \lt \infty #." truth />
+<Option
+  id="differentiability-2"
+  content="#f# is continuous at #x#, where #- \infty \lt x \lt \infty #."
+  truth
+/>
 <Option id="differentiability-3" content="#f# is differentiable at #x=0#." />
-<Option id="differentiability-4" content="#f# is differentiable at #x#, where #- \infty \lt x \lt \infty #." />
-<Option id="differentiability-5" content="#f# is differentiable at #x#, where #- \infty \lt x \lt 0# and #0 \lt x \lt \infty#" truth />
+<Option
+  id="differentiability-4"
+  content="#f# is differentiable at #x#, where #- \infty \lt x \lt \infty #."
+/>
+<Option
+  id="differentiability-5"
+  content="#f# is differentiable at #x#, where #- \infty \lt x \lt 0# and #0 \lt x \lt \infty#"
+  truth
+/>

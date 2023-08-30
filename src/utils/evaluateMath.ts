@@ -1,18 +1,45 @@
-const VALID_OPERATORS = ["+", "-", "*", "/", "(", ")", "[", "]", "."] as const;
+const VALID_OPERATORS = [
+  "+",
+  "-",
+  "*",
+  "/",
+  "(",
+  ")",
+  "[",
+  "]",
+  "^",
+  ".",
+  "\\",
+] as const;
 
-type OperatorType = (typeof VALID_OPERATORS)[number];
+const VALID_FUNCTIONS = [
+  "sin",
+  "cos",
+  "tan",
+  "csc",
+  "sec",
+  "cot",
+  "sqrt",
+  "ln",
+] as const;
+
+type OperatorType = (typeof VALID_OPERATORS | typeof VALID_FUNCTIONS)[number];
+type FunctionType = typeof VALID_FUNCTIONS;
 
 function isNumber(character: string) {
   return !isNaN(Number(character));
 }
 
 function isOperator(character: any) {
-  return VALID_OPERATORS.includes(character);
+  return (
+    VALID_OPERATORS.includes(character) || VALID_FUNCTIONS.includes(character)
+  );
 }
 
 function getPriority(operator: OperatorType) {
   if (operator === "+" || operator === "-") return 0;
-  if (operator === "*" || operator === "/") return 1;
+  if (operator === "*" || operator === "/" || operator === "^") return 1;
+  if (VALID_FUNCTIONS.includes(operator as any) || operator === "\\") return 1;
   return -1;
 }
 
@@ -32,6 +59,31 @@ function applyMath(
       return operand1 * operand2;
     case "/":
       return operand2 !== 0 ? operand1 / operand2 : NaN;
+    case "^":
+      if (operand1 !== 0 && operand2 !== 0) return Math.pow(operand1, operand2);
+
+      if (operand1 !== 0) return 1;
+
+      return NaN;
+    case "sin":
+      return Math.sin(operand2);
+    case "cos":
+      return Math.cos(operand2);
+    case "tan":
+      return Math.tan(operand2);
+    case "csc":
+      const sin = Math.sin(operand2);
+      return sin !== 0 ? 1 / sin : NaN;
+    case "sec":
+      const cos = Math.cos(operand2);
+      return cos !== 0 ? 1 / cos : NaN;
+    case "cot":
+      const tan = Math.tan(operand2);
+      return tan !== 0 ? 1 / tan : NaN;
+    case "sqrt":
+      return Math.sqrt(operand2);
+    case "ln":
+      return Math.log(operand2);
   }
   return 0;
 }
@@ -48,9 +100,6 @@ export function evaluateMath(expression: string) {
 
   for (let i = 0; i < expression.length; i++) {
     const character = expression[i];
-    //console.log(`Index: ${i + 1}`);
-    //console.log(operands.join("_"));
-    //console.log(operators.join("_"));
 
     if (isNumber(character)) {
       let finalNumber = Number(character);
@@ -103,12 +152,36 @@ export function evaluateMath(expression: string) {
         operands.push(0);
       }
 
+      let customFunction;
+
+      if (character === "\\") {
+        for (let j = 1; j < expression.length - i; j++) {
+          if (isNumber(expression[i + j])) {
+            i += j;
+            break;
+          }
+
+          // 1+\sin2
+          const detectedFunction = expression.slice(i + 1, i + j + 1) as any;
+
+          if (VALID_FUNCTIONS.includes(detectedFunction)) {
+            i += j;
+            operands.push(0);
+            customFunction = detectedFunction;
+            break;
+          }
+        }
+      }
+
       while (true) {
         const head = operators.pop();
 
         if (!head) break;
 
-        if (getPriority(head) < getPriority(character as OperatorType)) {
+        const toBeTested = (customFunction ??
+          character) as unknown as OperatorType;
+
+        if (getPriority(head) < getPriority(toBeTested)) {
           operators.push(head);
           break;
         }
@@ -116,7 +189,9 @@ export function evaluateMath(expression: string) {
         performOneOperation(head);
       }
 
-      operators.push(character as OperatorType);
+      customFunction
+        ? operators.push(customFunction)
+        : operators.push(character as OperatorType);
     }
   }
 

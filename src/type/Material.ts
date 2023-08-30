@@ -1,7 +1,6 @@
 import { ChapterAddressType } from "./Course";
 
 export const CUSTOM_MATERIAL = {
-  graph: "GraphContainer",
   input: "InputBox",
   match: "MatchBox",
   option: "Option",
@@ -30,5 +29,15 @@ export type OptionElementType = {
   parentElement: HTMLElement;
   content: string;
   truth: number;
+  id: string;
+};
+
+export type GraphElementType = {
+  parentElement: HTMLElement;
+  functions: string;
+  points: string;
+  ranges: string;
+  asymptotes: string;
+  gridSize: string;
   id: string;
 };

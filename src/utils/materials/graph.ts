@@ -1,11 +1,17 @@
-import { GraphColors, GraphParams, MathFunction, MathPoint } from "@/src/type";
+import {
+  GraphColors,
+  GraphParams,
+  MathAsymptote,
+  MathFunction,
+  MathPoint,
+} from "@/src/type";
 
 const graphColors: Record<GraphColors, string> = {
-  red: "#e74c3c",
-  blue: "#3498db",
-  green: "#2ecc71",
-  purple: "#9b59b6",
-  orange: "#e67e22",
+  red: "#ef4444",
+  blue: "#0ea5e9",
+  green: "#34d399",
+  purple: "#8b5cf6",
+  orange: "#f97316",
 };
 
 export function drawGraphAxes(
@@ -14,14 +20,17 @@ export function drawGraphAxes(
 ) {
   const { width, height, left, up, gridSize, borderSize } = params;
 
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 2;
+
   ctx.beginPath();
-  ctx.moveTo(borderSize, Math.abs(up) * gridSize + borderSize);
-  ctx.lineTo(borderSize + width, Math.abs(up) * gridSize + borderSize);
+  ctx.moveTo(borderSize, Math.abs(up) * gridSize[0] + borderSize);
+  ctx.lineTo(borderSize + width, Math.abs(up) * gridSize[0] + borderSize);
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(Math.abs(left) * gridSize + borderSize, borderSize);
-  ctx.lineTo(Math.abs(left) * gridSize + borderSize, borderSize + height);
+  ctx.moveTo(Math.abs(left) * gridSize[1] + borderSize, borderSize);
+  ctx.lineTo(Math.abs(left) * gridSize[1] + borderSize, borderSize + height);
   ctx.stroke();
 }
 
@@ -45,61 +54,61 @@ export function drawGraphAxesArrows(
   ctx.lineWidth = 2;
 
   ctx.beginPath();
-  ctx.moveTo(borderSize, Math.abs(up) * gridSize + borderSize);
+  ctx.moveTo(borderSize, Math.abs(up) * gridSize[0] + borderSize);
   ctx.lineTo(
     borderSize + arrowSize,
-    Math.abs(up) * gridSize + borderSize + arrowSize
+    Math.abs(up) * gridSize[0] + borderSize + arrowSize
   );
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(borderSize, Math.abs(up) * gridSize + borderSize);
+  ctx.moveTo(borderSize, Math.abs(up) * gridSize[0] + borderSize);
   ctx.lineTo(
     borderSize + arrowSize,
-    Math.abs(up) * gridSize + borderSize - arrowSize
+    Math.abs(up) * gridSize[0] + borderSize - arrowSize
   );
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(borderSize + width, Math.abs(up) * gridSize + borderSize);
+  ctx.moveTo(borderSize + width, Math.abs(up) * gridSize[0] + borderSize);
   ctx.lineTo(
     borderSize + width - arrowSize,
-    Math.abs(up) * gridSize + borderSize - arrowSize
+    Math.abs(up) * gridSize[0] + borderSize - arrowSize
   );
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(borderSize + width, Math.abs(up) * gridSize + borderSize);
+  ctx.moveTo(borderSize + width, Math.abs(up) * gridSize[0] + borderSize);
   ctx.lineTo(
     borderSize + width - arrowSize,
-    Math.abs(up) * gridSize + borderSize + arrowSize
+    Math.abs(up) * gridSize[0] + borderSize + arrowSize
   );
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(borderSize + Math.abs(left) * gridSize, borderSize);
+  ctx.moveTo(borderSize + Math.abs(left) * gridSize[1], borderSize);
   ctx.lineTo(
-    borderSize + Math.abs(left) * gridSize - arrowSize,
+    borderSize + Math.abs(left) * gridSize[1] - arrowSize,
     borderSize + arrowSize
   );
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(borderSize + Math.abs(left) * gridSize, borderSize);
+  ctx.moveTo(borderSize + Math.abs(left) * gridSize[1], borderSize);
   ctx.lineTo(
-    borderSize + Math.abs(left) * gridSize + arrowSize,
+    borderSize + Math.abs(left) * gridSize[1] + arrowSize,
     borderSize + arrowSize
   );
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(borderSize + Math.abs(left) * gridSize, borderSize + height);
+  ctx.moveTo(borderSize + Math.abs(left) * gridSize[1], borderSize + height);
   ctx.lineTo(
-    borderSize + Math.abs(left) * gridSize - arrowSize,
+    borderSize + Math.abs(left) * gridSize[1] - arrowSize,
     borderSize + height - arrowSize
   );
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(borderSize + Math.abs(left) * gridSize, borderSize + height);
+  ctx.moveTo(borderSize + Math.abs(left) * gridSize[1], borderSize + height);
   ctx.lineTo(
-    borderSize + Math.abs(left) * gridSize + arrowSize,
+    borderSize + Math.abs(left) * gridSize[1] + arrowSize,
     borderSize + height - arrowSize
   );
   ctx.stroke();
@@ -118,22 +127,37 @@ export function drawGraphAxesMarker(
     left,
     vertical,
     horizontal,
+    increments,
   } = params;
+
+  const [y, x] = increments;
 
   ctx.strokeStyle = "black";
   ctx.lineWidth = 2;
 
   for (let i = 1; i < horizontal; i++) {
     ctx.beginPath();
-    ctx.moveTo(Math.abs(left) * gridSize - borderSize, borderSize + i * 32);
-    ctx.lineTo(Math.abs(left) * gridSize + 3 * borderSize, borderSize + i * 32);
+    ctx.moveTo(
+      Math.abs(left) * gridSize[1] - borderSize,
+      borderSize + i * gridSize[0]
+    );
+    ctx.lineTo(
+      Math.abs(left) * gridSize[1] + 3 * borderSize,
+      borderSize + i * gridSize[0]
+    );
     ctx.stroke();
   }
 
   for (let i = 1; i < vertical; i++) {
     ctx.beginPath();
-    ctx.moveTo(borderSize + i * 32, Math.abs(up) * gridSize - borderSize);
-    ctx.lineTo(borderSize + i * 32, Math.abs(up) * gridSize + 3 * borderSize);
+    ctx.moveTo(
+      borderSize + i * gridSize[1],
+      Math.abs(up) * gridSize[0] - borderSize
+    );
+    ctx.lineTo(
+      borderSize + i * gridSize[1],
+      Math.abs(up) * gridSize[0] + 3 * borderSize
+    );
     ctx.stroke();
   }
 }
@@ -144,18 +168,18 @@ export function drawGraphGrids(
 ) {
   const { vertical, height, horizontal, width, borderSize, gridSize } = params;
 
-  ctx.strokeStyle = "lightgray";
+  ctx.strokeStyle = "#e2e8f0";
   ctx.lineWidth = 2;
   for (let i = 0; i <= vertical; i++) {
     ctx.beginPath();
-    ctx.moveTo(i * gridSize + borderSize, 0 + borderSize);
-    ctx.lineTo(i * gridSize + borderSize, height + borderSize);
+    ctx.moveTo(i * gridSize[1] + borderSize, 0 + borderSize);
+    ctx.lineTo(i * gridSize[1] + borderSize, height + borderSize);
     ctx.stroke();
   }
   for (let i = 0; i <= horizontal; i++) {
     ctx.beginPath();
-    ctx.moveTo(borderSize, i * gridSize + borderSize);
-    ctx.lineTo(borderSize + width, i * gridSize + borderSize);
+    ctx.moveTo(borderSize, i * gridSize[0] + borderSize);
+    ctx.lineTo(borderSize + width, i * gridSize[0] + borderSize);
     ctx.stroke();
   }
 }
@@ -165,29 +189,42 @@ export function drawGraphFunction(
   params: GraphParams,
   funcs: MathFunction[]
 ) {
-  const { left, right, up, height, width, color } = params;
-
-  ctx.strokeStyle = graphColors[color];
-  ctx.fillStyle = graphColors[color];
-  ctx.lineWidth = 4;
+  const { left, right, up, height, width, gridSize } = params;
 
   funcs.forEach((mathFunction) => {
+    const { func, color } = mathFunction;
+
+    ctx.strokeStyle = graphColors[color] ?? graphColors["orange"];
+    ctx.fillStyle = graphColors[color] ?? graphColors["orange"];
+    ctx.lineWidth = 4;
     let previous: number[] = [];
     for (let i = left; i <= right; i += 0.001) {
-      const x = 4 + 32 * (i - left);
-      const y = 4 + 32 * (-mathFunction(i) + up);
+      const ogY = func(i);
+      if (isNaN(ogY)) {
+        previous = [];
+        continue;
+      }
+      const y = 4 + gridSize[0] * (-ogY + up);
+      const x = 4 + gridSize[1] * (i - left);
       if (!isNaN(y) && y >= 4 && y <= 4 + height && x >= 4 && x <= 4 + width) {
-        if (previous.length === 2) {
+        if (
+          previous.length === 2 &&
+          Math.sqrt(
+            ((x - previous[1]) * gridSize[1]) ** 2 +
+              ((y - previous[0]) * gridSize[0]) ** 2
+          ) <= Math.sqrt((1 * gridSize[1]) ** 2 + (1 * gridSize[0]) ** 2)
+        ) {
           ctx.beginPath();
-          ctx.moveTo(previous[0], previous[1]);
+          ctx.moveTo(previous[1], previous[0]);
           ctx.lineTo(x, y);
           ctx.fill();
           ctx.stroke();
-          ctx.fillRect(x, y, 1, 1);
+          ctx.fillRect(x - 1, y - 1, 2, 2);
         } else {
-          ctx.fillRect(x, y, 1, 1);
+          ctx.fillRect(x - 1, y - 1, 2, 2);
         }
-        previous = [x, y];
+        ctx.fillRect(x - 1, y - 1, 2, 2);
+        previous = [y, x];
       } else {
         previous = [];
       }
@@ -200,7 +237,7 @@ export function drawGraphPoints(
   params: GraphParams,
   pts: MathPoint[]
 ) {
-  const { left, up, color } = params;
+  const { left, up, color, gridSize } = params;
 
   pts.forEach((point) => {
     const { points, variant } = point;
@@ -208,8 +245,8 @@ export function drawGraphPoints(
 
     ctx.beginPath();
     ctx.arc(
-      (x + Math.abs(left)) * 32 + 4,
-      (-y + Math.abs(up)) * 32 + 4,
+      (x + Math.abs(left)) * gridSize[1] + 4,
+      (-y + Math.abs(up)) * gridSize[0] + 4,
       4,
       0,
       2 * Math.PI
@@ -221,4 +258,36 @@ export function drawGraphPoints(
     ctx.fill();
     ctx.stroke();
   });
+}
+
+export function drawGraphAsymptotes(
+  ctx: CanvasRenderingContext2D,
+  params: GraphParams,
+  asyms: MathAsymptote[]
+) {
+  const { left, up, borderSize, gridSize, width, height } = params;
+
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
+  ctx.setLineDash([10, 10]);
+
+  asyms.forEach((asym) => {
+    const { type, value } = asym;
+    if (type === "x") {
+      ctx.beginPath();
+      ctx.moveTo(borderSize + (value - left) * gridSize[1], borderSize);
+      ctx.lineTo(
+        borderSize + (value - left) * gridSize[1],
+        borderSize + height
+      );
+      ctx.stroke();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(borderSize, borderSize + (up - value) * gridSize[0]);
+      ctx.lineTo(borderSize + width, borderSize + (up - value) * gridSize[0]);
+      ctx.stroke();
+    }
+  });
+
+  ctx.setLineDash([]);
 }

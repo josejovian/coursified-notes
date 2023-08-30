@@ -1,4 +1,4 @@
-import {
+import React, {
   Fragment,
   useMemo,
   useState,
@@ -11,6 +11,7 @@ import {
   AnswerType,
   CUSTOM_MATERIAL,
   ChapterType,
+  GraphElementType,
   InputBoxElementType,
   MatchBoxElementType,
   OptionElementType,
@@ -23,7 +24,7 @@ import { checkCourseProgress, getPracticeId } from "../utils";
 import * as ReactDOM from "react-dom";
 import { ReactElement } from "react-markdown/lib/react-markdown";
 import { Option } from "../components/Courses/Entity/Option/CourseEntityOption";
-import { Input, MatchBox } from "../components";
+import { Graph, Input, MatchBox } from "../components";
 
 interface UseCustomProps {
   stateAnswer: StateType<Partial<AnswerType>>;
@@ -56,6 +57,7 @@ export function useCustom({
   const answerInputBoxParentElement = useRef<InputBoxElementType[]>([]);
   const matchParentElement = useRef<MatchBoxElementType[]>([]);
   const optionParentElement = useRef<OptionElementType[]>([]);
+  const graphParentElement = useRef<GraphElementType[]>([]);
   const matchRef = useRef<
     Record<
       string,
@@ -66,6 +68,7 @@ export function useCustom({
       }
     >
   >({});
+  const graphRef = useRef<Record<string, string>>({});
 
   const userAnswerStatus = useCallback(
     (practiceId: string) => {
@@ -86,13 +89,22 @@ export function useCustom({
       group: string,
       id: string
     ) => {
+      const identifier = `${group}-${id}`;
+
+      if (document.getElementById(identifier)) return;
+
       const vessel = document.createElement("div");
       vessel.id = `${group}-${id}`;
       vessel.classList.add(group);
 
-      parentElement.insertBefore(vessel, parentElement.nextSibling);
+      const elm = document.getElementById(id);
 
-      ReactDOM.render(targetElement, vessel);
+      if (elm) {
+        elm.className = "";
+        elm.appendChild(vessel);
+
+        ReactDOM.render(targetElement, elm);
+      }
     },
     []
   );
@@ -158,7 +170,9 @@ export function useCustom({
     matchRef.current = {};
     previousRenders.forEach((element) => {
       /** @todos Something MIGHT be wrong with this unmount method. */
-      element.parentElement?.removeChild(element);
+      try {
+        element.parentElement && element.parentElement.removeChild(element);
+      } catch (e) {}
     });
   }, []);
 
@@ -280,7 +294,7 @@ export function useCustom({
     (practiceId: string, content: string) => {
       const identifier = `Option-${practiceId}`;
 
-			const parsed = content.replaceAll("\\{", "{").replaceAll("\\}", "}");
+      const parsed = content.replaceAll("\\{", "{").replaceAll("\\}", "}");
 
       return (
         <Option
@@ -365,6 +379,41 @@ export function useCustom({
     ]
   );
 
+  const renderGraph = useCallback(
+    ({
+      id,
+      functions,
+      points,
+      ranges,
+      asymptotes,
+      gridSize,
+    }: {
+      id: string;
+      functions: string;
+      points: string;
+      ranges: string;
+      asymptotes: string;
+      gridSize: string;
+    }) => {
+      return (
+        <Graph
+          key={id}
+          id={id}
+          functions={functions}
+          points={points}
+          ranges={ranges}
+          asymptotes={asymptotes}
+          gridSize={gridSize as any}
+          cache={graphRef.current[id]}
+          onReady={(data) => {
+            graphRef.current[id] = data;
+          }}
+        />
+      );
+    },
+    []
+  );
+
   const handleRenderAnswerBoxes = useCallback(() => {
     handleRemoveCustomComponents("InputBox");
 
@@ -409,6 +458,41 @@ export function useCustom({
     });
   }, [handleRemoveCustomComponents, renderCustomElement, renderOption]);
 
+  /*
+  const handleRenderGraph = useCallback(() => {
+    handleRemoveCustomComponents("GraphContainer");
+
+    graphParentElement.current.forEach(
+      ({
+        parentElement,
+        id,
+        functions,
+        points,
+        ranges,
+        asymptotes,
+        gridSize,
+      }) => {
+        console.warn(functions);
+        console.warn(points);
+        console.warn(ranges);
+        renderCustomElement(
+          parentElement,
+          renderGraph({
+            id,
+            functions,
+            points,
+            ranges,
+            asymptotes,
+            gridSize,
+          }),
+          CUSTOM_MATERIAL["graph"],
+          id
+        );
+      }
+    );
+  }, [handleRemoveCustomComponents, renderCustomElement, renderGraph]);
+*/
+
   const handleRemoveUndefinedAnswers = useCallback(() => {
     const entries = Object.entries(answer);
     const newAnswer: { [key: string]: string } = {};
@@ -445,6 +529,7 @@ export function useCustom({
     answerInputBoxParentElement.current = [];
     matchParentElement.current = [];
     optionParentElement.current = [];
+    graphParentElement.current = [];
 
     elements.forEach((element, index) => {
       const string = element.innerHTML;
@@ -455,10 +540,12 @@ export function useCustom({
 
         if (detectedPair && detectedPair.length === 4) {
           const [tag, id, left, right] = detectedPair;
+          const vessel = document.getElementById(id)!;
+
           matchParentElement.current = [
             ...matchParentElement.current,
             {
-              parentElement,
+              parentElement: vessel,
               pair: [left, right],
               id,
             },
@@ -478,10 +565,12 @@ export function useCustom({
 
         if (detectedPair && detectedPair.length === 4) {
           const [tag, id, left, right] = detectedPair;
+          const vessel = document.getElementById(id)!;
+
           matchParentElement.current = [
             ...matchParentElement.current,
             {
-              parentElement,
+              parentElement: vessel,
               pair: [left, right],
               id,
             },
@@ -501,10 +590,12 @@ export function useCustom({
 
         if (detectedPair && detectedPair.length === 4) {
           const [tag, id, content, truth] = detectedPair;
+          const vessel = document.getElementById(id)!;
+
           optionParentElement.current = [
             ...optionParentElement.current,
             {
-              parentElement,
+              parentElement: vessel,
               content,
               id,
               truth: Number(truth),
@@ -517,6 +608,31 @@ export function useCustom({
           };
 
           inputElementsRendered++;
+        }
+      }
+
+      if (container && parentElement && string.match(/\[graph/g)) {
+        const detectedPair = string.toString().split("@");
+
+        if (detectedPair && detectedPair.length >= 3) {
+          console.error(detectedPair);
+          const [tag, id, functions, points, ranges, asymptotes, gridSize] =
+            detectedPair;
+
+          const vessel = document.getElementById(id)!;
+
+          graphParentElement.current = [
+            ...graphParentElement.current,
+            {
+              parentElement: vessel,
+              id,
+              functions,
+              points,
+              ranges,
+              asymptotes,
+              gridSize,
+            },
+          ];
         }
       }
     });
@@ -579,10 +695,12 @@ export function useCustom({
       handleRenderMatch();
       handleRenderOptions();
     }
+    // handleRenderGraph();
   }, [
     loading,
     handleRemoveAllCustomComponents,
     solved,
+    // handleRenderGraph,
     setAnswer,
     setSolved,
     setAccept,
@@ -610,6 +728,7 @@ export function useCustom({
       handleRenderAnswerBoxes,
       handleRenderMatch,
       handleRenderOptions,
+      // handleRenderGraph,
       handleRemoveAllCustomComponents,
       handleConvertCodeToComponents,
     }),
@@ -618,6 +737,7 @@ export function useCustom({
       handleOnePairMatch,
       handleRemoveAllCustomComponents,
       handleRenderAnswerBoxes,
+      // handleRenderGraph,
       handleRenderMatch,
       handleRenderOptions,
     ]
