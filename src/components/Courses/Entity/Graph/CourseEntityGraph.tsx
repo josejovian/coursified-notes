@@ -5,7 +5,6 @@ import React, {
   useCallback,
   useRef,
   useMemo,
-  createRef,
 } from "react";
 import {
   GraphParams,
@@ -20,13 +19,11 @@ import {
   drawGraphAxesMarker,
   drawGraphGrids,
   drawGraphPoints,
-  evaluateMath,
   drawGraphAsymptotes,
+  parseSourceFunctions,
 } from "@/src/utils";
-import { useSwapPage } from "@/src/hooks";
 import TeX from "@matejmazur/react-katex";
 import clsx from "clsx";
-import Image from "next/image";
 
 type GraphGridSize = "md" | "sm";
 
@@ -153,39 +150,11 @@ export const Graph = ({
   );
 
   const handleInitializeFunctions = useCallback(() => {
-    const convertedFunctions = parsedFunctions
-      .map((f: string) => {
-        const parsed = f.split("@");
-
-        if (parsed.length < 1 || parsed.length > 3) return null;
-
-        const [strFunc, strBounds, strColor] = parsed;
-        const bounds = strBounds
-          ? strBounds
-              .split("")
-              .filter((_, idx) => idx > 0 && idx < strBounds.length - 1)
-              .join("")
-              .split(",")
-              .map((num) => Number(num))
-          : [left, right];
-        const [l, r] = bounds;
-
-        const fun = (x: number) => {
-          if (x < l || x > r) return NaN;
-
-          const value = evaluateMath(strFunc.replace(/x/g, `(${x})`));
-          return value;
-        };
-
-        return {
-          func: fun,
-          color: strColor ?? "orange",
-        };
-      })
-      .filter((f) => f) as MathFunction[];
-
+    const convertedFunctions = parseSourceFunctions(parsedFunctions, [
+      left,
+      right,
+    ]);
     setFuncs(convertedFunctions);
-
     return convertedFunctions;
   }, [left, parsedFunctions, right]);
 

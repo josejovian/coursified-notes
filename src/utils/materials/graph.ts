@@ -1,18 +1,10 @@
 import {
-  GraphColors,
   GraphParams,
   MathAsymptote,
   MathFunction,
   MathPoint,
 } from "@/src/type";
-
-const graphColors: Record<GraphColors, string> = {
-  red: "#ef4444",
-  blue: "#0ea5e9",
-  green: "#34d399",
-  purple: "#8b5cf6",
-  orange: "#f97316",
-};
+import { GRAPH_COLORS } from "@/src/consts";
 
 export function drawGraphAxes(
   ctx: CanvasRenderingContext2D,
@@ -194,8 +186,8 @@ export function drawGraphFunction(
   funcs.forEach((mathFunction) => {
     const { func, color } = mathFunction;
 
-    ctx.strokeStyle = graphColors[color] ?? graphColors["orange"];
-    ctx.fillStyle = graphColors[color] ?? graphColors["orange"];
+    ctx.strokeStyle = GRAPH_COLORS[color] ?? GRAPH_COLORS["orange"];
+    ctx.fillStyle = GRAPH_COLORS[color] ?? GRAPH_COLORS["orange"];
     ctx.lineWidth = 4;
     let previous: number[] = [];
     for (let i = left; i <= right; i += 0.001) {
@@ -252,8 +244,8 @@ export function drawGraphPoints(
       2 * Math.PI
     );
 
-    ctx.strokeStyle = graphColors[color];
-    ctx.fillStyle = variant === "solid" ? graphColors[color] : "white";
+    ctx.strokeStyle = GRAPH_COLORS[color];
+    ctx.fillStyle = variant === "solid" ? GRAPH_COLORS[color] : "white";
     ctx.lineWidth = 3;
     ctx.fill();
     ctx.stroke();
