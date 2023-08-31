@@ -3,7 +3,9 @@
 	"overrideChapterTitles": {
 		"definition": "Definition of Limit",
 		"properties": "Properties of Limit",
-		"common": "Common Limits",
-		"continuity": "Continuity of Functions"
+		"trigonometric": "Limits of Trigonometric Functions",
+		"exponential": "Limits of Exponential Functions",
+		"continuity": "Continuity of Functions",
+		"discontinuity": "Discontinuity of Functions"
 	}
 }

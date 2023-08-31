@@ -227,7 +227,7 @@ export function CourseLayoutMain({
             }
           }}
           defaultValue={answer[id]}
-          disabled={solved === 1 || userAnswerStatus(id) === "success"}
+          disabled={solved === 1}
           state={submitted && solved ? userAnswerStatus(id) : undefined}
           mounted={inputRef.current[id]}
           onMount={() => {

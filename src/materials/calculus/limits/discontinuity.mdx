@@ -1,0 +1,134 @@
+# Identifying Discontinuity
+
+There are three types of discontinuity:
+
+## Jump Discontinuity
+
+![Jump Discontinuity](/materials/jump_discontinuity.png "Jump Discontinuity")
+
+This happens when $\lim\limits_{x\rightarrow a^-} f(x) \neq \lim_{x\rightarrow a^+} f(x)$
+
+---
+
+## Infinite Discontinuity
+
+![Infinite Discontinuity](/materials/infinite_discontinuity.png "Infinite Discontinuity")
+
+This happens when the function approaches infinity or negative infinity, whether from the left side or the right side.
+
+---
+
+## Removable Discontinuity
+
+![Removable Discontinuity](/materials/removable_discontinuity.png "Removable Discontinuity")
+
+This happens when $\lim\limits_{x\rightarrow a} f(x) = f(a)$, or $f(a)$ does not exist.
+
+===
+
+# Identifying Discontinuity with Graph: Example
+
+<Graph
+  functions="1+4/(x+2)@[-6,2];(x-6)*(x-4)*(x-2)@[2,6]"
+  asymptotes="x=-2"
+  points="2,2~solid;0,2~outline;-3,-3~outline;3,-3~solid;0,6~solid;0,-6~outline"
+  ranges="[8,8,-8,-8]"
+/>
+
+<Example>
+The given graph shows the function $f$. Identify the discontinuities (if there are any) of $f$ at the following points:
+
+1. $x=-3$
+2. $x=-2$
+3. $x=2$
+</Example>
+
+
+1. Removable Discontinuity
+2. Infinite Discontinuity
+3. Jump Discontinuity
+
+===
+
+# Identifying Discontinuity without Graph: Example
+
+<Example>
+The functions $f$, $g$, and $h$ are defined below, along with some $x$ values. Determine the discontinuities each of this function has at its respective given point.
+
+$$
+f(x)=\frac{1}{x}\text{, at }x=0
+$$
+<br />
+$$
+g(x)=\begin{cases}
+x^2& \text{, } x \leq2\\
+x& \text{, } x > 2\\
+\end{cases}\text{, at }x=2
+$$
+<br />
+$$
+h(x)=\begin{cases}
+\cos{x} \text{, } x \neq 0\\
+x& \text{, } x = 0\\
+\end{cases}\text{, at }x=2
+$$
+
+</Example>
+
+Since $\lim\limits_{x\rightarrow 0^-} f(x) = -\infty$ and $\lim\limits_{x\rightarrow 0^+} f(x) = \infty$, $f$ has infinite discontinuity at $x=0$.
+
+Since $\lim\limits_{x\rightarrow 0^-} g(x) = 4$ and $\lim\limits_{x\rightarrow 0^+} g(x) = 2$, $g$ has jump discontinuity at $x=2$.
+
+Since $\lim\limits_{x\rightarrow 0^-} h(x) = 1$, $\lim\limits_{x\rightarrow 0^+} h(x) = 1$, and they are equal, $h$ has removable discontinuity at $x=1$.
+
+===
+
+# **Practice:** Identifying Discontinuity without Graph
+
+The functions $f$, $g$, $h$, $p$ and $q$ are defined below, along with some $x$ values.
+
+$$
+f(x)=\cot{x}\text{, at }x=0
+$$
+
+$$
+g(x)=\begin{cases}
+\cos{x}& \text{, } x \leq -\frac{\pi}{4}\\
+\sin{\pi - x}& \text{, } x > -\frac{\pi}{4} \\
+\end{cases}\text{, at }x= -\frac{\pi}{4}
+$$
+
+$$
+h(x)= \left \lfloor x \right \rfloor\text{, at }x=1
+$$
+
+$$
+p(x)=\begin{cases}
+x& \text{, } x < 4\\
+x^2-4x+3& \text{, } 4 \leq x < 5\\
+7.9& \text{, } x = 5\\
+\sqrt{x+ 59}& \text{, } x  > 5\\
+\end{cases}\text{, at }x=5
+$$
+
+$$
+q(x) = \frac{1}{x^{2}-6x+9} \text{, at }x=3
+$$
+
+---
+
+In these input boxes, respectively, name all functions that have Jump, Infinite and Removable discontinuity, at the given $x$ value. Functions should be written alphabetically.
+
+<Practice id="discontinuity-1" answer="g, h" placeholder="Jump Discontinuity" />
+
+<Practice
+  id="discontinuity-2"
+  answer="f, q"
+  placeholder="Infinite Discontinuity"
+/>
+
+<Practice
+  id="discontinuity-3"
+  answer="p"
+  placeholder="Removable Discontinuity"
+/>

@@ -182,93 +182,15 @@ We know that $\lim\limits_{x\rightarrow \infty} -\frac{1}{x} = 0$ and $\lim\limi
 
 ===
 
-# Limit of Exponential Function
-
-<Formula>
-$\lim\limits_{x\rightarrow \infty} \left ( 1 + \frac{1}{x} \right) ^ x = e$
-</Formula>
-
-The euler number is often defined as above. Using the above, we can quickly prove that, for a constant $k$, $\lim\limits_{x\rightarrow \infty} \left ( 1 + \frac{k}{x} \right) ^ x = e^k$.
-Let us first define a new variable $y$, such that $y = \frac{x}{k}$.
-
-$$
-\begin{align*}
-\lim\limits_{x\rightarrow \infty}\left ( 1 + \frac{k}{x} \right) ^ x
-&= \lim\limits_{x\rightarrow \infty}\left ( 1 + \frac{1}{\frac{x}{k}} \right) ^ x \\
-&= \lim\limits_{y\rightarrow \infty}\left ( 1 + \frac{1}{y} \right) ^ {yk} \\
-&= \lim\limits_{y\rightarrow \infty}\left [ \left ( 1 + \frac{1}{y} \right) ^ y \right ] ^ k \\
-&= e^k \\
-\end{align*}
-$$
-
-Since $x$ is approaching $\infty$, when we swap out the variables of the limit, $y$ is also approaching $\infty$ because $x$ and $y$ are proportional. Consequently, the above proof is possible. Additionally, sligthly altering the limit will yield us another neat limit. Let us define another variable $z$ such that $z = \frac{1}{x}$, which means that $z$ is inversely proportional to $x$. In this case, instead of approaching infinity, $z$ is approaching $0$.
-
-$$
-\begin{align*}
-\lim\limits_{x\rightarrow \infty}\left ( 1 + \frac{k}{x} \right) ^ x
-&= \lim\limits_{z\rightarrow 0} \left ( 1 + z \right) ^ \frac{k}{z} \\
-&= e^k \\
-\end{align*}
-$$
-
-===
-
-# Limit of Exponential Function: Example
-
-<Example>
-Evaluate the following limits:
-1. $\lim\limits_{x\rightarrow \infty} \left ( 1 + \frac{2}{x} \right ) ^ {5x} = ...$
-2. $\lim\limits_{x\rightarrow \infty} \left ( 1 - \frac{1}{x} \right ) ^ {3x} = ...$
-3. $\lim\limits_{x\rightarrow 0} \left ( 2x^2 + 1 \right ) ^ {\frac{1}{x^2}} = ...$
-</Example>
-
-**Limit 1**
-
-$$
-\begin{align*}
-\lim\limits_{x\rightarrow \infty} \left ( 1 + \frac{2}{x} \right ) ^ {5x} 
-&= \left ( \lim\limits_{x\rightarrow \infty} \left [ 1 + \frac{2}{x} \right ] ^ x \right) ^ 5\\
-&= \left ( e^2 \right) ^ 5\\
-&= e^{10}
-\end{align*}
-$$
-
-**Limit 2**
-
-$$
-\begin{align*}
-\lim\limits_{x\rightarrow \infty} \left ( 1 - \frac{1}{x} \right ) ^ { 3x }
-&= \left ( \lim\limits_{x\rightarrow \infty} \left [ 1 - \frac{1}{x} \right ] ^ x \right) ^ 3\\
-&= \left ( \lim\limits_{x\rightarrow \infty} \left [ 1 + \frac{(-1)}{x} \right ] ^ x \right) ^ 3\\
-&= \left ( e^{-1} \right) ^ 3\\
-&= e^{-3}
-\end{align*}
-$$
-
-**Limit 3**  
-Let $y=2x^2$. Since $y$ is proportional to $x$, the limit variable will also approach $0$.
-
-$$
-\begin{align*}
-\lim\limits_{x\rightarrow 0} \left ( 2x^2 + 1 \right ) ^ {\frac{1}{x^2}} 
-&= \lim\limits_{y\rightarrow 0} \left ( y + 1 \right ) ^ {\frac{2}{y}} \\
-&= \left ( \lim\limits_{y\rightarrow  0} \left [ y + 1\right ] ^ {\frac{1}{y}} \right) ^ 2\\
-&= e^2
-\end{align*}
-$$
-
-===
-
-# **Practice:** Limits of Trigonometric and Exponential Functions
+# **Practice:** Limits of Trigonometric Functions
 
 1. Evaluate $\lim\limits_{h\rightarrow 0} \frac{\sec{(\pi + h)} - \sec{\pi}}{h}=...$
 
-<Practice id="trig-exp-1" answer="0" indent />
+<Practice id="trig-1" answer="0" indent />
 
 2. Evaluate $\lim_{x\rightarrow 0} \frac{\tan{2x}}{\sqrt{1-\sin{x}}-\sqrt{1+\sin{x}}}=...$ 
 
-<Practice id="trig-exp-2" answer="-2" indent />
+<Practice id="trig-2" answer="-2" indent />
 
-3. Evaluate $\lim\limits_{x\rightarrow \infty } \left ( \frac{4-2x}{6-2x} \right )^{1-x} =...$ (Express your answer accurate to 4 decimal places)
-
-<Practice id="trig-exp-3" answer="0.3678" indent />
+3. Provided $\cos{x} \leq f(x) \leq \sin{x}$ at $x=\frac{\pi}{4}$, determine $\lim_{x\rightarrow \frac{\pi}{4}} f(x)$. (Round your answer to 4 decimal places)
+<Practice id="trig-3" answer="0.7071" indent />
