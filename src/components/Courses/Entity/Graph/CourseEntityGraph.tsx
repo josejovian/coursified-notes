@@ -21,6 +21,7 @@ import {
   drawGraphPoints,
   drawGraphAsymptotes,
   parseSourceFunctions,
+  parseSourcePoints,
 } from "@/src/utils";
 import TeX from "@matejmazur/react-katex";
 import clsx from "clsx";
@@ -118,25 +119,8 @@ export const Graph = ({
   } = graphParams;
 
   const [loading, setLoading] = useState(true);
-  const [build, setBuild] = useState(false);
-  const buildRef = useRef(false);
   const initializeRef = useRef(false);
-  const [success, setSuccess] = useState(false);
-  const [funcs, setFuncs] = useState<MathFunction[]>([]);
-  const [pts, setPts] = useState<MathPoint[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const xAxisRef = useRef<HTMLDivElement>(null);
-  const yAxisRef = useRef<HTMLDivElement>(null);
-
-  const parsedFunctions = useMemo(
-    () => functions.replace("function:", "").split(";"),
-    [functions]
-  );
-
-  const parsedPoints = useMemo(
-    () => points.replace("point:", "").split(";"),
-    [points]
-  );
 
   const parsedAsymptotes = useMemo<MathAsymptote[]>(
     () =>
@@ -148,37 +132,6 @@ export const Graph = ({
       }),
     [asymptotes]
   );
-
-  const handleInitializeFunctions = useCallback(() => {
-    const convertedFunctions = parseSourceFunctions(parsedFunctions, [
-      left,
-      right,
-    ]);
-    setFuncs(convertedFunctions);
-    return convertedFunctions;
-  }, [left, parsedFunctions, right]);
-
-  const handleInitializePoints = useCallback(() => {
-    const convertedPoints: MathPoint[] = [];
-    parsedPoints.forEach((point) => {
-      const parse = point.split("~");
-      if (parse.length === 2) {
-        const variant = parse[1];
-        const coords = parse[0].split(",").map((x) => Number(x));
-        const [y, x] = coords;
-        if (coords.length === 2) {
-          convertedPoints.push({
-            points: [y, x],
-            variant: variant ?? "solid",
-          });
-        }
-      }
-    });
-
-    setPts(convertedPoints);
-
-    return convertedPoints;
-  }, [parsedPoints]);
 
   const handleDrawGraphTemplates = useCallback(() => {
     const canvas = canvasRef.current;
@@ -195,7 +148,6 @@ export const Graph = ({
   const handleDrawGraph = useCallback(
     (directFunctions: MathFunction[], directPoints: MathPoint[]) => {
       if (!loading) return;
-      if (funcs.length !== parsedFunctions.length) return;
 
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -222,30 +174,28 @@ export const Graph = ({
       setImage(graph);
     },
     [
-      funcs.length,
       graphParams,
       handleDrawGraphTemplates,
       hideGrid,
       loading,
       onReady,
       parsedAsymptotes,
-      parsedFunctions.length,
     ]
   );
 
   const handleInitialize = useCallback(() => {
     if (cache) return;
-
     handleDrawGraphTemplates();
-    const ogFunctions = handleInitializeFunctions();
-    const ogPoints = handleInitializePoints();
-    handleDrawGraph(ogFunctions, ogPoints);
-    // setBuild(true);
+    const parsedFunctions = parseSourceFunctions(functions, [left, right]);
+    const parsedPoints = parseSourcePoints(points);
+    handleDrawGraph(parsedFunctions, parsedPoints);
   }, [
     cache,
-    handleInitializeFunctions,
-    handleInitializePoints,
     handleDrawGraphTemplates,
+    functions,
+    left,
+    right,
+    points,
     handleDrawGraph,
   ]);
 
@@ -264,7 +214,6 @@ export const Graph = ({
             top: gridSize[0] * up + borderSize * 3,
             left: borderSize,
           }}
-          ref={xAxisRef}
         >
           {Array.from({ length: horizontal }, () => 0).map((_, idx) => {
             const xValue = idx + left;
@@ -294,7 +243,6 @@ export const Graph = ({
               gridSize[1] * (Math.abs(left) - 1) -
               (ovverrideGridSize === "md" ? 0 : 12),
           }}
-          ref={xAxisRef}
         >
           {Array.from({ length: horizontal }, () => 0).map((_, idx) => {
             const yValue = up - idx;

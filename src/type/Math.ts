@@ -5,7 +5,8 @@ export interface MathFunction {
 
 export interface MathPoint {
   points: [number, number];
-  variant?: string;
+  color?: GraphColors;
+  variant?: PointVariants;
 }
 
 export interface MathAsymptote {
@@ -14,6 +15,8 @@ export interface MathAsymptote {
 }
 
 export type GraphColors = "purple" | "blue" | "green" | "red" | "orange";
+
+export type PointVariants = "solid" | "outline";
 
 export interface GraphParams {
   up: number;
