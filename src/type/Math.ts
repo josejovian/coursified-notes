@@ -14,6 +14,8 @@ export interface MathAsymptote {
   value: number;
 }
 
+export type GraphGridSize = "md" | "sm";
+
 export type GraphColors = "purple" | "blue" | "green" | "red" | "orange";
 
 export type PointVariants = "solid" | "outline";
@@ -30,6 +32,7 @@ export interface GraphParams {
   increments: [number, number];
   borderSize: number;
   gridSize: [number, number];
+  gridSizeCategory: GraphGridSize;
   arrowSize: number;
   color: GraphColors;
 }
