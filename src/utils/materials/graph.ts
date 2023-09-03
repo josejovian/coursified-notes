@@ -451,8 +451,6 @@ export function parseSourcePoints(source: string) {
             source: phrase,
           });
 
-          console.log(data);
-
           if (!data) return;
 
           switch (type) {

@@ -35,19 +35,19 @@ export function CourseJourneySectionChapter({
           active && "bg-orange-50",
         ],
         status !== "locked" && "cursor-pointer",
+				status === "completed" && "text-success-6",
+				status === "locked" && "text-secondary-4",
+				status === "unlocked" && "text-orange-600",
         className
       )}
       key={chapter.title}
       onClick={onClick}
     >
-      <Icon IconComponent={MdOutlineDescription} className="mr-4" size="m" />
+      <Icon IconComponent={MdOutlineDescription} className="mr-4 text-inherit" size="m" />
       <Paragraph
-        className={clsx(
-          status === "completed" && "text-success-6",
-          status === "locked" && "text-secondary-4",
-          status === "unlocked" && "text-orange-600",
-          "truncate"
-        )}
+				as="p"
+        className="truncate"
+				color="inherit"
       >
         {chapter.title}
       </Paragraph>

@@ -2,13 +2,14 @@ import { Common } from "@/src/type";
 import clsx from "clsx";
 import { CSSProperties, HTMLProps, ReactNode, useEffect, useMemo } from "react";
 
-interface ParagraphProps {
+export interface ParagraphProps {
   as?: "span" | "p" | "h1" | "h2" | "h3" | "a";
   weight?: FontWeight;
   size?: FontSize;
   color?: FontColor;
   children?: ReactNode;
   className?: string;
+  style?: CSSProperties;
   onClick?: () => void;
 }
 

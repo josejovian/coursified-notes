@@ -39,10 +39,17 @@ export interface ChapterType {
   completed?: boolean;
 }
 
+export interface QuizConfigType {
+  title?: string;
+  description: string;
+  duration: number;
+}
+
 export interface SectionType {
   id?: string;
   title: string;
   chapters: ChapterType[];
+  quiz?: QuizConfigType;
   progress?: number;
 }
 
@@ -57,6 +64,7 @@ export interface CourseType {
 export interface ChapterAddressType {
   course: string;
   section: string;
+  sectionIndex?: number;
   chapter: string;
   page?: number;
 }

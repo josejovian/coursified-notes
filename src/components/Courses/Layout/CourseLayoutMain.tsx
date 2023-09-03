@@ -13,6 +13,7 @@ import { checkChapterProgress } from "@/src/utils";
 import { Blockquote, Graph, Input, Loader, Paragraph } from "@/src/components";
 import { useRouter } from "next/router";
 import { useCustom } from "@/src/hooks";
+import { CourseLayoutContentTemplate } from "./CourseLayoutContentTemplate";
 
 interface CourseMaterialContentProps {
   markdown: any;
@@ -264,104 +265,78 @@ export function CourseLayoutMain({
     ]
   );
 
-  const renderContents = useMemo(() => {
-    return (
-      <article
-        className={clsx(
-          "CourseMaterial_wrapper",
-          "absolute left-0 top-0",
-          "w-full h-full pt-24 p-adapt-sm",
-          trueLoading && "hidden"
-        )}
-      >
-        <div className="CourseMaterial_content">
-          <Content
-            components={{
-              Indent: ({ children }) => {
-                return <div className="ml-8">{children}</div>;
-              },
-              TwoColumns: ({ children }) => {
-                return (
-                  <div className="TwoColumns flex flex-wrap gap-4 w-fit mx-auto">
-                    {children}
-                  </div>
-                );
-              },
-              Graph: (props) => {
-                const { functions = "" } = props;
-                const identifier = getId(functions);
-                return (
-                  <Graph
-                    {...props}
-                    key={identifier}
-                    id={identifier}
-                    cache={graphRef.current[identifier]}
-                    onReady={(cache) => {
-                      graphRef.current[identifier] = cache;
-                    }}
-                  />
-                );
-              },
-              TeX,
-              Practice: handleConvertPractice,
-              Explanation: ({ children }) => (
-                <>
-                  {solved === 1 && (
-                    <Blockquote variant="explanation">{children}</Blockquote>
-                  )}
-                </>
-              ),
-              Formula: ({ children }) => (
-                <Blockquote variant="formula">{children}</Blockquote>
-              ),
-              Example: ({ children }) => (
-                <Blockquote variant="example">
-                  <Paragraph weight="bold">Example</Paragraph>
-                  <br />
-                  {children}
-                </Blockquote>
-              ),
-              Theorem: ({ children, title }) => (
-                <Blockquote variant="theorem">
-                  <Paragraph weight="bold">{title}</Paragraph>
-                  {children}
-                </Blockquote>
-              ),
-              TexBlock: ({ children }) => {
-                return <TeX block>{children}</TeX>;
-              },
-              Match: ({ id, left, right }) => (
-                <div
-                  id={id}
-                  className="CustomMaterialInvoker hidden"
-                >{`[match]@${id}@${left}@${right}`}</div>
-              ),
-              Option: ({ id, content, truth }) => (
-                <div
-                  id={id}
-                  className="CustomMaterialInvoker hidden"
-                >{`[option]@${id}@${content}@${truth ? 1 : 0}`}</div>
-              ),
-            }}
-          />
-        </div>
-      </article>
-    );
-  }, [Content, handleConvertPractice, solved, trueLoading]);
-
   return (
-    <div className="relative flex w-full h-full overflow-x-hidden overflow-y-scroll">
-      <div
-        className={clsx(
-          "self-center w-full h-full justify-self-center mx-auto",
-          "flex justify-center items-center z-10",
-          !trueLoading && "hidden"
-        )}
-      >
-        <Loader />
-      </div>
-      {renderContents}
-    </div>
+    <CourseLayoutContentTemplate trueLoading={trueLoading}>
+      <Content
+        components={{
+          Indent: ({ children }) => {
+            return <div className="ml-8">{children}</div>;
+          },
+          TwoColumns: ({ children }) => {
+            return (
+              <div className="TwoColumns flex flex-wrap gap-4 w-fit mx-auto">
+                {children}
+              </div>
+            );
+          },
+          Graph: (props) => {
+            const { functions = "" } = props;
+            const identifier = getId(functions);
+            return (
+              <Graph
+                {...props}
+                key={identifier}
+                id={identifier}
+                cache={graphRef.current[identifier]}
+                onReady={(cache) => {
+                  graphRef.current[identifier] = cache;
+                }}
+              />
+            );
+          },
+          TeX,
+          Practice: handleConvertPractice,
+          Explanation: ({ children }) => (
+            <>
+              {solved === 1 && (
+                <Blockquote variant="explanation">{children}</Blockquote>
+              )}
+            </>
+          ),
+          Formula: ({ children }) => (
+            <Blockquote variant="formula">{children}</Blockquote>
+          ),
+          Example: ({ children }) => (
+            <Blockquote variant="example">
+              <Paragraph weight="bold">Example</Paragraph>
+              <br />
+              {children}
+            </Blockquote>
+          ),
+          Theorem: ({ children, title }) => (
+            <Blockquote variant="theorem">
+              <Paragraph weight="bold">{title}</Paragraph>
+              {children}
+            </Blockquote>
+          ),
+          TexBlock: ({ children }) => {
+            return <TeX block>{children}</TeX>;
+          },
+          Match: ({ id, left, right }) => (
+            <div
+              id={id}
+              className="CustomMaterialInvoker hidden"
+            >{`[match]@${id}@${left}@${right}`}</div>
+          ),
+          Option: ({ id, content, truth }) => (
+            <div
+              id={id}
+              className="CustomMaterialInvoker hidden"
+            >{`[option]@${id}@${content}@${truth ? 1 : 0}`}</div>
+          ),
+        }}
+      />
+    </CourseLayoutContentTemplate>
   );
 }
 

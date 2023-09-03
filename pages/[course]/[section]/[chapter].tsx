@@ -8,7 +8,12 @@ import React, {
 import clsx from "clsx";
 import "katex/dist/katex.min.css";
 import { useRouter } from "next/router";
-import { AnswerType, ChapterAddressType, CourseType } from "@/src/type";
+import {
+  AnswerType,
+  ChapterAddressType,
+  CourseType,
+  QuizConfigType,
+} from "@/src/type";
 import {
   checkChapterProgress,
   getSpecificChapterAddress,
@@ -17,6 +22,7 @@ import {
 import {
   Button,
   CourseLayoutMain,
+  CourseQuizOnboarding,
   CourseLayoutSide,
   Paragraph,
 } from "@/src/components";
@@ -29,15 +35,16 @@ import {
   readChapterMd,
 } from "@/src/lib/mdx";
 import { useProgress, useToast } from "@/src/hooks";
+import { CourseLayoutContentTemplate } from "@/src/components/Courses/Layout/CourseLayoutContentTemplate";
 
 interface CourseMaterialProps {
-  markdown: any[];
+  markdown: any;
   chapterAddress: ChapterAddressType;
   rawCourseDetail: any;
 }
 
 const CourseMaterial = ({
-  markdown = [],
+  markdown,
   chapterAddress,
   rawCourseDetail,
 }: CourseMaterialProps) => {
@@ -62,6 +69,10 @@ const CourseMaterial = ({
   const stateChecking = useState(false);
   const [checking, setChecking] = stateChecking;
   const setSubmmited = stateSubmitted[1];
+  const stateQuizPhase = useState<
+    "onboarding" | "working" | "submitted" | undefined
+  >(chapterAddress.chapter === "quiz" ? "onboarding" : undefined);
+  const [quizPhase, setQuizPhase] = stateQuizPhase;
 
   const { addToast } = useToast();
 
@@ -69,6 +80,21 @@ const CourseMaterial = ({
     () => JSON.parse(rawCourseDetail) as CourseType,
     [rawCourseDetail]
   );
+
+  const quizDetails = useMemo<QuizConfigType | undefined>(() => {
+    const currentSection = courseDetail.sections[chapterAddress.sectionIndex!];
+
+    return chapterAddress.chapter === "quiz"
+      ? ({
+          ...currentSection.quiz,
+          title: currentSection.title,
+        } as any)
+      : undefined;
+  }, [
+    chapterAddress.chapter,
+    chapterAddress.sectionIndex,
+    courseDetail.sections,
+  ]);
 
   const { id, sections } = courseDetail;
 
@@ -86,7 +112,7 @@ const CourseMaterial = ({
     console.log(sectionData);
   }, [sectionData]);
 
-  const chapterContent = useMemo(() => markdown[page], [markdown, page]);
+  const chapterContent = useMemo(() => markdown[page].code, [markdown, page]);
 
   const trueLoading = useMemo(
     () => swapPages || swapChapters || loading,
@@ -200,13 +226,22 @@ const CourseMaterial = ({
     updateData();
   }, [markdown, updateData]);
 
+  const handleSetupQuiz = useCallback(() => {
+    if (quizDetails && !quizPhase) setQuizPhase("onboarding");
+  }, [quizDetails, quizPhase, setQuizPhase]);
+
+  useEffect(() => {
+    handleSetupQuiz();
+  }, [quizDetails, handleSetupQuiz]);
+
   const handleCleanUpStates = useCallback(() => {
     setAccept({});
     setSolved(-1);
     setSubmmited(false);
     setAnswer({});
     setLoading(true);
-  }, [setAccept, setAnswer, setLoading, setSolved, setSubmmited]);
+    setQuizPhase(undefined);
+  }, [setAccept, setAnswer, setLoading, setQuizPhase, setSolved, setSubmmited]);
 
   const handlePreviousPage = useCallback(() => {
     handleCleanUpStates();
@@ -251,82 +286,90 @@ const CourseMaterial = ({
           "border-t border-zinc-400"
         )}
       >
-        <Button
-          color="secondary"
-          size="l"
-          onClick={handlePreviousPage}
-          disabled={page <= 0 || trueLoading}
-        >
-          Back
-        </Button>
-        <Paragraph as="span" size="l">
-          {page + 1} / {maxPage}
-        </Paragraph>
-        {solved !== 0 ? (
-          <Button
-            size="l"
-            onClick={() => {
-              handleNextPage();
-            }}
-            disabled={trueLoading}
-          >
-            Next
+        {quizDetails && quizPhase === "onboarding" ? (
+          <Button size="l" onClick={() => {}} disabled={trueLoading}>
+            Start
           </Button>
         ) : (
-          <Button
-            size="l"
-            onClick={() => {
-              setChecking(true);
-              setSubmmited(true);
-              console.log("Submitted Answers");
-              console.log(answer);
-              console.log("Accepted Answer:");
-              console.log(accept);
-              if (
-                Object.values(answer).length === Object.values(accept).length
-              ) {
-                const correct = !Object.entries(answer).some(
-                  ([key, answer]) => {
-                    return !handleCheckAnswer(answer ?? "", key);
+          <>
+            <Button
+              color="secondary"
+              size="l"
+              onClick={handlePreviousPage}
+              disabled={page <= 0 || trueLoading}
+            >
+              Back
+            </Button>
+            <Paragraph as="span" size="l">
+              {page + 1} / {maxPage}
+            </Paragraph>
+            {solved !== 0 ? (
+              <Button
+                size="l"
+                onClick={() => {
+                  handleNextPage();
+                }}
+                disabled={trueLoading}
+              >
+                Next
+              </Button>
+            ) : (
+              <Button
+                size="l"
+                onClick={() => {
+                  setChecking(true);
+                  setSubmmited(true);
+
+                  if (
+                    Object.values(answer).length ===
+                    Object.values(accept).length
+                  ) {
+                    const correct = !Object.entries(answer).some(
+                      ([key, answer]) => {
+                        return !handleCheckAnswer(answer ?? "", key);
+                      }
+                    );
+
+                    console.log("Correct? ", correct);
+
+                    if (correct) {
+                      setSolved(1);
+                      addToast({
+                        phrase: "courseMaterialPracticeAnsweredCorrect",
+                      });
+                    } else {
+                      addToast({
+                        phrase: "courseMaterialPracticeAnsweredIncorrect",
+                      });
+                    }
+                  } else {
+                    setTimeout(() => {
+                      setChecking(false);
+                    }, 1000);
+                    addToast({
+                      phrase: "courseMaterialPracticeAnsweredIncorrect",
+                    });
                   }
-                );
-
-                console.log("Correct? ", correct);
-
-                if (correct) {
-                  setSolved(1);
-                  addToast({
-                    phrase: "courseMaterialPracticeAnsweredCorrect",
-                  });
-                } else {
-                  addToast({
-                    phrase: "courseMaterialPracticeAnsweredIncorrect",
-                  });
+                }}
+                disabled={
+                  trueLoading || checking
+                  // Object.values(answer).length !== Object.values(accept).length ||
+                  // Object.values(answer).filter((x) => x === "").length > 1
                 }
-              } else {
-                setTimeout(() => {
-                  setChecking(false);
-                }, 1000);
-                addToast({
-                  phrase: "courseMaterialPracticeAnsweredIncorrect",
-                });
-              }
-            }}
-            disabled={
-              trueLoading || checking
-              // Object.values(answer).length !== Object.values(accept).length ||
-              // Object.values(answer).filter((x) => x === "").length > 1
-            }
-          >
-            Check
-          </Button>
+              >
+                Check
+              </Button>
+            )}
+          </>
         )}
       </div>
     ),
     [
+      quizDetails,
+      quizPhase,
+      trueLoading,
       handlePreviousPage,
       page,
-      trueLoading,
       maxPage,
       solved,
       checking,
@@ -341,24 +384,32 @@ const CourseMaterial = ({
     ]
   );
 
-  const renderChapterContents = useMemo(
-    () => (
-      <CourseLayoutMain
-        addreses={addresses}
-        markdown={chapterContent}
-        stateAccept={stateAccept}
-        stateAnswer={stateAnswer}
-        stateLoading={stateLoading}
-        trueLoading={trueLoading}
-        stateSolved={stateSolved}
-        stateSubmitted={stateSubmitted}
-        stateChecking={stateChecking}
-        page={page}
-        handleCheckAnswer={handleCheckAnswer}
-        onChapterChange={() => setPage(0)}
-      />
-    ),
+  const renderPageContents = useMemo(
+    () =>
+      quizPhase === "onboarding" && quizDetails ? (
+        <CourseQuizOnboarding
+          quizDetails={quizDetails}
+          trueLoading={trueLoading}
+        />
+      ) : (
+        <CourseLayoutMain
+          addreses={addresses}
+          markdown={chapterContent}
+          stateAccept={stateAccept}
+          stateAnswer={stateAnswer}
+          stateLoading={stateLoading}
+          trueLoading={trueLoading}
+          stateSolved={stateSolved}
+          stateSubmitted={stateSubmitted}
+          stateChecking={stateChecking}
+          page={page}
+          handleCheckAnswer={handleCheckAnswer}
+          onChapterChange={() => setPage(0)}
+        />
+      ),
     [
+      quizPhase,
+      quizDetails,
       addresses,
       chapterContent,
       stateAccept,
@@ -418,7 +469,7 @@ const CourseMaterial = ({
       >
         {renderCourseContents}
         <main className="relative flex flex-col flex-auto justify-between w-full overflow-hidden">
-          {renderChapterContents}
+          {renderPageContents}
           {renderPageControls}
         </main>
       </div>
@@ -465,12 +516,23 @@ export const getStaticProps = async (req: any) => {
 
   const { pages } = await readChapterMd(course, section, chapter);
 
-  const courseDetail = await getDetailedCourse(course);
+  const courseDetail = (await getDetailedCourse(course)) as CourseType;
+
+  const sectionIndex = courseDetail.sections.findIndex((value) => {
+    console.log("Comparing Value: ", value.id);
+    console.log("Comparing Section: ", section);
+    return section === value.id;
+  });
+
+  console.log("Section Index: ", sectionIndex);
 
   return {
     props: {
       markdown: pages,
-      chapterAddress: params,
+      chapterAddress: {
+        ...params,
+        sectionIndex,
+      },
       rawCourseDetail: JSON.stringify(courseDetail),
     },
   };

@@ -33,11 +33,12 @@ export function CourseEntityGraphAxes({
         {Array.from({ length: horizontal }, () => 0).map((_, idx) => {
           const xValue = idx + left;
 
-          if (idx === 0 || xValue === -1 || xValue === 0) return <></>;
+					const hidden = (idx === 0 || xValue === -1 || xValue === 0);
 
           return (
             <TeX
               style={{
+								display:  hidden ? "none" : "initial",
                 width: `${GRAPH_FONT_SIZE}px`,
                 textAlign: "right",
                 position: "absolute",

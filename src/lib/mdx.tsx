@@ -112,7 +112,7 @@ export async function readChapterMd(
   );
 
   return {
-    pages: results.map((res) => res.code),
+    pages: results,
   };
 }
 
@@ -143,10 +143,11 @@ export async function getDetailedCourse(course: string) {
         return null;
       }
 
-      const { title = section, overrideChapterTitles } = await readSection(
-        course,
-        section
-      );
+      const {
+        title = section,
+        overrideChapterTitles,
+        quiz,
+      } = await readSection(course, section);
 
       const sectionData: SectionType = {
         id: section,
@@ -155,6 +156,10 @@ export async function getDetailedCourse(course: string) {
       };
 
       const chapters = await readAllChapters(course, section);
+
+      const hasQuiz = chapters.some((chapter: string) => {
+        return chapter === "quiz.mdx";
+      });
 
       const detectedChapters = (await Promise.all(
         chapters.map(async (chapterRaw: string) => {
@@ -209,11 +214,16 @@ export async function getDetailedCourse(course: string) {
             };
           }
 
+          const chapterTitle = (() => {
+            if (chapter === "quiz") return "Quiz";
+            if (overrideChapterTitles)
+              return overrideChapterTitles[chapter] ?? chapter;
+            return chapter;
+          })();
+
           return {
             id: chapter,
-            title: overrideChapterTitles
-              ? overrideChapterTitles[chapter]
-              : chapter ?? chapter,
+            title: chapterTitle,
             requirements,
             pages: completePages,
           } as ChapterType;
@@ -222,9 +232,15 @@ export async function getDetailedCourse(course: string) {
         .then((result) => result.filter((x) => x))
         .catch()) as ChapterType[];
 
-      const topicIndexees = Object.keys(overrideChapterTitles);
+      const topicIndexes = Object.keys(overrideChapterTitles);
 
-      sectionData.chapters = sortData(detectedChapters, topicIndexees);
+      if (hasQuiz) {
+        topicIndexes.push("quiz");
+      }
+
+      sectionData.chapters = sortData(detectedChapters, topicIndexes);
+
+      sectionData.quiz = quiz;
 
       return sectionData;
     })
