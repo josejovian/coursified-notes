@@ -29,6 +29,7 @@ export type OptionElementType = {
   parentElement: HTMLElement;
   content: string;
   truth: number;
+  choiceIndex: number;
   id: string;
 };
 

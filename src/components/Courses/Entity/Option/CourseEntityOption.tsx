@@ -65,7 +65,7 @@ export function Option({
   return (
     <div
       role="option"
-			aria-label="option"
+      aria-label="option"
       aria-selected={selected}
       className={clsx(
         "flex align-self-end items-center",
@@ -86,11 +86,15 @@ export function Option({
         className={clsx(
           "w-6 h-6 min-w-6 mr-4 border flex items-center justify-center",
           solved && selected && "text-success-5 border-success-5 bg-success-5",
-					!solved && selected && "text-primary-5 border-primary-5 bg-primary-5",
-					!selected && "border-secondary-5"
+          !solved && selected && "text-primary-5 border-primary-5 bg-primary-5",
+          !selected && "border-secondary-5"
         )}
       >
-        <Icon className={clsx(!selected && "invisible", "text-secondary-1")} size="m" IconComponent={MdCheck} />
+        <Icon
+          className={clsx(!selected && "invisible", "text-secondary-1")}
+          size="m"
+          IconComponent={MdCheck}
+        />
       </div>
       <span ref={contentRef} />
     </div>

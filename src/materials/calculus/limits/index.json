@@ -7,5 +7,9 @@
 		"exponential": "Limits of Exponential Functions",
 		"continuity": "Continuity of Functions",
 		"discontinuity": "Discontinuity of Functions"
+	},
+	"quiz": {
+		"duration": 60,
+		"description": ""
 	}
 }

@@ -58,6 +58,9 @@ export function useCustom({
   const matchParentElement = useRef<MatchBoxElementType[]>([]);
   const optionParentElement = useRef<OptionElementType[]>([]);
   const graphParentElement = useRef<GraphElementType[]>([]);
+  const optionCount = useRef<Record<string, number>>({});
+  const optionDict = useRef<Record<string, string[]>>({});
+  const optionRendered = useRef<Record<string, boolean>>({});
   const matchRef = useRef<
     Record<
       string,
@@ -120,12 +123,22 @@ export function useCustom({
   }, [active, setActive, setAnswer]);
 
   const handleToggleOption = useCallback(
-    (questionId: string) => {
+    (questionId: string, choiceId: number) => {
       if (solved) return;
 
       setAnswer((prev) => ({
         ...prev,
-        [questionId]: prev[questionId] && prev[questionId] === "1" ? "0" : "1",
+        [questionId]: prev[questionId]
+          ? prev[questionId]
+              ?.split("")
+              .map((v, idx) => {
+                if (idx !== choiceId) {
+                  return v;
+                }
+                return v === "1" ? "0" : "1";
+              })
+              .join("")
+          : prev[questionId],
       }));
     },
     [setAnswer, solved]
@@ -180,12 +193,15 @@ export function useCustom({
     // Object.entries(customElementQueue.current).forEach(([key, _]) => {
     //   JXG.JSXGraph.freeBoard(key);
     // });
+    optionDict.current = {};
+    optionCount.current = {};
+
     Object.values(CUSTOM_MATERIAL).forEach((group) => {
       handleRemoveCustomComponents(group);
     });
 
     inputRef.current = {};
-  }, [handleRemoveCustomComponents, inputRef]);
+  }, [handleRemoveCustomComponents, inputRef, optionCount, optionDict]);
 
   const handleRemoveAnswer = useCallback(
     (key: string) => {
@@ -290,19 +306,24 @@ export function useCustom({
     ]
   );
 
-  const renderOption = useCallback(
-    (practiceId: string, content: string) => {
-      const identifier = `Option-${practiceId}`;
+  useEffect(() => {
+    console.log(accept);
+  }, [accept]);
 
+  const renderOption = useCallback(
+    (practiceId: string, choiceId: number, content: string) => {
+      const identifier = `Option-${practiceId}-${choiceId}`;
       const parsed = content.replaceAll("\\{", "{").replaceAll("\\}", "}");
 
       return (
         <Option
           id={identifier}
           content={parsed}
-          selected={Boolean(answer[practiceId] && answer[practiceId] === "1")}
+          selected={Boolean(
+            answer[practiceId] && answer[practiceId]?.at(choiceId) === "1"
+          )}
           onSelect={() => {
-            handleToggleOption(practiceId);
+            handleToggleOption(practiceId, choiceId);
           }}
           solved={solved}
         />
@@ -448,14 +469,19 @@ export function useCustom({
   const handleRenderOptions = useCallback(() => {
     handleRemoveCustomComponents("Option");
 
-    optionParentElement.current.forEach(({ parentElement, content, id }) => {
-      renderCustomElement(
-        parentElement,
-        renderOption(id, content),
-        CUSTOM_MATERIAL["option"],
-        id
-      );
-    });
+    optionParentElement.current.forEach(
+      ({ parentElement, content, id, choiceIndex }) => {
+        optionRendered.current[id] = true;
+        console.log("Rendering Option");
+        const identifier = `${id}-${choiceIndex}`;
+        renderCustomElement(
+          parentElement,
+          renderOption(id, choiceIndex, content),
+          CUSTOM_MATERIAL["option"],
+          identifier
+        );
+      }
+    );
   }, [handleRemoveCustomComponents, renderCustomElement, renderOption]);
 
   /*
@@ -524,12 +550,14 @@ export function useCustom({
 
     let inputElementsRendered = 0;
 
-    let answerKeys = {};
+    let answerKeys: Record<string, string> = {};
 
     answerInputBoxParentElement.current = [];
     matchParentElement.current = [];
     optionParentElement.current = [];
     graphParentElement.current = [];
+
+    let tempOptionCount: Record<string, number> = {};
 
     elements.forEach((element, index) => {
       const string = element.innerHTML;
@@ -588,9 +616,19 @@ export function useCustom({
       if (container && parentElement && string.match(/\[option\]/g)) {
         const detectedPair = string.toString().split("@");
 
-        if (detectedPair && detectedPair.length === 4) {
-          const [tag, id, content, truth] = detectedPair;
+        if (detectedPair && detectedPair.length === 5) {
+          const [tag, id, index, content, truth] = detectedPair;
           const vessel = document.getElementById(id)!;
+
+          let existingCount = optionCount.current[id] ?? 0;
+          let existingDict = optionDict.current[id] ?? [];
+          let index2 = existingDict.findIndex((value) => value === content);
+          if (index2 === -1) {
+            index2 = existingDict.length;
+            existingDict.push(content);
+            optionCount.current[id] = existingCount + 1;
+            optionDict.current[id] = existingDict;
+          }
 
           optionParentElement.current = [
             ...optionParentElement.current,
@@ -599,15 +637,9 @@ export function useCustom({
               content,
               id,
               truth: Number(truth),
+              choiceIndex: Number(index),
             },
           ];
-
-          answerKeys = {
-            ...answerKeys,
-            [id]: `${truth}`,
-          };
-
-          inputElementsRendered++;
         }
       }
 
@@ -668,21 +700,67 @@ export function useCustom({
     }
 
     if (optionParentElement.current.length > 0 && solved !== 1) {
-      if (!solved) optionParentElement.current.sort(() => Math.random() - 0.5);
+      let optionAnswerKeys: Record<string, string> = {};
+      let optionDefaultAnswer: Record<string, string> = {};
 
-      const defaultTruth = optionParentElement.current
-        .map((option) => option.id)
-        .reduce(
-          (prev, curr) => ({
-            ...prev,
-            [curr]: "0",
-          }),
-          {}
-        );
+      optionParentElement.current.forEach((option, idx) => {
+        let relevantKey = optionAnswerKeys[option.id];
+
+        if (relevantKey) {
+          relevantKey = relevantKey
+            .split("")
+            .map((value, idx2) => (idx2 === idx ? String(option.truth) : value))
+            .join("");
+        } else {
+          const array = Array.from(
+            { length: optionCount.current[option.id] },
+            () => "0"
+          );
+          console.log("Create array");
+          console.log(optionCount.current);
+          console.log(option.id);
+          console.log(array);
+          optionDefaultAnswer[option.id] = array.join("");
+          relevantKey = array
+            .map((v, idx2) => (idx2 === idx ? String(option.truth) : "0"))
+            .join("");
+        }
+        optionAnswerKeys[option.id] = relevantKey;
+
+        // newAnswerKey.split('').map((value, idx2) => idx2 === optionIndex)
+
+        answerKeys = {
+          ...answerKeys,
+          [option.id]: relevantKey,
+        };
+      });
+
+      console.log("Register:");
+      console.log(optionCount);
+      console.log(answerKeys);
+
+      // if (!solved) optionParentElement.current.sort(() => Math.random() - 0.5);
+
+      // const defaultTruth = optionParentElement.current
+      //   .map((option) => option.id)
+      //   .reduce(
+      //     (prev, curr) => ({
+      //       ...prev,
+      //       [curr]: "0",
+      //     }),
+      //     {}
+      //   );
+
+      setAccept((prev) => ({
+        ...prev,
+        ...answerKeys,
+      }));
       setAnswer((prev) => ({
         ...prev,
-        ...defaultTruth,
+        ...optionDefaultAnswer,
       }));
+
+      inputElementsRendered += Object.keys(optionAnswerKeys).length;
     }
 
     if (inputElementsRendered > 0 && Object.values(answerKeys).length > 0) {
@@ -700,7 +778,7 @@ export function useCustom({
     loading,
     handleRemoveAllCustomComponents,
     solved,
-    // handleRenderGraph,
+    optionCount,
     setAnswer,
     setSolved,
     setAccept,

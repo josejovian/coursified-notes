@@ -1,14 +1,16 @@
 # Absolute Extrema of a Function
 
 The function $f$:
+
 - has an **absolute maximum** at $c$ if $f(x) ≤ f(c)$ for all $x$ in the $f$'s domain. $f(c)$ is $f$'s maximum value on its domain.
 - has an **absolute minimum** at $c$ if $f(x) ≥ f(c)$ for all $x$ in the $f$'s domain. $f(c)$ is $f$'s minimum value on its domain.
 
 The absolute maximum and minimum of $f$ are $f$'s **extrema** on its domain.
 
-<Graph functions="x*x+1,-x*x-1,1/x" />
+<Graph functions="x*x+1@red;-x*x-1@blue;1/x" />
 
 Consider the following examples: $x^2 + 1$, $-x^2 - 1$, and $\frac{1}{x}$. By observing the graph, you know that:
+
 - $x^2 + 1$ only has absolute minimum at $x=0$, and its minimum value is $1$. It doesn't have a maximum value.
 - $-x^2 - 1$ only has absolute maximum at $x=0$, and its maximum value is $-1$. It doesn't have a minimum value.
 - $\frac{1}{x}$ has neither absolute maximum nor minimum, so it has no extrema.
@@ -18,9 +20,10 @@ Consider the following examples: $x^2 + 1$, $-x^2 - 1$, and $\frac{1}{x}$. By ob
 # Local Extrema of a Function
 
 The function $f$:
+
 - has a relative maximum at $c$ if $f(x) ≥ f(c)$ for all $x$ in some open interval that contains $c$.
 - has a relative maximum at $c$ if $f(x) ≤ f(c)$ for all $x$ in some open interval that contains $c$.
- are $f$'s **extrema** on its domain.
+  are $f$'s **extrema** on its domain.
 
 <Graph functions="(x*x*x)/4-x*3" />
 
@@ -31,16 +34,20 @@ Consider the following example: $\frac{x^3}{4} - 3x$. By observing the graph, yo
 # Finding Extremas
 
 <Theorem title="Fermat's Theorem">
-If $f$ has a relative extremum at $c$, then either $f'(c) = 0$ or $f'(c)$ doesn't exist.
+  If $f$ has a relative extremum at $c$, then either $f'(c) = 0$ or $f'(c)$
+  doesn't exist.
 </Theorem>
 
 <Theorem title="Extreme Value Theorem">
-If $f$ is continuous on a closed interval $[a,b]$, then $f$ attains an absolute maximum value $f(c)$ for some number $c$ in $[a,b]$ and an absolute minimum value $f(d)$ for some number $d$ in $[a,b]$.
+  If $f$ is continuous on a closed interval $[a,b]$, then $f$ attains an
+  absolute maximum value $f(c)$ for some number $c$ in $[a,b]$ and an absolute
+  minimum value $f(d)$ for some number $d$ in $[a,b]$.
 </Theorem>
 
 <Theorem title="Critical Number">
-A function $f$ has the **critical number** $c$ in its domain, where either $f'(c) = 0$ or $f'(c)$ doesn't exist.
-</Theorem> 
+  A function $f$ has the **critical number** $c$ in its domain, where either
+  $f'(c) = 0$ or $f'(c)$ doesn't exist.
+</Theorem>{" "}
 
 This means that we can find the **extrema** of function by deriving the function, then finding the appropriate $c$ values that fulfill the above theorem(s).
 
@@ -49,10 +56,12 @@ This means that we can find the **extrema** of function by deriving the function
 # Finding Extremas: Example (1)
 
 <Example>
-Determine the absolute maximum and minimum of the function $f(x) = x^2-x-2$ within $[0, 2]$.
+  Determine the absolute maximum and minimum of the function $f(x) = x^2-x-2$
+  within $[0, 2]$.
 </Example>
 
 Firstly, derive the function:
+
 $$
 \begin{align*}
 f(x)&=x^2-x-2\\
@@ -63,10 +72,10 @@ $$
 
 Then, we check $f$'s value when we subtitute the $x$ value we got in the first step (which is $f$'s critical point), as well as the endpoints of the interval.
 
-| $x$    | $0$ | $\frac{1}{2}$ | $2$ |
-| ---- | ---- | ---- | ---- |
-| $f(x)$ | $-2$ | $-\frac{9}{4}$ | $0$ |
-| Type | Neither | Min | Max |
+| $x$    | $0$     | $\frac{1}{2}$  | $2$ |
+| ------ | ------- | -------------- | --- |
+| $f(x)$ | $-2$    | $-\frac{9}{4}$ | $0$ |
+| Type   | Neither | Min            | Max |
 
 Therefore, the absolute maximum and minimum of $f$ in the given interval, respectively, are $0$ and $-\frac{9}{4}$.
 
@@ -75,10 +84,12 @@ Therefore, the absolute maximum and minimum of $f$ in the given interval, respec
 # Finding Extremas: Example (2)
 
 <Example>
-Determine the absolute maximum and minimum of the function $f(x) = (x^2-4)\sqrt[3]{x^2}$ within $[0, 2]$.
+  Determine the absolute maximum and minimum of the function $f(x) =
+  (x^2-4)\sqrt[3]{x ^ 2}$ within $[0, 2]$.
 </Example>
 
 Firstly, derive the function:
+
 $$
 \begin{align*}
 f(x)&=(x^2-4)\sqrt[3]{x^2}\\
@@ -92,10 +103,10 @@ $$
 
 Then, we check $f$'s value when we subtitute the $x$ value we got in the first step (which is $f$'s critical point), as well as the endpoints of the interval.
 
-| $x$    | $-1$ | $0$ | $1$ | $2$ |
-| ---- | ---- | ---- | ---- | ---- |
+| $x$    | $-1$ | $0$ | $1$  | $2$ |
+| ------ | ---- | --- | ---- | --- |
 | $f(x)$ | $-3$ | $0$ | $-3$ | $0$ |
-| Type | Min | Max | Min | Max |
+| Type   | Min  | Max | Min  | Max |
 
 Therefore, the absolute maximum and minimum of $f$ in the given interval, respectively, are $0$ and $-3$.
 
@@ -105,9 +116,27 @@ Therefore, the absolute maximum and minimum of $f$ in the given interval, respec
 
 Let $f(x)=-x+2\sin{x}$, and $g(x)=\ln\left(x^{2}+4x+5\right)-\frac{x^{2}+10x}{x^{2}+x+8}$. Select all options below that are TRUE.
 
-<Option id="extrema-1" content="#f# has exactly one critical point in its domain." />
-<Option id="extrema-2" content="#f# has exactly one critical point in #\left [ 0, \frac{\pi}{2} \right ]#." truth />
-<Option id="extrema-3" content="#g# has exactly three critical points in its domain." truth />
-<Option id="extrema-4" content="#g# has exactly three critical points in #\left [ -2, 2 \right ]#." truth />
-<Option id="extrema-5" content="#f#'s maximum value in #\left [ 0, \frac{\pi}{2} \right ]# is #2 - \frac{\pi}{2}#." />
-<Option id="extrema-6" content="#g#'s minimum value in #0#." truth />
+<Option
+  id="extrema"
+  content="#f# has exactly one critical point in its domain."
+/>
+<Option
+  id="extrema"
+  content="#f# has exactly one critical point in #\left [ 0, \frac{\pi}{2} \right ]#."
+  truth
+/>
+<Option
+  id="extrema"
+  content="#g# has exactly three critical points in its domain."
+  truth
+/>
+<Option
+  id="extrema"
+  content="#g# has exactly three critical points in #\left [ -2, 2 \right ]#."
+  truth
+/>
+<Option
+  id="extrema"
+  content="#f#'s maximum value in #\left [ 0, \frac{\pi}{2} \right ]# is #2 - \frac{\pi}{2}#."
+/>
+<Option id="extrema" content="#g#'s minimum value in #0#." truth />

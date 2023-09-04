@@ -6,19 +6,13 @@ $$
 f'(x)=\lim_{h\rightarrow 0} \frac{f(x + h) - f(x)}{h}
 $$
 
-Derivatives have different notations, but they still have the same meaning. The first derivative, second derivative, and the n-th derivative of a function are commonly written with these notations:
+Derivatives have different notations, but they still have the same meaning. The first derivative, second derivative, and the n-th derivative of a function are commonly written with these notations.
 
-$$
-f',\enspace f'',\enspace f^{(n)}
-$$
-
-$$
-\frac{d}{dx} [f(x)],\enspace \frac{d^2}{dx^2} [f(x)],\enspace \frac{d^n}{dx^n} [f(x)],
-$$
-
-$$
-D_x f(x),\enspace D_x^2f(x),\enspace D_x^n(x)
-$$
+| Name     | Notation                                                                 |
+| -------- | ------------------------------------------------------------------------ |
+| Lagrange | $f',\enspace f'',\enspace f^{(n)}$                                       |
+| Leibniz  | $\frac{d}{dx} f,\enspace \frac{d^2}{dx^2} f,\enspace \frac{d^n}{dx^n} f$ |
+| Euler    | $D_x f(x),\enspace D_x^2f(x),\enspace D_x^n(x)$                          |
 
 ===
 
@@ -32,6 +26,7 @@ $$
   {4}$?
 </Example>
 
+**Number 1**  
 Using the definition from before:
 
 $$
@@ -46,11 +41,11 @@ $$
 \end{align*}
 $$
 
-Using this result, we can answer the second question. Substitute $x$ in to $f'(x)$, which allows us to obtain $f'(\frac{1}{4}) = -2$.
+**Number 2**  
+Using the answer of the first question, substitute $x$ in to $f'(x)$, which allows us to obtain $f'(\frac{1}{4}) = -2$.
 
-This is also the gradient, or the slope of the tanget line described in the third question. Since the question already provides us with a $x$ value, substituting it to $f$ yields the point $(\frac{1}{4}, \frac{1}{4})$.
-
-Thus, we can now construct the tangent line equation given the point of intersect and the gradient:
+**Number 3**  
+The answer of the second question is the gradient, or the slope of the tanget line described in the third question. Since the question already provides us with a $x$ value, substituting it to $f$ yields the point $(\frac{1}{4}, \frac{1}{4})$. Thus, we can now construct the tangent line equation given the point of intersect and the gradient:
 
 $$
 \begin{align*}
@@ -61,7 +56,21 @@ y &= -2x + \frac{3}{4} \\
 \end{align*}
 $$
 
-# <Graph functions="4*x*x-4*x+1,-2*x+0.75" points="0.25,0.25~solid" />
+<Graph functions="4*x*x-4*x+1,-2*x+0.75" points="0.25,0.25~solid" />
+
+===
+
+# **Practice:** Definition of Derivative
+
+1. Provided $f(x) = \sin{2x}$, at which rate is $f$ changing at $x = \frac{\pi}{3}$?
+
+<Practice id="defintion-derivative-1" answer="-1" indent />
+
+2. The equation of the tangent line to the graph of the function $f$ at $x = \frac{\pi}{3}$ can be represented as $y=mx+c$. What is the value of $c$? Round your answer accurate to 4 decimal places.
+
+<Practice id="defintion-derivative-2" answer="1.9132" indent />
+
+===
 
 # Differentiability of a Function
 
@@ -98,19 +107,19 @@ Since the left and right side limit are different, the limit doesn't exist, and 
 
 Let $f(x)=\sqrt{\left | x \right |}$. Select all the statements below that are TRUE.
 
-<Option id="differentiability-1" content="#f# is continuous at #x=0#." truth />
+<Option id="differentiability" content="#f# is continuous at #x=0#." truth />
 <Option
-  id="differentiability-2"
+  id="differentiability"
   content="#f# is continuous at #x#, where #- \infty \lt x \lt \infty #."
   truth
 />
-<Option id="differentiability-3" content="#f# is differentiable at #x=0#." />
+<Option id="differentiability" content="#f# is differentiable at #x=0#." />
 <Option
-  id="differentiability-4"
+  id="differentiability"
   content="#f# is differentiable at #x#, where #- \infty \lt x \lt \infty #."
 />
 <Option
-  id="differentiability-5"
+  id="differentiability"
   content="#f# is differentiable at #x#, where #- \infty \lt x \lt 0# and #0 \lt x \lt \infty#"
   truth
 />

@@ -33,6 +33,7 @@ interface CourseMaterialContentProps {
 export function CourseLayoutMain({
   markdown,
   addreses,
+  stateChecking,
   stateSolved,
   stateAnswer,
   stateAccept,
@@ -44,6 +45,7 @@ export function CourseLayoutMain({
   onChapterChange,
 }: CourseMaterialContentProps) {
   const router = useRouter();
+  const checking = stateChecking[0];
   const [loading, setLoading] = stateLoading;
   const [answer, setAnswer] = stateAnswer;
   const [accept, setAccept] = stateAccept;
@@ -53,6 +55,8 @@ export function CourseLayoutMain({
   const active = stateActive[0];
   const inputRef = useRef<Record<string, boolean>>({});
   const graphRef = useRef<Record<string, string>>({});
+  const optionCount = useRef<Record<string, number>>({});
+  const optionDict = useRef<Record<string, string[]>>({});
 
   const [executed, setExecuted] = useState(0);
 
@@ -106,6 +110,7 @@ export function CourseLayoutMain({
     accept,
     answer,
     solved,
+    submitted,
     userAnswerStatus,
     handleRenderAnswerBoxes,
     handleRenderMatch,
@@ -265,6 +270,29 @@ export function CourseLayoutMain({
     ]
   );
 
+  const handleRenderOption = useCallback(({ id, content, truth }: any) => {
+    let existingCount = optionCount.current[id] ?? 0;
+    let existingDict = optionDict.current[id] ?? [];
+    let index = existingDict.findIndex((value) => value === content);
+    if (index === -1) {
+      index = existingDict.length;
+      existingDict.push(content);
+      optionCount.current[id] = existingCount + 1;
+      optionDict.current[id] = existingDict;
+    }
+
+    console.log(`Rerendering: ${id}-${index}`);
+
+    const identifier = `${id}-${index}`;
+
+    return (
+      <div
+        id={identifier}
+        className="CustomMaterialInvoker hidden"
+      >{`[option]@${id}@${index}@${content}@${truth ? 1 : 0}`}</div>
+    );
+  }, []);
+
   return (
     <CourseLayoutContentTemplate trueLoading={trueLoading}>
       <Content
@@ -328,12 +356,7 @@ export function CourseLayoutMain({
               className="CustomMaterialInvoker hidden"
             >{`[match]@${id}@${left}@${right}`}</div>
           ),
-          Option: ({ id, content, truth }) => (
-            <div
-              id={id}
-              className="CustomMaterialInvoker hidden"
-            >{`[option]@${id}@${content}@${truth ? 1 : 0}`}</div>
-          ),
+          Option: handleRenderOption,
         }}
       />
     </CourseLayoutContentTemplate>
