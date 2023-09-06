@@ -1,3 +1,5 @@
+import { AnswerType } from "./Material";
+
 const REQUIREMENT_TYPES = ["read", "practice"] as const;
 
 export type RequirementCategoryType = (typeof REQUIREMENT_TYPES)[number];
@@ -75,4 +77,17 @@ export interface QuizQuestionType {
   weight: number;
 }
 
+export interface QuizAnswerType {
+  answers: Record<string, Partial<AnswerType>>;
+  accept?: Record<string, Partial<AnswerType>>;
+  answered: boolean;
+  correct: boolean;
+}
+
 export type QuizPhaseType = "onboarding" | "working" | "submitted" | undefined;
+
+export type QuizAnswerStatusType =
+  | "answered"
+  | "unanswered"
+  | "correct"
+  | "incorrect";

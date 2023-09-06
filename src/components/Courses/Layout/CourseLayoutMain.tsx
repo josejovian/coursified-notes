@@ -68,8 +68,6 @@ export function CourseLayoutMain({
   const optionDict = useRef<Record<string, string[]>>({});
   const page = statePage[0];
 
-  const [executed, setExecuted] = useState(0);
-
   const {
     handleOnePairMatch,
     handleRenderAnswerBoxes,

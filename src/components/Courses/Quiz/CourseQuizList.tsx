@@ -1,23 +1,20 @@
-import { useMemo, MutableRefObject, useState, useEffect } from "react";
+import { MutableRefObject, useMemo } from "react";
 import {
   ChapterAddressType,
-  CourseType,
+  QuizAnswerType,
+  QuizConfigType,
   QuizPhaseType,
   QuizQuestionType,
-  SectionType,
 } from "@/src/type";
 import clsx from "clsx";
 import { CourseLayoutSideSection } from "../Layout/CourseLayoutSideSection";
-import { CourseJourneySectionChapter } from "../Journey/CourseJourneySectionChapter";
-import { CourseLayoutSideSectionChapter } from "../Layout/CourseLayoutSideSectionChapter";
 import { CourseQuizListQuestion } from "./CourseQuizListQuestion";
 
 interface CourseQuizListProps {
   chapterAddress?: ChapterAddressType;
   questions: MutableRefObject<Record<string, QuizQuestionType>>;
   quizPhase?: QuizPhaseType;
-  quizAnswerSheet: any;
-  title?: string;
+  quizAnswerSheet: Record<string, QuizAnswerType>;
   className?: string;
   disabled?: boolean;
   noBorder?: boolean;
@@ -30,13 +27,20 @@ export function CourseQuizList({
   questions: refQuestions,
   quizPhase,
   quizAnswerSheet,
-  title,
   disabled,
   onClickQuestion,
   noBorder,
   noPadding,
 }: CourseQuizListProps) {
   const questions = Object.values(refQuestions.current);
+
+  const answered = useMemo(() => {
+    let count = 0;
+    Object.values(quizAnswerSheet).forEach((answer) => {
+      if (answer.answered) count++;
+    });
+    return count;
+  }, [quizAnswerSheet]);
 
   return (
     <div
@@ -46,30 +50,24 @@ export function CourseQuizList({
         !noBorder && "border-t border-x"
       )}
     >
-      <CourseLayoutSideSection title={`Quiz - ${title}`} noExpand noPadding>
+      <CourseLayoutSideSection
+        title="Questions"
+        caption={`${answered} / ${questions.length}`}
+        noExpand
+        noPadding
+      >
         {questions.map((question, index) => {
-          const { inputIds, weight } = question;
-          const idx = index + 1;
-          const status = (() => {
-            if (!quizAnswerSheet || !quizAnswerSheet[idx]) return "unanswered";
-
-            if (quizPhase === "submitted")
-              return quizAnswerSheet[idx].correct ? "correct" : "incorrect";
-
-            return quizAnswerSheet[idx].answered ? "answered" : "unanswered";
-          })();
+          const { inputIds } = question;
 
           return (
             <CourseQuizListQuestion
+              question={question}
+              phase={quizPhase}
+              answer={quizAnswerSheet[index + 1]}
               key={inputIds.join("")}
-              title={`Q${index + 1}`}
-              caption={`${weight} pts`}
-              index={index}
-              status={status}
+              index={index + 1}
               active={quizPhase === "submitted"}
-              onClick={() => {
-                // onClickQuestion && onClickQuestion(index);
-              }}
+              onClick={onClickQuestion}
               className={clsx(className, noPadding ? ROW_STYLE_2 : ROW_STYLE)}
             />
           );

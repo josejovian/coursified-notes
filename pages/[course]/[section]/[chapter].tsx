@@ -12,6 +12,7 @@ import {
   AnswerType,
   ChapterAddressType,
   CourseType,
+  QuizAnswerType,
   QuizConfigType,
   QuizPhaseType,
   QuizQuestionType,
@@ -99,6 +100,8 @@ const CourseMaterial = ({
   const quizQuestions = useRef<Record<string, QuizQuestionType>>({});
 
   const quizAnswerSheet = useMemo(() => {
+    if (!quizDetails) return undefined;
+
     const individualQuestions = Object.entries(quizQuestions.current)
       .map(([key, value]) => {
         let answered = true;
@@ -127,7 +130,7 @@ const CourseMaterial = ({
             accept: relatedKeys,
             answered,
             correct,
-          },
+          } as QuizAnswerType,
         ];
       })
       .reduce(
@@ -138,15 +141,8 @@ const CourseMaterial = ({
         {}
       );
 
-    console.log("Rerenders!! ");
-    console.log(individualQuestions);
-
-    return individualQuestions;
-  }, [accept, answer]);
-
-  useEffect(() => {
-    console.log(quizAnswerSheet);
-  }, [quizAnswerSheet]);
+    return individualQuestions as Record<string, QuizAnswerType>;
+  }, [accept, answer, quizDetails]);
 
   const { id, sections } = courseDetail;
 
@@ -381,7 +377,7 @@ const CourseMaterial = ({
           Submit
         </Button>
       ),
-    [accept, answer, quizPhase, setLoading, setQuizPhase, trueLoading]
+    [quizPhase, setLoading, setQuizPhase, trueLoading]
   );
 
   const renderPageControls = useMemo(
@@ -543,7 +539,6 @@ const CourseMaterial = ({
         className="flex relative w-full h-screen overflow-hidden"
       >
         <CourseLayoutSide
-          statePage={statePage}
           quizPhase={quizPhase}
           onQuizBack={() => {
             router.back();

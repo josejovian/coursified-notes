@@ -1,45 +1,32 @@
+import { useState, useEffect, useMemo, useRef, MutableRefObject } from "react";
 import {
-  Fragment,
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  MutableRefObject,
-} from "react";
-import {
-  AnswerType,
   ChapterAddressType,
-  ChapterType,
   CourseType,
+  QuizAnswerType,
   QuizConfigType,
   QuizPhaseType,
   QuizQuestionType,
-  RequirementMap,
-  RequirementType,
-  SectionType,
-  StateType,
 } from "@/src/type";
 import clsx from "clsx";
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { Badge, Button, CourseJourney, Paragraph } from "@/src/components";
-import { checkCourseProgress } from "@/src/utils";
-import { useProgress, useScreen } from "@/src/hooks";
-import { getLastFinishedChapter } from "@/src/utils/materials";
+import {
+  Button,
+  CourseJourney,
+  Paragraph,
+  Icon,
+  CourseQuizList,
+} from "@/src/components";
+import { useScreen } from "@/src/hooks";
 import Image from "next/image";
-import { Icon } from "../../Basic/Icon";
 import { MdChevronLeft } from "react-icons/md";
-import { CourseQuizList } from "../Quiz/CourseQuizList";
 
 interface SideProps {
   courseDetail: CourseType;
   chapterAddress: ChapterAddressType;
   quizDetails?: QuizConfigType;
-  quizAnswerSheet: any;
+  quizAnswerSheet?: Record<string, QuizAnswerType>;
   quizQuestions?: MutableRefObject<Record<string, QuizQuestionType>>;
   quizPhase?: QuizPhaseType;
-  statePage: StateType<number>;
   trueLoading?: boolean;
   onQuizBack?: () => void;
 }
@@ -49,7 +36,6 @@ export function CourseLayoutSide({
   chapterAddress,
   quizQuestions,
   quizDetails,
-  statePage,
   quizAnswerSheet,
   quizPhase,
   onQuizBack,
@@ -59,10 +45,13 @@ export function CourseLayoutSide({
   const textWrapperRef = useRef<HTMLDivElement>(null);
   const { width } = useScreen();
   const [open, setOpen] = useState(false);
-  const router = useRouter();
-  const setPage = statePage[1];
+  const showQuizQuestions =
+    quizDetails &&
+    quizQuestions &&
+    quizAnswerSheet &&
+    quizPhase !== "onboarding";
 
-  const { id, title, sections, description } = courseDetail;
+  const { id, title, description } = courseDetail;
 
   useEffect(() => {
     if (headerWrapperRef.current && textWrapperRef.current) {
@@ -183,18 +172,15 @@ export function CourseLayoutSide({
         {renderCourseHeader}
         <hr />
         <div className="!h-full overflow-y-auto">
-          {quizDetails &&
-          quizQuestions &&
-          quizAnswerSheet &&
-          quizPhase !== "onboarding" ? (
+          {showQuizQuestions ? (
             <CourseQuizList
-              title={quizDetails.title}
               questions={quizQuestions}
               quizPhase={quizPhase}
               quizAnswerSheet={quizAnswerSheet}
-              onClickQuestion={() => {
-                router.push("");
-              }}
+              onClickQuestion={(id) =>
+                document.getElementById(`q${id}`)?.scrollIntoView()
+              }
+              disabled={trueLoading}
               noBorder
               noPadding
             />
@@ -202,6 +188,7 @@ export function CourseLayoutSide({
             <CourseJourney
               course={courseDetail}
               chapterAddress={chapterAddress}
+              disabled={trueLoading}
               noBorder
               noPadding
             />
