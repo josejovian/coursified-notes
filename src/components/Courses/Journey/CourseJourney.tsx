@@ -1,9 +1,6 @@
 import { useMemo } from "react";
 import { ChapterAddressType, CourseType, SectionType } from "@/src/type";
 import clsx from "clsx";
-import { MdOutlineDescription, MdOutlineExpandMore } from "react-icons/md";
-import { Icon } from "../../Basic/Icon";
-import { checkChaptersAreComplete, getLastFinishedChapter } from "@/src/utils";
 import { CourseJourneySection } from "./CourseJourneySection";
 
 interface CourseJourneyProps {

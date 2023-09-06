@@ -5,14 +5,20 @@ import {
   useEffect,
   useMemo,
   useRef,
+  MutableRefObject,
 } from "react";
 import {
+  AnswerType,
   ChapterAddressType,
   ChapterType,
   CourseType,
+  QuizConfigType,
+  QuizPhaseType,
+  QuizQuestionType,
   RequirementMap,
   RequirementType,
   SectionType,
+  StateType,
 } from "@/src/type";
 import clsx from "clsx";
 import { useRouter } from "next/router";
@@ -24,22 +30,37 @@ import { getLastFinishedChapter } from "@/src/utils/materials";
 import Image from "next/image";
 import { Icon } from "../../Basic/Icon";
 import { MdChevronLeft } from "react-icons/md";
+import { CourseQuizList } from "../Quiz/CourseQuizList";
 
 interface SideProps {
   courseDetail: CourseType;
   chapterAddress: ChapterAddressType;
+  quizDetails?: QuizConfigType;
+  quizAnswerSheet: any;
+  quizQuestions?: MutableRefObject<Record<string, QuizQuestionType>>;
+  quizPhase?: QuizPhaseType;
+  statePage: StateType<number>;
   trueLoading?: boolean;
+  onQuizBack?: () => void;
 }
 
 export function CourseLayoutSide({
   courseDetail,
   chapterAddress,
+  quizQuestions,
+  quizDetails,
+  statePage,
+  quizAnswerSheet,
+  quizPhase,
+  onQuizBack,
   trueLoading,
 }: SideProps) {
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const textWrapperRef = useRef<HTMLDivElement>(null);
   const { width } = useScreen();
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const setPage = statePage[1];
 
   const { id, title, sections, description } = courseDetail;
 
@@ -54,75 +75,73 @@ export function CourseLayoutSide({
   }, [width]);
 
   const renderCourseHeader = useMemo(
-    () => (
-      <div ref={headerWrapperRef} className="flex relative bg-black">
-        <div
-          ref={textWrapperRef}
-          className="absolute top-0 p-8 flex flex-col gap-4 z-10"
-        >
-          <Link href={`/${id}`} legacyBehavior>
-            <a>
-              <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
-                {title}
+    () =>
+      quizPhase !== "onboarding" && quizDetails ? (
+        <div ref={headerWrapperRef} className="flex relative bg-black">
+          <div
+            ref={textWrapperRef}
+            className="absolute top-0 p-8 flex flex-col gap-4 z-10"
+          >
+            {quizPhase === "submitted" && (
+              <Paragraph
+                onClick={() => {
+                  onQuizBack && onQuizBack();
+                }}
+                color="secondary-1"
+              >
+                Back to Course
               </Paragraph>
-            </a>
-          </Link>
-          <Paragraph as="p" color="secondary-1">
-            {description}
-          </Paragraph>
-          <Paragraph size="m-alt" color="secondary-1">
-            Jose Jovian
-          </Paragraph>
+            )}
+            <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
+              Quiz - {quizDetails.title}
+            </Paragraph>
+            <Paragraph as="p" color="secondary-1">
+              {quizDetails.description}
+            </Paragraph>
+          </div>
+          <Image
+            src="/calculus.jpg"
+            width="512"
+            height="512"
+            className="fixed top-0 left-0 object-none object-center opacity-20"
+            alt="Course Banner"
+          />
         </div>
-        <Image
-          src="/calculus.jpg"
-          width="512"
-          height="512"
-          className="fixed top-0 left-0 object-none object-center opacity-20"
-          alt="Course Banner"
-        />
-      </div>
-    ),
-    [description, id, title]
-  );
-
-  const renderCourseContents = useMemo(
-    () => (
-      <div className="!h-full overflow-y-auto">
-        <CourseJourney
-          course={courseDetail}
-          chapterAddress={chapterAddress}
-          noBorder
-          noPadding
-        />
-      </div>
-    ),
-    [chapterAddress, courseDetail]
+      ) : (
+        <div ref={headerWrapperRef} className="flex relative bg-black">
+          <div
+            ref={textWrapperRef}
+            className="absolute top-0 p-8 flex flex-col gap-4 z-10"
+          >
+            <Link href={`/${id}`} legacyBehavior>
+              <a>
+                <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
+                  {title}
+                </Paragraph>
+              </a>
+            </Link>
+            <Paragraph as="p" color="secondary-1">
+              {description}
+            </Paragraph>
+            <Paragraph size="m-alt" color="secondary-1">
+              Jose Jovian
+            </Paragraph>
+          </div>
+          <Image
+            src="/calculus.jpg"
+            width="512"
+            height="512"
+            className="fixed top-0 left-0 object-none object-center opacity-20"
+            alt="Course Banner"
+          />
+        </div>
+      ),
+    [description, id, onQuizBack, quizDetails, quizPhase, title]
   );
 
   const renderSideToggleButton = useMemo(
     () => (
       <>
-        {/* <div
-        tabIndex={0}
-        role="button"
-        className={clsx(
-          "w-10 h-10 fixed left-4 top-4",
-          "flex items-center justify-center",
-          "transition-all cursor-pointer shadow-lg z-20",
-          open
-            ? "translate-x-60 text-zinc-700 bg-gray-50 hover:bg-gray-200"
-            : "text-white bg-zinc-700 hover:bg-zinc-600",
-          width >= 1024 && "hidden"
-        )}
-        onClick={() => setOpen((prev) => !prev)}
-				>
-					<Icon
-						className={clsx(!open && "rotate-180")}
-						size="l"
-						IconComponent={MdChevronLeft}
-					/>
-					</div> */}
         <Button
           className={clsx(
             "fixed top-6",
@@ -163,7 +182,31 @@ export function CourseLayoutSide({
       >
         {renderCourseHeader}
         <hr />
-        {renderCourseContents}
+        <div className="!h-full overflow-y-auto">
+          {quizDetails &&
+          quizQuestions &&
+          quizAnswerSheet &&
+          quizPhase !== "onboarding" ? (
+            <CourseQuizList
+              title={quizDetails.title}
+              questions={quizQuestions}
+              quizPhase={quizPhase}
+              quizAnswerSheet={quizAnswerSheet}
+              onClickQuestion={() => {
+                router.push("");
+              }}
+              noBorder
+              noPadding
+            />
+          ) : (
+            <CourseJourney
+              course={courseDetail}
+              chapterAddress={chapterAddress}
+              noBorder
+              noPadding
+            />
+          )}
+        </div>
       </aside>
       {renderSideToggleButton}
     </>

@@ -5,6 +5,7 @@ import { CSSProperties, HTMLProps, ReactNode, useEffect, useMemo } from "react";
 export interface ParagraphProps {
   as?: "span" | "p" | "h1" | "h2" | "h3" | "a";
   weight?: FontWeight;
+  id?: string;
   size?: FontSize;
   color?: FontColor;
   children?: ReactNode;
@@ -61,12 +62,12 @@ export function Paragraph({
 }
 
 const FONT_SIZE = {
-  xl: "text-xl",
-  l: "text-lg",
-  "l-alt": "text-lg-alt",
+  xl: "!text-xl",
+  l: "!text-lg !leading-8",
+  "l-alt": "!text-lg-alt",
   m: "",
-  "m-alt": "text-md-alt",
-  s: "text-sm",
+  "m-alt": "!text-md-alt",
+  s: "!text-sm",
 } as const;
 
 type FontSize = keyof typeof FONT_SIZE;

@@ -9,7 +9,8 @@
 		"discontinuity": "Discontinuity of Functions"
 	},
 	"quiz": {
-		"duration": 60,
-		"description": ""
+		"questions": 10,
+		"duration": 45,
+		"description": "This quiz tests your ability and knowledge about limits."
 	}
 }

@@ -54,8 +54,13 @@ Provided $u$ and $v$ are functions.
 
 # Properties of Derivatives (1): Exampless
 
-<Example>If $f(x) = (x+2)^2$, calculate $f'(x)$.</Example>
+<Example>
+Calculate the first derivative of the following:
+1. $f(x) = (x+2)^2$
+2. $f(x) = \frac{2x^3 - 5x^2 - 3x + 1}{x^3}$
+</Example>
 
+**Number 1**  
 Expand first, then calculate:
 
 $$
@@ -66,12 +71,7 @@ f'(x) &= 2x+4\\
 \end{align*}
 $$
 
----
-
-<Example>
-If $f(x) = \frac{2x^3 - 5x^2 - 3x + 1}{x^3}$, calculate $f'(x)$.
-</Example>
-
+**Number 2**  
 Simplify first, then calculate.
 
 $$
@@ -87,6 +87,7 @@ $$
 # Properties of Derivatives (2)
 
 <Formula>
+**Product Rule***
 $$
 \begin{align*}
 f(x)&=u.v\\
@@ -95,11 +96,10 @@ f'(x)&=u'v + uv'
 $$
 </Formula>
 
-The product rule is as above, provided $u$ and $v$ are functions.
-
 ---
 
 <Formula>
+**Quotient Rule**
 $$
 \begin{align*}
 f(x)&=\frac{u}{v}\\
@@ -108,11 +108,10 @@ f'(x)&=\frac{u'v + uv'}{v^2}
 $$
 </Formula>
 
-The quotient rule is as above, provided $u$ and $v$ are functions.
-
 ---
 
 <Formula>
+**Chain Rule**
 $$
 \begin{align*}
 f(x)&=g(h(x))\\
@@ -121,16 +120,58 @@ f'(x)&=g'(h(x)).h'(x)
 $$
 </Formula>
 
-The chain rule is as above, provided $g$ and $h$ are functions, where $h$ is differentiable at $x$, and $g$ is differentiable at $h(x)$.
-
 ===
 
 # Properties of Derivatives (2): Example
 
-<Example>If $f(x) = 2x^2 (4x+1)^5$, calculate $f'(x)$.</Example>
+<Example>
+Calculate the first derivative of the following:
+1. $p(x) = \frac{(4x^2+4x+1)}{(x^2+4x+4)}$
+2. $q(x) = 2x^2 (4x+1)^5$
+</Example>
 
-Let $u = 2x^2$ and $v = (4x+1)^5$. Deriving these individually yields:
+**Number 1**  
+Use the quotient rule. Let $u = 4x^2+4x+1$ and $v = x^2+4x+4$:
+$$
+\begin{align*}
+u &= 4x^2+4x+1\\
+u' &= 8x + 4\\
+v &= x^2+4x+4\\
+v' &=2x + 4
+\end{align*}
+$$
 
+Then, calculate the main derivative:
+$$
+\begin{align*}
+p(x) &= uv\\
+p'(x)&= \frac{u'v - uv'}{v^2}\\
+&= \frac{(8x + 4)(x^2 + 4x + 4) - (4x^2 + 4x + 1)(2x + 4)}{(x^2+4x+4)^2}\\
+&= \frac{(8x + 4)(x+2)^2 - (4x^2 + 4x + 1)(2)(x + 2)}{(x+2)^4}\\
+&= \frac{(8x + 4)(x+2) - (4x^2 + 4x + 1)(2)}{(x+2)^3}\\
+&= \frac{(8x ^2 + 20x + 8) - (8x^2 + 8x + 2)}{(x+2)^3}\\
+&= \frac{12x + 6}{(x+2)^3}
+\end{align*}
+$$
+
+**Number 2**  
+Product rule is used here, as well as chain rule. 
+For the product rule, let $u = 2x^2$ and $v = (4x+1)^5$.
+For the chain rule, let $g(x)=x^5$ and $h(x)=4x+1$, which when combined makes $v=g(h(x))=(4x+1)^5$.
+$$
+\begin{align*}
+g(x) &= x^5\\
+g'(x) &= 5x^4\\
+h(x) &= (4x+1)\\
+h'(x) &= 4\\
+\\
+v&= g(h(x))\\
+v'&= h'(x) . g'(h(x))\\
+&= 20 (4x + 1)^4\\
+\end{align*}
+$$
+
+Return to the product rule.  
 $$
 \begin{align*}
 u &= 2x^2\\
@@ -144,130 +185,20 @@ Then, calculate the main derivative:
 
 $$
 \begin{align*}
-f(x) &= uv\\
-&= u'v + uv'\\
+q(x) &= uv\\
+q'(x)&= u'v + uv'\\
 &= 4x(4x+1)^5 + 40x^2(4x+1)^4
 \end{align*}
 $$
 
 ===
 
-# **Practice**: Derivative
+# **Practice:** Derivative
 
-Let $f$ and $g$ be a function, such that $f(x) = \frac{\sqrt{x + 2}}{g(x)}$. The definition of $g(x)$ is unknown, but we know that $g(2) = 1$ and $g'(2) = 1$. Calculate $f'(2)$.
+1. Let $f$ and $g$ be a function, such that $f(x) = \frac{\sqrt{x + 2}}{g(x)}$. The definition of $g(x)$ is unknown, but we know that $g(2) = 1$ and $g'(2) = 1$. Calculate $f'(2)$.
 
-<Practice id="derivative-1" answer="-1.75" />
+<Practice id="derivative-properties-1" answer="-1.75" indent />
 
-<Explanation>
-Use the product rule, where $u = \sqrt{x + 2}$ and $v = g(x)$:
-$$
-\begin{align*}
-u &= \sqrt{x + 2}\\
-u' &= \frac{1}{2\sqrt{x + 2}}\\
-v &= g(x)\\
-v' &= g'(x)
-\end{align*}
-$$
+2. Let $f(x) = \left(4x+c\right)^{2}(x-2)$, where $c$ is an unknown constant no more than $17$. It is known that $f'\left (-\frac{1}{2} \right) = -64$. Determine the value of $c$.
 
-Then, calculate the main derivative. We don't necessarily have to know $g(x)$ to do this.
-
-$$
-\begin{align*}
-f(x) &= \frac{u}{v}\\
-f'(x)&= \frac{u'v + uv'}{v^2}\\
-&= \frac{\frac{1}{2\sqrt{x + 2}}g(x) + \sqrt{x + 2} g'(x)}{(g'(x))^2}\\
-\end{align*}
-$$
-
-Then, substitute all the known values:
-
-$$
-\begin{align*}
-f'(x) &= \frac{\frac{1}{2\sqrt{x + 2}}g(x) - \sqrt{x + 2} g'(x)}{(g'(x))^2}\\
-&= \frac{\frac{1}{2\sqrt{x + 2}}g(x) - \sqrt{x + 2} g'(x)}{(g'(x))^2}\\
-&= \frac{\frac{1}{2\sqrt{(2) + 2}}(1) - \sqrt{(2) + 2} (1)}{1}\\
-&= \frac{\frac{1}{4} - 2}{1}\\
-&= -1.75\\
-\end{align*}
-$$
-
-</Explanation>
-
-===
-
-# **Practice**: Derivative
-
-Let $f(x) = \left(4x+c\right)^{2}(x-2)$, where $c$ is an unknown constant no more than $17$. It is known that $f'\left (-\frac{1}{2} \right) = -64$. Determine the value of $c$.
-
-<Practice id="derivative-2" answer="6" />
-
-<Explanation>
-Let $u = \left(4x+c\right)^{2}$ and $v = x-2$:
-$$
-\begin{align*}
-u &= \left(4x+c\right)^{2}\\
-u' &= 2(4)(4x+c)\\
-v &= x - 2\\
-v' &= 1
-\end{align*}
-$$
-
-Then, calculate the main derivative. We don't necessarily have to know $c$ to do this.
-
-$$
-\begin{align*}
-f(x) &= uv\\
-f'(x)&= u'v + uv'\\
-&= 2(4)(4x+c)(x-2) + \left(4x+c\right)^{2}\\
-&= 8(4x^2 - 8x + cx -2c) + (16x^2 + 8cx + c^2)\\
-\end{align*}
-$$
-
-Then, substitute all the known values to get $c$.
-
-$$
-\begin{align*}
-f'(x)&= 8(4x^2 - 8x + cx -2c) + (16x^2 + 8cx + c^2)\\
-f'\left (-\frac{1}{2} \right) &= 8(1 + 4 - \frac{c}{2} - 2c) + (4 - 4c + c^2)\\
--64 &= 8(1 + 4 - \frac{c}{2} - 2c) + (4 - 4c + c^2)\\
--64 &= (40 - 20c) + (4 - 4c + c^2)\\
-0 &= c^2 - 24c + 108\\
-0 &= (c-6)(c-18)\\
-\end{align*}
-$$
-
-It appears there are two possible values for $c$. However, the question already declared that $c$ is less than $17$. In this case, the appropriate value for c is $6$.
-</Explanation>
-
-===
-
-# **Practice**: Derivative
-
-A certain factory manufactures a specific type of product for $x$ days for the daily cost of $(4x + \frac{100}{x} + 40)$ million IDR. Calculate the cheapest daily cost possible. Answer in terms of million IDR.
-
-<Practice id="derivative-3" answer="80" />
-
-<Explanation>
-When a function reaches its maximum or minimum value, the rate of change at that point is zero. In other words, $f'(x)=0$.
-
-$$
-\begin{align*}
-f(x) &= 4x + \frac{100}{x} + 40\\
-f'(x)&= 4 - \frac{100}{x^2}\\
-0 &= 4 - \frac{100}{x^2}\\
-4 &= \frac{100}{x^2}\\
-x &= 5\\
-\end{align*}
-$$
-
-The daily cost will be the cheapest when $x=5$. Substitute this to the initial function to obtain the cheapest cost possible.
-
-$$
-\begin{align*}
-f(x) &= 4x + \frac{100}{x} + 40\\
-f(5) &= 20 + 20 + 40\\
-f(5) &= 80\\
-\end{align*}
-$$
-
-</Explanation>
+<Practice id="derivative-properties-2" answer="6" indent />

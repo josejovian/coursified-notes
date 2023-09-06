@@ -4,7 +4,6 @@ export * from "./IconText";
 export * from "./Input";
 export * from "./Loader";
 export * from "./Quote";
-export * from "./Section";
 export * from "./Toast";
 export * from "./ToggleLink";
 export * from "./Paragraph";

@@ -1,6 +1,7 @@
 import { QuizConfigType } from "@/src/type";
-import { Paragraph } from "../../Basic";
+import { IconText, Paragraph } from "../../Basic";
 import { CourseLayoutContentTemplate } from "../Layout";
+import { BsClock, BsQuestionCircle } from "react-icons/bs";
 
 interface CourseQuizOnboardingProps {
   quizDetails: QuizConfigType;
@@ -11,14 +12,21 @@ export function CourseQuizOnboarding({
   quizDetails,
   trueLoading,
 }: CourseQuizOnboardingProps) {
-  const { title, duration, description } = quizDetails;
+  const { title, questions, duration, description } = quizDetails;
 
   return (
     <CourseLayoutContentTemplate trueLoading={trueLoading}>
       <Paragraph as="h1" weight="bold">
         Quiz - {title}
       </Paragraph>
-      <Paragraph as="p">{description}</Paragraph>
+      <Paragraph as="p" size="l">
+        {description}
+      </Paragraph>
+      <div className="flex gap-4">
+        <IconText icon={BsQuestionCircle}>{questions} questions</IconText>
+        <IconText icon={BsClock}>{duration} minutes</IconText>
+      </div>
+      <hr />
       <Paragraph as="h2" weight="bold">
         Guidelines
       </Paragraph>

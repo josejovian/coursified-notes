@@ -7,7 +7,6 @@ export function useToast() {
 
   const addToast = useCallback(
     (toast: ToastType) => {
-      console.log(setToasts);
       setToasts(
         (prev: ToastType[]) =>
           [

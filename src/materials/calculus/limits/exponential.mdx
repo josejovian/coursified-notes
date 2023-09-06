@@ -79,4 +79,21 @@ $$
 
 Evaluate $\lim\limits_{x\rightarrow \infty } \left ( \frac{4-2x}{6-2x} \right )^{1-x} =...$ (Round your answer to 7 decimal places)
 
-<Practice id="expo-3" answer="0.3678794" />
+<Practice id="expo-1" answer="0.3678794" />
+
+<Explanation>
+Manipulate the inner fraction, so that we can use the euler's limit definition.  
+$$
+\begin{align*}
+&\lim\limits_{x\rightarrow \infty } \left ( \frac{4-2x}{6-2x} \right )^{1-x}\\
+&=\lim\limits_{x\rightarrow \infty } \left ( \frac{4-2x}{6-2x} - 1 + 1 \right )^{1-x}\\
+&=\lim\limits_{x\rightarrow \infty } \left ( \frac{4-2x}{6-2x} - \frac{6-2x}{6-2x} + 1 \right )^{1-x}\\
+&=\lim\limits_{x\rightarrow \infty } \left ( \frac{-2}{6-2x} + 1 \right )^{1-x}\\
+&=\lim\limits_{x\rightarrow \infty } \left ( \left ( \frac{-2}{6-2x} + 1 \right )^{\frac{6-2x}{6-2x}} \right ) ^ {1-x}\\
+&=\lim\limits_{x\rightarrow \infty } \left ( \left ( \frac{-2}{6-2x} + 1 \right )^{6-2x} \right ) ^ {\frac{1-x}{6-2x}}\\
+&=\lim\limits_{x\rightarrow \infty } \left ( \left ( \frac{-2}{6-2x} + 1 \right )^{6-2x} \right ) ^ {\frac{\frac{1}{x} - 1}{\frac{6}{x} - 2}}\\
+&=\left ( e^{-2} \right )^{\frac{1}{2}}\\
+&=\frac{1}{e}
+\end{align*}
+$$
+</Explanation>

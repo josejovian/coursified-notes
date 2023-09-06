@@ -5,15 +5,22 @@ import React, {
   useRef,
   useMemo,
   useEffect,
+  MutableRefObject,
 } from "react";
 import { getMDXComponent } from "mdx-bundler/client";
 import TeX from "@matejmazur/react-katex";
-import { AddressesType, AnswerType, StateType } from "@/src/type";
+import {
+  AddressesType,
+  AnswerType,
+  QuizQuestionType,
+  StateType,
+} from "@/src/type";
 import { checkChapterProgress } from "@/src/utils";
 import { Blockquote, Graph, Input, Loader, Paragraph } from "@/src/components";
 import { useRouter } from "next/router";
 import { useCustom } from "@/src/hooks";
 import { CourseLayoutContentTemplate } from "./CourseLayoutContentTemplate";
+import { Option } from "../Entity/Option/CourseEntityOption";
 
 interface CourseMaterialContentProps {
   markdown: any;
@@ -24,8 +31,9 @@ interface CourseMaterialContentProps {
   stateLoading: StateType<boolean>;
   stateChecking: StateType<boolean>;
   stateSubmitted: StateType<boolean>;
+  statePage: StateType<number>;
   trueLoading: boolean;
-  page: number;
+  quizQuestions?: MutableRefObject<Record<string, QuizQuestionType>>;
   handleCheckAnswer: (ans: string, id: string, flag?: boolean) => boolean;
   onChapterChange?: () => void;
 }
@@ -39,8 +47,9 @@ export function CourseLayoutMain({
   stateAccept,
   stateLoading,
   stateSubmitted,
+  statePage,
   trueLoading,
-  page,
+  quizQuestions,
   handleCheckAnswer,
   onChapterChange,
 }: CourseMaterialContentProps) {
@@ -57,6 +66,7 @@ export function CourseLayoutMain({
   const graphRef = useRef<Record<string, string>>({});
   const optionCount = useRef<Record<string, number>>({});
   const optionDict = useRef<Record<string, string[]>>({});
+  const page = statePage[0];
 
   const [executed, setExecuted] = useState(0);
 
@@ -73,6 +83,7 @@ export function CourseLayoutMain({
     stateActive,
     stateAnswer,
     stateLoading,
+    statePage,
     stateSolved,
     stateSubmitted,
     inputRef,
@@ -224,11 +235,11 @@ export function CourseLayoutMain({
           onBlur={(e) => {
             const { value } = e.target;
 
-            if (value !== "" && answer[id] !== value) {
+            if (answer[id] !== value) {
               setSubmmited(false);
               setAnswer((prev) => ({
                 ...prev,
-                [id]: e.target.value,
+                [id]: value === "" ? undefined : value,
               }));
             }
           }}
@@ -274,6 +285,7 @@ export function CourseLayoutMain({
     let existingCount = optionCount.current[id] ?? 0;
     let existingDict = optionDict.current[id] ?? [];
     let index = existingDict.findIndex((value) => value === content);
+
     if (index === -1) {
       index = existingDict.length;
       existingDict.push(content);
@@ -281,20 +293,44 @@ export function CourseLayoutMain({
       optionDict.current[id] = existingDict;
     }
 
-    console.log(`Rerendering: ${id}-${index}`);
-
     const identifier = `${id}-${index}`;
 
     return (
       <div
         id={identifier}
-        className="CustomMaterialInvoker hidden"
+        className="CustomMaterialInvoker OptionElm"
       >{`[option]@${id}@${index}@${content}@${truth ? 1 : 0}`}</div>
     );
   }, []);
 
-  return (
-    <CourseLayoutContentTemplate trueLoading={trueLoading}>
+  const handleRenderQuizQuestionHeading = useCallback(
+    ({ id, ids, weight = "10" }: any) => {
+      if (!quizQuestions) return <></>;
+
+      quizQuestions.current[id] = {
+        inputIds: ids.split(","),
+        weight: Number(weight),
+      };
+
+      return (
+        <Paragraph
+          as="h2"
+          id={`q${id}`}
+          style={{
+            marginTop: "-2rem",
+            paddingTop: "2rem",
+          }}
+        >
+          <Paragraph weight="bold">Question {id} </Paragraph>
+          <Paragraph>[{weight} pts]</Paragraph>
+        </Paragraph>
+      );
+    },
+    [quizQuestions]
+  );
+
+  const renderContent = useMemo(
+    () => (
       <Content
         components={{
           Indent: ({ children }) => {
@@ -324,6 +360,7 @@ export function CourseLayoutMain({
           },
           TeX,
           Practice: handleConvertPractice,
+          Input: handleConvertPractice,
           Explanation: ({ children }) => (
             <>
               {solved === 1 && (
@@ -357,8 +394,22 @@ export function CourseLayoutMain({
             >{`[match]@${id}@${left}@${right}`}</div>
           ),
           Option: handleRenderOption,
+          Question: handleRenderQuizQuestionHeading,
         }}
       />
+    ),
+    [
+      Content,
+      handleConvertPractice,
+      handleRenderOption,
+      handleRenderQuizQuestionHeading,
+      solved,
+    ]
+  );
+
+  return (
+    <CourseLayoutContentTemplate trueLoading={trueLoading}>
+      {renderContent}
     </CourseLayoutContentTemplate>
   );
 }

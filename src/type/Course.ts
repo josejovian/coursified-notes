@@ -41,6 +41,7 @@ export interface ChapterType {
 
 export interface QuizConfigType {
   title?: string;
+  questions: number;
   description: string;
   duration: number;
 }
@@ -68,3 +69,10 @@ export interface ChapterAddressType {
   chapter: string;
   page?: number;
 }
+
+export interface QuizQuestionType {
+  inputIds: string[];
+  weight: number;
+}
+
+export type QuizPhaseType = "onboarding" | "working" | "submitted" | undefined;

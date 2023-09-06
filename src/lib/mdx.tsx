@@ -234,13 +234,13 @@ export async function getDetailedCourse(course: string) {
 
       const topicIndexes = Object.keys(overrideChapterTitles);
 
-      if (hasQuiz) {
-        topicIndexes.push("quiz");
-      }
-
-      sectionData.chapters = sortData(detectedChapters, topicIndexes);
+      sectionData.chapters = sortData(
+        detectedChapters,
+        hasQuiz ? [...topicIndexes, "quiz"] : topicIndexes
+      );
 
       sectionData.quiz = quiz;
+      console.log(quiz);
 
       return sectionData;
     })

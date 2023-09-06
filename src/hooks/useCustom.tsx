@@ -27,6 +27,7 @@ import { Option } from "../components/Courses/Entity/Option/CourseEntityOption";
 import { Graph, Input, MatchBox } from "../components";
 
 interface UseCustomProps {
+  statePage: StateType<number>;
   stateAnswer: StateType<Partial<AnswerType>>;
   stateActive: StateType<any>;
   stateSolved: StateType<number>;
@@ -126,20 +127,31 @@ export function useCustom({
     (questionId: string, choiceId: number) => {
       if (solved) return;
 
-      setAnswer((prev) => ({
-        ...prev,
-        [questionId]: prev[questionId]
-          ? prev[questionId]
-              ?.split("")
-              .map((v, idx) => {
-                if (idx !== choiceId) {
-                  return v;
-                }
-                return v === "1" ? "0" : "1";
-              })
-              .join("")
-          : prev[questionId],
-      }));
+      setAnswer((prev) => {
+        const array = prev[questionId] ?? "";
+        const newArray = array.split("");
+
+        // console.log("ID: ", choiceId);
+
+        // if (newArray.length === choiceId) {
+        //   console.log("ChoiceID: ", choiceId);
+        //   newArray[choiceId] = "0";
+        // }
+
+        return {
+          ...prev,
+          [questionId]: prev[questionId]
+            ? newArray
+                .map((v, idx) => {
+                  if (idx !== choiceId) {
+                    return v;
+                  }
+                  return v === "1" ? "0" : "1";
+                })
+                .join("")
+            : prev[questionId],
+        };
+      });
     },
     [setAnswer, solved]
   );
@@ -195,6 +207,7 @@ export function useCustom({
     // });
     optionDict.current = {};
     optionCount.current = {};
+    optionParentElement.current = [];
 
     Object.values(CUSTOM_MATERIAL).forEach((group) => {
       handleRemoveCustomComponents(group);
@@ -305,10 +318,6 @@ export function useCustom({
       setActive,
     ]
   );
-
-  useEffect(() => {
-    console.log(accept);
-  }, [accept]);
 
   const renderOption = useCallback(
     (practiceId: string, choiceId: number, content: string) => {
@@ -471,9 +480,8 @@ export function useCustom({
 
     optionParentElement.current.forEach(
       ({ parentElement, content, id, choiceIndex }) => {
-        optionRendered.current[id] = true;
-        console.log("Rendering Option");
         const identifier = `${id}-${choiceIndex}`;
+        optionRendered.current[id] = true;
         renderCustomElement(
           parentElement,
           renderOption(id, choiceIndex, content),
@@ -554,10 +562,10 @@ export function useCustom({
 
     answerInputBoxParentElement.current = [];
     matchParentElement.current = [];
-    optionParentElement.current = [];
     graphParentElement.current = [];
 
-    let tempOptionCount: Record<string, number> = {};
+    let tempOptionDict: Record<string, string[]> = optionDict.current;
+    let tempOptionCount: Record<string, number> = optionCount.current;
 
     elements.forEach((element, index) => {
       const string = element.innerHTML;
@@ -618,17 +626,19 @@ export function useCustom({
 
         if (detectedPair && detectedPair.length === 5) {
           const [tag, id, index, content, truth] = detectedPair;
-          const vessel = document.getElementById(id)!;
 
-          let existingCount = optionCount.current[id] ?? 0;
-          let existingDict = optionDict.current[id] ?? [];
+          let existingCount = tempOptionCount[id] ?? 0;
+          let existingDict = tempOptionDict[id] ?? [];
           let index2 = existingDict.findIndex((value) => value === content);
+
           if (index2 === -1) {
             index2 = existingDict.length;
             existingDict.push(content);
-            optionCount.current[id] = existingCount + 1;
-            optionDict.current[id] = existingDict;
+            tempOptionCount[id] = existingCount + 1;
+            tempOptionDict[id] = existingDict;
           }
+
+          const vessel = document.getElementById(`${id}-${index}`)!;
 
           optionParentElement.current = [
             ...optionParentElement.current,
@@ -699,30 +709,32 @@ export function useCustom({
       );
     }
 
+    optionCount.current = tempOptionCount;
+    optionDict.current = tempOptionDict;
+
     if (optionParentElement.current.length > 0 && solved !== 1) {
       let optionAnswerKeys: Record<string, string> = {};
       let optionDefaultAnswer: Record<string, string> = {};
 
-      optionParentElement.current.forEach((option, idx) => {
+      optionParentElement.current.forEach((option) => {
+        const { choiceIndex } = option;
         let relevantKey = optionAnswerKeys[option.id];
 
         if (relevantKey) {
           relevantKey = relevantKey
             .split("")
-            .map((value, idx2) => (idx2 === idx ? String(option.truth) : value))
+            .map((value, idx2) =>
+              idx2 === choiceIndex ? String(option.truth) : value
+            )
             .join("");
         } else {
           const array = Array.from(
             { length: optionCount.current[option.id] },
             () => "0"
           );
-          console.log("Create array");
-          console.log(optionCount.current);
-          console.log(option.id);
-          console.log(array);
           optionDefaultAnswer[option.id] = array.join("");
           relevantKey = array
-            .map((v, idx2) => (idx2 === idx ? String(option.truth) : "0"))
+            .map((v, idx2) => (idx2 === choiceIndex ? option.truth : "0"))
             .join("");
         }
         optionAnswerKeys[option.id] = relevantKey;
@@ -735,10 +747,6 @@ export function useCustom({
         };
       });
 
-      console.log("Register:");
-      console.log(optionCount);
-      console.log(answerKeys);
-
       // if (!solved) optionParentElement.current.sort(() => Math.random() - 0.5);
 
       // const defaultTruth = optionParentElement.current
@@ -750,6 +758,8 @@ export function useCustom({
       //     }),
       //     {}
       //   );
+
+      console.log("generated answer keys: ", answerKeys);
 
       setAccept((prev) => ({
         ...prev,

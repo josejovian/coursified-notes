@@ -191,6 +191,9 @@
   .CourseMaterial_content .Option {
     @apply !mb-4;
   }
+  .CourseMaterial_content hr {
+    margin-top: 4rem;
+  }
   .CourseMaterial_content .TwoColumns .Graph {
     margin: 0;
   }

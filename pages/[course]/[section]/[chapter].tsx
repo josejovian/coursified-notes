@@ -13,6 +13,8 @@ import {
   ChapterAddressType,
   CourseType,
   QuizConfigType,
+  QuizPhaseType,
+  QuizQuestionType,
 } from "@/src/type";
 import {
   checkChapterProgress,
@@ -69,9 +71,7 @@ const CourseMaterial = ({
   const stateChecking = useState(false);
   const [checking, setChecking] = stateChecking;
   const setSubmmited = stateSubmitted[1];
-  const stateQuizPhase = useState<
-    "onboarding" | "working" | "submitted" | undefined
-  >(chapterAddress.chapter === "quiz" ? "onboarding" : undefined);
+  const stateQuizPhase = useState<QuizPhaseType>();
   const [quizPhase, setQuizPhase] = stateQuizPhase;
 
   const { addToast } = useToast();
@@ -96,6 +96,58 @@ const CourseMaterial = ({
     courseDetail.sections,
   ]);
 
+  const quizQuestions = useRef<Record<string, QuizQuestionType>>({});
+
+  const quizAnswerSheet = useMemo(() => {
+    const individualQuestions = Object.entries(quizQuestions.current)
+      .map(([key, value]) => {
+        let answered = true;
+        let correct = true;
+
+        let relatedInputs = value.inputIds.reduce((prev, curr) => {
+          if (!answer[curr]) answered = false;
+          if (!answer[curr] || answer[curr] !== accept[curr]) correct = false;
+
+          return {
+            ...prev,
+            [curr]: answer[curr],
+          };
+        }, {});
+        let relatedKeys = value.inputIds.reduce((prev, curr) => {
+          return {
+            ...prev,
+            [curr]: accept[curr],
+          };
+        }, {});
+
+        return [
+          key,
+          {
+            answers: relatedInputs,
+            accept: relatedKeys,
+            answered,
+            correct,
+          },
+        ];
+      })
+      .reduce(
+        (prev, [key, value]: any) => ({
+          ...prev,
+          [key]: value,
+        }),
+        {}
+      );
+
+    console.log("Rerenders!! ");
+    console.log(individualQuestions);
+
+    return individualQuestions;
+  }, [accept, answer]);
+
+  useEffect(() => {
+    console.log(quizAnswerSheet);
+  }, [quizAnswerSheet]);
+
   const { id, sections } = courseDetail;
 
   const { sectionData, updateData } = useProgress({ id, sections });
@@ -107,10 +159,6 @@ const CourseMaterial = ({
     }),
     [courseDetail, sectionData]
   );
-
-  useEffect(() => {
-    console.log(sectionData);
-  }, [sectionData]);
 
   const chapterContent = useMemo(() => markdown[page].code, [markdown, page]);
 
@@ -206,8 +254,6 @@ const CourseMaterial = ({
         );
       })();
 
-      console.log("Result: ", result);
-
       if (result && updateCheckingState) {
         const existingData = checkChapterProgress(practice) ?? {};
         storeChapterProgress(practice, {
@@ -223,25 +269,42 @@ const CourseMaterial = ({
 
   useEffect(() => {
     setMaxPage(markdown.length);
+    setLoading(false);
     updateData();
-  }, [markdown, updateData]);
+  }, [markdown, setLoading, updateData]);
 
   const handleSetupQuiz = useCallback(() => {
-    if (quizDetails && !quizPhase) setQuizPhase("onboarding");
-  }, [quizDetails, quizPhase, setQuizPhase]);
+    if (quizDetails && !quizPhase) {
+      setQuizPhase("onboarding");
+      setLoading(false);
+      setSwapChapters(false);
+    }
+  }, [quizDetails, quizPhase, setLoading, setQuizPhase, setSwapChapters]);
 
   useEffect(() => {
     handleSetupQuiz();
   }, [quizDetails, handleSetupQuiz]);
 
   const handleCleanUpStates = useCallback(() => {
-    setAccept({});
-    setSolved(-1);
-    setSubmmited(false);
-    setAnswer({});
     setLoading(true);
-    setQuizPhase(undefined);
-  }, [setAccept, setAnswer, setLoading, setQuizPhase, setSolved, setSubmmited]);
+
+    if (quizPhase === "working") {
+    } else {
+      setSolved(-1);
+      setSubmmited(false);
+      setAnswer({});
+      setAccept({});
+      setQuizPhase(undefined);
+    }
+  }, [
+    quizPhase,
+    setAccept,
+    setAnswer,
+    setLoading,
+    setQuizPhase,
+    setSolved,
+    setSubmmited,
+  ]);
 
   const handlePreviousPage = useCallback(() => {
     handleCleanUpStates();
@@ -277,96 +340,119 @@ const CourseMaterial = ({
     nextDestination,
   ]);
 
+  const handlePreviousPageQuiz = useCallback(() => {
+    if (page > 0) {
+      setLoading(true);
+      setPage((prev) => prev - 1);
+    }
+  }, [page, setLoading, setPage]);
+
+  const handleNextPageQuiz = useCallback(() => {
+    if (page < maxPage - 1) {
+      setLoading(true);
+      setPage((prev) => prev + 1);
+    }
+  }, [page, maxPage, setLoading, setPage]);
+
+  const renderQuizControls = useMemo(
+    () =>
+      quizPhase === "onboarding" ? (
+        <Button
+          size="l"
+          onClick={() => {
+            setQuizPhase("working");
+            setLoading(true);
+          }}
+          disabled={trueLoading}
+        >
+          Start
+        </Button>
+      ) : (
+        <Button
+          size="l"
+          onClick={() => {
+            setQuizPhase("submitted");
+          }}
+          disabled={
+            // Object.values(answer).length !== Object.values(accept).length
+            false
+          }
+        >
+          Submit
+        </Button>
+      ),
+    [accept, answer, quizPhase, setLoading, setQuizPhase, trueLoading]
+  );
+
   const renderPageControls = useMemo(
     () => (
-      <div
-        className={clsx(
-          "flex justify-center items-center p-8",
-          "gap-8 w-full bg-gray-100",
-          "border-t border-zinc-400"
-        )}
-      >
-        {quizDetails && quizPhase === "onboarding" ? (
-          <Button size="l" onClick={() => {}} disabled={trueLoading}>
-            Start
+      <>
+        <Button
+          color="secondary"
+          size="l"
+          onClick={handlePreviousPage}
+          disabled={page <= 0 || trueLoading}
+        >
+          Back
+        </Button>
+        <Paragraph as="span" size="l">
+          {page + 1} / {maxPage}
+        </Paragraph>
+        {solved !== 0 ? (
+          <Button
+            size="l"
+            onClick={handleNextPage}
+            disabled={trueLoading || page + 1 === maxPage}
+          >
+            Next
           </Button>
         ) : (
-          <>
-            <Button
-              color="secondary"
-              size="l"
-              onClick={handlePreviousPage}
-              disabled={page <= 0 || trueLoading}
-            >
-              Back
-            </Button>
-            <Paragraph as="span" size="l">
-              {page + 1} / {maxPage}
-            </Paragraph>
-            {solved !== 0 ? (
-              <Button
-                size="l"
-                onClick={() => {
-                  handleNextPage();
-                }}
-                disabled={trueLoading}
-              >
-                Next
-              </Button>
-            ) : (
-              <Button
-                size="l"
-                onClick={() => {
-                  setChecking(true);
-                  setSubmmited(true);
+          <Button
+            size="l"
+            onClick={() => {
+              setChecking(true);
+              setSubmmited(true);
 
-                  if (
-                    Object.values(answer).length ===
-                    Object.values(accept).length
-                  ) {
-                    const correct = !Object.entries(answer).some(
-                      ([key, answer]) => {
-                        return !handleCheckAnswer(answer ?? "", key);
-                      }
-                    );
-
-                    console.log("Correct? ", correct);
-
-                    if (correct) {
-                      setSolved(1);
-                      addToast({
-                        phrase: "courseMaterialPracticeAnsweredCorrect",
-                      });
-                    } else {
-                      addToast({
-                        phrase: "courseMaterialPracticeAnsweredIncorrect",
-                      });
-                    }
-                  } else {
-                    setTimeout(() => {
-                      setChecking(false);
-                    }, 1000);
-                    addToast({
-                      phrase: "courseMaterialPracticeAnsweredIncorrect",
-                    });
+              if (
+                Object.values(answer).length === Object.values(accept).length
+              ) {
+                const correct = !Object.entries(answer).some(
+                  ([key, answer]) => {
+                    return !handleCheckAnswer(answer ?? "", key);
                   }
-                }}
-                disabled={
-                  trueLoading || checking
-                  // Object.values(answer).length !== Object.values(accept).length ||
-                  // Object.values(answer).filter((x) => x === "").length > 1
+                );
+
+                if (correct) {
+                  setSolved(1);
+                  addToast({
+                    phrase: "courseMaterialPracticeAnsweredCorrect",
+                  });
+                } else {
+                  addToast({
+                    phrase: "courseMaterialPracticeAnsweredIncorrect",
+                  });
                 }
-              >
-                Check
-              </Button>
-            )}
-          </>
+              } else {
+                setTimeout(() => {
+                  setChecking(false);
+                }, 1000);
+                addToast({
+                  phrase: "courseMaterialPracticeAnsweredIncorrect",
+                });
+              }
+            }}
+            disabled={
+              trueLoading || checking
+              // Object.values(answer).length !== Object.values(accept).length ||
+              // Object.values(answer).filter((x) => x === "").length > 1
+            }
+          >
+            Check
+          </Button>
         )}
-      </div>
+      </>
     ),
     [
-      quizDetails,
-      quizPhase,
       trueLoading,
       handlePreviousPage,
       page,
@@ -402,24 +488,25 @@ const CourseMaterial = ({
           stateSolved={stateSolved}
           stateSubmitted={stateSubmitted}
           stateChecking={stateChecking}
-          page={page}
+          statePage={statePage}
           handleCheckAnswer={handleCheckAnswer}
           onChapterChange={() => setPage(0)}
+          quizQuestions={quizQuestions}
         />
       ),
     [
       quizPhase,
       quizDetails,
+      trueLoading,
       addresses,
       chapterContent,
       stateAccept,
       stateAnswer,
       stateLoading,
-      trueLoading,
       stateSolved,
       stateSubmitted,
       stateChecking,
-      page,
+      statePage,
       handleCheckAnswer,
       setPage,
     ]
@@ -427,7 +514,6 @@ const CourseMaterial = ({
 
   const handleRouteChangeStart = useCallback(
     (next: string) => {
-      console.log("Next: ", next);
       if (next === `/${chapterAddress.course}`) return;
 
       setSwapChapters(true);
@@ -440,17 +526,6 @@ const CourseMaterial = ({
     setSwapChapters(false);
     handleCleanUpStates();
   }, [handleCleanUpStates, setSwapChapters]);
-
-  const renderCourseContents = useMemo(
-    () => (
-      <CourseLayoutSide
-        courseDetail={courseDetailWithProgress}
-        chapterAddress={chapterAddress}
-        trueLoading={trueLoading}
-      />
-    ),
-    [chapterAddress, courseDetailWithProgress, trueLoading]
-  );
 
   useEffect(() => {
     router.events.on("routeChangeStart", handleRouteChangeStart);
@@ -467,10 +542,30 @@ const CourseMaterial = ({
         id="CourseMaterial"
         className="flex relative w-full h-screen overflow-hidden"
       >
-        {renderCourseContents}
+        <CourseLayoutSide
+          statePage={statePage}
+          quizPhase={quizPhase}
+          onQuizBack={() => {
+            router.back();
+          }}
+          quizDetails={quizPhase !== "onboarding" ? quizDetails : undefined}
+          quizAnswerSheet={quizAnswerSheet}
+          quizQuestions={quizQuestions}
+          courseDetail={courseDetailWithProgress}
+          chapterAddress={chapterAddress}
+          trueLoading={trueLoading}
+        />
         <main className="relative flex flex-col flex-auto justify-between w-full overflow-hidden">
           {renderPageContents}
-          {renderPageControls}
+          <div
+            className={clsx(
+              "flex justify-center items-center p-8",
+              "gap-8 w-full bg-gray-100",
+              "border-t border-zinc-400"
+            )}
+          >
+            {quizDetails ? renderQuizControls : renderPageControls}
+          </div>
         </main>
       </div>
     </SwapPageContext.Provider>
@@ -519,12 +614,8 @@ export const getStaticProps = async (req: any) => {
   const courseDetail = (await getDetailedCourse(course)) as CourseType;
 
   const sectionIndex = courseDetail.sections.findIndex((value) => {
-    console.log("Comparing Value: ", value.id);
-    console.log("Comparing Section: ", section);
     return section === value.id;
   });
-
-  console.log("Section Index: ", sectionIndex);
 
   return {
     props: {

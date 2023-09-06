@@ -4,9 +4,9 @@ module.exports = {
   theme: {
     fontSize: {
       sm: [
-        "0.5rem",
+        "0.75rem",
         {
-          lineHeight: "0.5rem",
+          lineHeight: "0.75rem",
         },
       ], // 8
       "md-alt": [
