@@ -12,6 +12,7 @@ import TeX from "@matejmazur/react-katex";
 import {
   AddressesType,
   AnswerType,
+  QuizPhaseType,
   QuizQuestionType,
   StateType,
 } from "@/src/type";
@@ -31,6 +32,7 @@ interface CourseMaterialContentProps {
   stateLoading: StateType<boolean>;
   stateChecking: StateType<boolean>;
   stateSubmitted: StateType<boolean>;
+  stateQuizPhase: StateType<QuizPhaseType>;
   statePage: StateType<number>;
   trueLoading: boolean;
   quizQuestions?: MutableRefObject<Record<string, QuizQuestionType>>;
@@ -47,6 +49,7 @@ export function CourseLayoutMain({
   stateAccept,
   stateLoading,
   stateSubmitted,
+  stateQuizPhase,
   statePage,
   trueLoading,
   quizQuestions,
@@ -67,6 +70,7 @@ export function CourseLayoutMain({
   const optionCount = useRef<Record<string, number>>({});
   const optionDict = useRef<Record<string, string[]>>({});
   const page = statePage[0];
+  const quizPhase = stateQuizPhase[0];
 
   const {
     handleOnePairMatch,
@@ -84,6 +88,7 @@ export function CourseLayoutMain({
     statePage,
     stateSolved,
     stateSubmitted,
+    stateQuizPhase,
     inputRef,
   });
 
@@ -96,13 +101,12 @@ export function CourseLayoutMain({
   const userAnswerStatus = useCallback(
     (practiceId: string) => {
       const specificAnswer = answer[practiceId];
-      if (specificAnswer && submitted)
-        return handleCheckAnswer(specificAnswer, practiceId, false)
-          ? "success"
-          : "error";
-      return undefined;
+      return specificAnswer &&
+        handleCheckAnswer(specificAnswer, practiceId, false)
+        ? "success"
+        : "error";
     },
-    [answer, submitted, handleCheckAnswer]
+    [answer, handleCheckAnswer]
   );
 
   useEffect(() => {
@@ -242,8 +246,12 @@ export function CourseLayoutMain({
             }
           }}
           defaultValue={answer[id]}
-          disabled={solved === 1}
-          state={submitted && solved ? userAnswerStatus(id) : undefined}
+          disabled={solved === 1 || (quizPhase && quizPhase !== "working")}
+          state={
+            (submitted && solved) || quizPhase === "submitted"
+              ? userAnswerStatus(id)
+              : undefined
+          }
           mounted={inputRef.current[id]}
           onMount={() => {
             if (inputRef.current[id]) return;
@@ -269,6 +277,7 @@ export function CourseLayoutMain({
     },
     [
       answer,
+      quizPhase,
       setAccept,
       setAnswer,
       setSolved,

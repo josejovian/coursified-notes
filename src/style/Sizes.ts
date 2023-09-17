@@ -22,6 +22,6 @@ export const INPUT_SIZE_CLASS: StyleClassType<SizeType> = {
 
 export const BADGE_SIZE_CLASS: StyleClassType<SizeType> = {
   s: "text-sm",
-  m: "px-2 text-sm",
+  m: "px-2 py-1 text-sm",
   l: "py-2 px-2 text-md",
 };

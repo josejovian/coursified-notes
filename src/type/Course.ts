@@ -79,9 +79,10 @@ export interface QuizQuestionType {
 
 export interface QuizAnswerType {
   answers: Record<string, Partial<AnswerType>>;
-  accept?: Record<string, Partial<AnswerType>>;
   answered: boolean;
-  correct: boolean;
+  accept?: Record<string, Partial<AnswerType>>;
+  correct?: boolean;
+  points?: number;
 }
 
 export type QuizPhaseType = "onboarding" | "working" | "submitted" | undefined;

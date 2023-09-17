@@ -37,7 +37,7 @@ import {
   getDetailedCourse,
   readChapterMd,
 } from "@/src/lib/mdx";
-import { useProgress, useToast } from "@/src/hooks";
+import { useProgress, useQuiz, useToast } from "@/src/hooks";
 import { CourseLayoutContentTemplate } from "@/src/components/Courses/Layout/CourseLayoutContentTemplate";
 
 interface CourseMaterialProps {
@@ -72,8 +72,6 @@ const CourseMaterial = ({
   const stateChecking = useState(false);
   const [checking, setChecking] = stateChecking;
   const setSubmmited = stateSubmitted[1];
-  const stateQuizPhase = useState<QuizPhaseType>();
-  const [quizPhase, setQuizPhase] = stateQuizPhase;
 
   const { addToast } = useToast();
 
@@ -82,67 +80,14 @@ const CourseMaterial = ({
     [rawCourseDetail]
   );
 
-  const quizDetails = useMemo<QuizConfigType | undefined>(() => {
-    const currentSection = courseDetail.sections[chapterAddress.sectionIndex!];
-
-    return chapterAddress.chapter === "quiz"
-      ? ({
-          ...currentSection.quiz,
-          title: currentSection.title,
-        } as any)
-      : undefined;
-  }, [
-    chapterAddress.chapter,
-    chapterAddress.sectionIndex,
-    courseDetail.sections,
-  ]);
-
-  const quizQuestions = useRef<Record<string, QuizQuestionType>>({});
-
-  const quizAnswerSheet = useMemo(() => {
-    if (!quizDetails) return undefined;
-
-    const individualQuestions = Object.entries(quizQuestions.current)
-      .map(([key, value]) => {
-        let answered = true;
-        let correct = true;
-
-        let relatedInputs = value.inputIds.reduce((prev, curr) => {
-          if (!answer[curr]) answered = false;
-          if (!answer[curr] || answer[curr] !== accept[curr]) correct = false;
-
-          return {
-            ...prev,
-            [curr]: answer[curr],
-          };
-        }, {});
-        let relatedKeys = value.inputIds.reduce((prev, curr) => {
-          return {
-            ...prev,
-            [curr]: accept[curr],
-          };
-        }, {});
-
-        return [
-          key,
-          {
-            answers: relatedInputs,
-            accept: relatedKeys,
-            answered,
-            correct,
-          } as QuizAnswerType,
-        ];
-      })
-      .reduce(
-        (prev, [key, value]: any) => ({
-          ...prev,
-          [key]: value,
-        }),
-        {}
-      );
-
-    return individualQuestions as Record<string, QuizAnswerType>;
-  }, [accept, answer, quizDetails]);
+  const { quizAnswerSheet, quizDetails, quizQuestions, stateQuizPhase } =
+    useQuiz({
+      chapterAddress,
+      courseDetail,
+      answer,
+      accept,
+    });
+  const [quizPhase, setQuizPhase] = stateQuizPhase;
 
   const { id, sections } = courseDetail;
 
@@ -336,20 +281,6 @@ const CourseMaterial = ({
     nextDestination,
   ]);
 
-  const handlePreviousPageQuiz = useCallback(() => {
-    if (page > 0) {
-      setLoading(true);
-      setPage((prev) => prev - 1);
-    }
-  }, [page, setLoading, setPage]);
-
-  const handleNextPageQuiz = useCallback(() => {
-    if (page < maxPage - 1) {
-      setLoading(true);
-      setPage((prev) => prev + 1);
-    }
-  }, [page, maxPage, setLoading, setPage]);
-
   const renderQuizControls = useMemo(
     () =>
       quizPhase === "onboarding" ? (
@@ -395,11 +326,7 @@ const CourseMaterial = ({
           {page + 1} / {maxPage}
         </Paragraph>
         {solved !== 0 ? (
-          <Button
-            size="l"
-            onClick={handleNextPage}
-            disabled={trueLoading || page + 1 === maxPage}
-          >
+          <Button size="l" onClick={handleNextPage} disabled={trueLoading}>
             Next
           </Button>
         ) : (
@@ -484,6 +411,7 @@ const CourseMaterial = ({
           stateSolved={stateSolved}
           stateSubmitted={stateSubmitted}
           stateChecking={stateChecking}
+          stateQuizPhase={stateQuizPhase}
           statePage={statePage}
           handleCheckAnswer={handleCheckAnswer}
           onChapterChange={() => setPage(0)}
@@ -502,8 +430,10 @@ const CourseMaterial = ({
       stateSolved,
       stateSubmitted,
       stateChecking,
+      stateQuizPhase,
       statePage,
       handleCheckAnswer,
+      quizQuestions,
       setPage,
     ]
   );

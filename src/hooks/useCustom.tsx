@@ -15,6 +15,7 @@ import {
   InputBoxElementType,
   MatchBoxElementType,
   OptionElementType,
+  QuizPhaseType,
   RequirementMap,
   RequirementType,
   SectionType,
@@ -34,6 +35,7 @@ interface UseCustomProps {
   stateLoading: StateType<boolean>;
   stateAccept: StateType<AnswerType>;
   stateSubmitted: StateType<boolean>;
+  stateQuizPhase: StateType<QuizPhaseType>;
   inputRef: MutableRefObject<Record<string, boolean>>;
   handleCheckAnswer: (ans: string, id: string, flag?: boolean) => boolean;
 }
@@ -45,6 +47,7 @@ export function useCustom({
   stateLoading,
   stateAccept,
   stateSubmitted,
+  stateQuizPhase,
   inputRef,
   handleCheckAnswer,
 }: UseCustomProps) {
@@ -54,6 +57,7 @@ export function useCustom({
   const [loading, setLoading] = stateLoading;
   const [accept, setAccept] = stateAccept;
   const [submitted, setSubmitted] = stateSubmitted;
+  const quizPhase = stateQuizPhase[0];
 
   const answerInputBoxParentElement = useRef<InputBoxElementType[]>([]);
   const matchParentElement = useRef<MatchBoxElementType[]>([]);
@@ -323,6 +327,9 @@ export function useCustom({
     (practiceId: string, choiceId: number, content: string) => {
       const identifier = `Option-${practiceId}-${choiceId}`;
       const parsed = content.replaceAll("\\{", "{").replaceAll("\\}", "}");
+      const disabled = Boolean(
+        solved || (quizPhase && quizPhase !== "working")
+      );
 
       return (
         <Option
@@ -332,13 +339,15 @@ export function useCustom({
             answer[practiceId] && answer[practiceId]?.at(choiceId) === "1"
           )}
           onSelect={() => {
+            if (disabled) return;
+
             handleToggleOption(practiceId, choiceId);
           }}
-          solved={solved}
+          disabled={disabled}
         />
       );
     },
-    [answer, handleToggleOption, solved]
+    [answer, handleToggleOption, quizPhase, solved]
   );
 
   const renderMatchBox = useCallback(
@@ -394,7 +403,12 @@ export function useCustom({
           }
         }}
         defaultValue={answer[practiceId]}
-        disabled={solved === 1 || userAnswerStatus(practiceId) === "success"}
+        disabled={
+          solved === 1 ||
+          userAnswerStatus(practiceId) === "success" ||
+          (quizPhase && quizPhase !== "working")
+        }
+        color="danger"
         state={submitted ? userAnswerStatus(practiceId) : undefined}
       />
     ),
@@ -402,6 +416,7 @@ export function useCustom({
       answer,
       solved,
       userAnswerStatus,
+      quizPhase,
       submitted,
       accept,
       setSubmitted,

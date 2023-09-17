@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import clsx from "clsx";
 import { MdOutlineDescription } from "react-icons/md";
-import { Paragraph, Icon } from "../../Basic";
+import { Paragraph, Icon, Badge } from "../../Basic";
 import { QuizAnswerType, QuizPhaseType, QuizQuestionType } from "@/src/type";
 
 interface CourseQuizListQuestionProps {
@@ -36,7 +36,7 @@ export function CourseQuizListQuestion({
   return (
     <div
       className={clsx(
-        "flex items-center cursor-pointer",
+        "flex relative items-center gap-4 cursor-pointer h-14",
         status === "correct" && [
           "hover:bg-success-2 hover:bg-success-2",
           active && "bg-success-1",
@@ -61,18 +61,15 @@ export function CourseQuizListQuestion({
       )}
       onClick={() => onClick && onClick(index)}
     >
-      <Icon
-        IconComponent={MdOutlineDescription}
-        className="mr-4 text-inherit"
-        size="m"
-      />
-
-      <span className="w-full flex justify-between gap-4 items-start h-min">
-        <Paragraph as="p" className="truncate" color="inherit">
-          Q{index}
-        </Paragraph>
-        <Paragraph className=" w-max whitespace-nowrap">{weight} pts</Paragraph>
-      </span>
+      <Paragraph as="p" className="truncate" color="inherit">
+        #{index}
+      </Paragraph>
+      {phase === "working" && status === "unanswered" && (
+        <Badge>Unanswered</Badge>
+      )}
+      <Paragraph as="p" className="truncate absolute right-12">
+        {weight} pts
+      </Paragraph>
     </div>
   );
 }
