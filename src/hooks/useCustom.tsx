@@ -331,6 +331,14 @@ export function useCustom({
         solved || (quizPhase && quizPhase !== "working")
       );
 
+      const correct = Boolean(
+        answer[practiceId] &&
+          accept[practiceId] &&
+          answer[practiceId]?.at(choiceId) === accept[practiceId].at(choiceId)
+      );
+
+      console.log(correct);
+
       return (
         <Option
           id={identifier}
@@ -347,7 +355,7 @@ export function useCustom({
         />
       );
     },
-    [answer, handleToggleOption, quizPhase, solved]
+    [accept, answer, handleToggleOption, quizPhase, solved]
   );
 
   const renderMatchBox = useCallback(
