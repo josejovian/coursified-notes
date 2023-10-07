@@ -72,6 +72,7 @@ const CourseMaterial = ({
   const stateChecking = useState(false);
   const [checking, setChecking] = stateChecking;
   const setSubmmited = stateSubmitted[1];
+  const [quiz, setQuiz] = useState();
 
   const { addToast } = useToast();
 
@@ -80,7 +81,7 @@ const CourseMaterial = ({
     [rawCourseDetail]
   );
 
-  const { quizAnswerSheet, quizDetails, quizQuestions, stateQuizPhase } =
+  const { stateQuizAnswerSheet, quizDetails, quizQuestions, stateQuizPhase } =
     useQuiz({
       chapterAddress,
       courseDetail,
@@ -88,6 +89,7 @@ const CourseMaterial = ({
       accept,
     });
   const [quizPhase, setQuizPhase] = stateQuizPhase;
+  const [quizAnswerSheet, setQuizAnswerSheet] = stateQuizAnswerSheet;
 
   const { id, sections } = courseDetail;
 
@@ -287,8 +289,13 @@ const CourseMaterial = ({
         <Button
           size="l"
           onClick={() => {
+            const now = new Date().getTime();
             setQuizPhase("working");
             setLoading(true);
+            setQuizAnswerSheet((prev) => ({
+              ...prev,
+              startAt: now,
+            }));
           }}
           disabled={trueLoading}
         >
@@ -298,7 +305,17 @@ const CourseMaterial = ({
         <Button
           size="l"
           onClick={() => {
+            const now = new Date().getTime();
+            const points = Object.values(quizAnswerSheet.answers).reduce(
+              (prev, { points = 0 }) => prev + points,
+              0
+            );
             setQuizPhase("submitted");
+            setQuizAnswerSheet((prev) => ({
+              ...prev,
+              submittedAt: now,
+              points,
+            }));
           }}
           disabled={
             // Object.values(answer).length !== Object.values(accept).length
@@ -308,7 +325,14 @@ const CourseMaterial = ({
           Submit
         </Button>
       ),
-    [quizPhase, setLoading, setQuizPhase, trueLoading]
+    [
+      quizAnswerSheet.answers,
+      quizPhase,
+      setLoading,
+      setQuizAnswerSheet,
+      setQuizPhase,
+      trueLoading,
+    ]
   );
 
   const renderPageControls = useMemo(

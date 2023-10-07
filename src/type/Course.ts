@@ -92,3 +92,10 @@ export type QuizAnswerStatusType =
   | "unanswered"
   | "correct"
   | "incorrect";
+
+export interface QuizAnswerSheetType {
+  answers: Record<string, QuizAnswerType>;
+  startAt: number;
+  submittedAt: number;
+  points: number;
+}

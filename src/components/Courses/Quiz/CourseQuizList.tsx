@@ -1,6 +1,7 @@
 import { MutableRefObject, useMemo } from "react";
 import {
   ChapterAddressType,
+  QuizAnswerSheetType,
   QuizAnswerType,
   QuizConfigType,
   QuizPhaseType,
@@ -14,7 +15,7 @@ interface CourseQuizListProps {
   chapterAddress?: ChapterAddressType;
   questions: MutableRefObject<Record<string, QuizQuestionType>>;
   quizPhase?: QuizPhaseType;
-  quizAnswerSheet: Record<string, QuizAnswerType>;
+  quizAnswerSheet: QuizAnswerSheetType;
   className?: string;
   disabled?: boolean;
   noBorder?: boolean;
@@ -32,15 +33,17 @@ export function CourseQuizList({
   noBorder,
   noPadding,
 }: CourseQuizListProps) {
+  const { answers, points } = quizAnswerSheet;
   const questions = Object.values(refQuestions.current);
 
   const answered = useMemo(() => {
     let count = 0;
-    Object.values(quizAnswerSheet).forEach((answer) => {
-      if (answer.answered) count++;
-    });
+    answers &&
+      Object.values(answers).forEach((answer) => {
+        if (answer.answered) count++;
+      });
     return count;
-  }, [quizAnswerSheet]);
+  }, [answers]);
 
   return (
     <div
@@ -52,7 +55,14 @@ export function CourseQuizList({
     >
       <CourseLayoutSideSection
         title="Questions"
-        caption={`${answered} / ${questions.length}`}
+        caption={
+          quizPhase === "working"
+            ? `${answered} / ${questions.length}`
+            : `${points} / ${questions.reduce(
+                (prev, { weight }) => prev + weight,
+                0
+              )} pts`
+        }
         noExpand
         noPadding
       >
@@ -63,7 +73,7 @@ export function CourseQuizList({
             <CourseQuizListQuestion
               question={question}
               phase={quizPhase}
-              answer={quizAnswerSheet[index + 1]}
+              answer={answers[index + 1]}
               key={inputIds.join("")}
               index={index + 1}
               active={quizPhase === "submitted"}

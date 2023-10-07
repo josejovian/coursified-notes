@@ -351,6 +351,7 @@ export function useCustom({
 
             handleToggleOption(practiceId, choiceId);
           }}
+          correct={correct}
           disabled={disabled}
         />
       );

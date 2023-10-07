@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef, MutableRefObject } from "react";
 import {
   ChapterAddressType,
   CourseType,
+  QuizAnswerSheetType,
   QuizAnswerType,
   QuizConfigType,
   QuizPhaseType,
@@ -24,7 +25,7 @@ interface SideProps {
   courseDetail: CourseType;
   chapterAddress: ChapterAddressType;
   quizDetails?: QuizConfigType;
-  quizAnswerSheet?: Record<string, QuizAnswerType>;
+  quizAnswerSheet?: QuizAnswerSheetType;
   quizQuestions?: MutableRefObject<Record<string, QuizQuestionType>>;
   quizPhase?: QuizPhaseType;
   trueLoading?: boolean;

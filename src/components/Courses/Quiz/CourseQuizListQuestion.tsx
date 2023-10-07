@@ -68,7 +68,9 @@ export function CourseQuizListQuestion({
         <Badge>Unanswered</Badge>
       )}
       <Paragraph as="p" className="truncate absolute right-12">
-        {weight} pts
+        {phase === "working"
+          ? `${weight} pts`
+          : `${answer?.points} / ${weight} pts`}
       </Paragraph>
     </div>
   );
