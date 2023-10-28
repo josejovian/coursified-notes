@@ -39,6 +39,7 @@ import {
 } from "@/src/lib/mdx";
 import { useProgress, useQuiz, useToast } from "@/src/hooks";
 import { CourseLayoutContentTemplate } from "@/src/components/Courses/Layout/CourseLayoutContentTemplate";
+import { CourseQuizTimer } from "@/src/components/Courses/Quiz/CourseQuizTimer";
 
 interface CourseMaterialProps {
   markdown: any;
@@ -72,7 +73,7 @@ const CourseMaterial = ({
   const stateChecking = useState(false);
   const [checking, setChecking] = stateChecking;
   const setSubmmited = stateSubmitted[1];
-  const [quiz, setQuiz] = useState();
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const { addToast } = useToast();
 
@@ -90,6 +91,7 @@ const CourseMaterial = ({
     });
   const [quizPhase, setQuizPhase] = stateQuizPhase;
   const [quizAnswerSheet, setQuizAnswerSheet] = stateQuizAnswerSheet;
+  const { endAt } = quizAnswerSheet;
 
   const { id, sections } = courseDetail;
 
@@ -289,12 +291,17 @@ const CourseMaterial = ({
         <Button
           size="l"
           onClick={() => {
-            const now = new Date().getTime();
+            const now = new Date();
+            const end = new Date();
+            if (quizDetails)
+              end.setMinutes(end.getMinutes() + quizDetails.duration);
+
             setQuizPhase("working");
             setLoading(true);
             setQuizAnswerSheet((prev) => ({
               ...prev,
-              startAt: now,
+              startAt: now.getTime(),
+              endAt: end.getTime(),
             }));
           }}
           disabled={trueLoading}
@@ -302,31 +309,34 @@ const CourseMaterial = ({
           Start
         </Button>
       ) : (
-        <Button
-          size="l"
-          onClick={() => {
-            const now = new Date().getTime();
-            const points = Object.values(quizAnswerSheet.answers).reduce(
-              (prev, { points = 0 }) => prev + points,
-              0
-            );
-            setQuizPhase("submitted");
-            setQuizAnswerSheet((prev) => ({
-              ...prev,
-              submittedAt: now,
-              points,
-            }));
-          }}
-          disabled={
-            // Object.values(answer).length !== Object.values(accept).length
-            false
-          }
-        >
-          Submit
-        </Button>
+        <>
+          <Button
+            size="l"
+            onClick={() => {
+              const now = new Date().getTime();
+              const points = Object.values(quizAnswerSheet.answers).reduce(
+                (prev, { points = 0 }) => prev + points,
+                0
+              );
+              setQuizPhase("submitted");
+              setQuizAnswerSheet((prev) => ({
+                ...prev,
+                submittedAt: now,
+                points,
+              }));
+            }}
+            disabled={
+              // Object.values(answer).length !== Object.values(accept).length
+              false
+            }
+          >
+            Submit
+          </Button>
+        </>
       ),
     [
       quizAnswerSheet.answers,
+      quizDetails,
       quizPhase,
       setLoading,
       setQuizAnswerSheet,
@@ -506,12 +516,22 @@ const CourseMaterial = ({
         />
         <main className="relative flex flex-col flex-auto justify-between w-full overflow-hidden">
           {renderPageContents}
+          {quizDetails && bottomRef.current && endAt && (
+            <CourseQuizTimer
+              bottom={bottomRef.current.getBoundingClientRect().height}
+              endAt={endAt}
+              onTimeOut={() => {
+                setQuizPhase("submitted");
+              }}
+            />
+          )}
           <div
             className={clsx(
               "flex justify-center items-center p-8",
               "gap-8 w-full bg-gray-100",
               "border-t border-zinc-400"
             )}
+            ref={bottomRef}
           >
             {quizDetails ? renderQuizControls : renderPageControls}
           </div>

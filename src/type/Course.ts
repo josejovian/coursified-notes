@@ -96,6 +96,7 @@ export type QuizAnswerStatusType =
 export interface QuizAnswerSheetType {
   answers: Record<string, QuizAnswerType>;
   startAt: number;
+  endAt: number;
   submittedAt: number;
   points: number;
 }
