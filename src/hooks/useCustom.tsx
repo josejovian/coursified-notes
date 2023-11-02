@@ -324,7 +324,12 @@ export function useCustom({
   );
 
   const renderOption = useCallback(
-    (practiceId: string, choiceId: number, content: string) => {
+    (
+      practiceId: string,
+      choiceId: number,
+      content: string,
+      value?: boolean
+    ) => {
       const identifier = `Option-${practiceId}-${choiceId}`;
       const parsed = content.replaceAll("\\{", "{").replaceAll("\\}", "}");
       const disabled = Boolean(
@@ -337,14 +342,15 @@ export function useCustom({
           answer[practiceId]?.at(choiceId) === accept[practiceId].at(choiceId)
       );
 
-      console.log(correct);
+      console.log(answer);
 
       return (
         <Option
           id={identifier}
           content={parsed}
           selected={Boolean(
-            answer[practiceId] && answer[practiceId]?.at(choiceId) === "1"
+            value ||
+              (answer[practiceId] && answer[practiceId]?.at(choiceId) === "1")
           )}
           onSelect={() => {
             if (disabled) return;
@@ -789,10 +795,11 @@ export function useCustom({
         ...prev,
         ...answerKeys,
       }));
-      setAnswer((prev) => ({
-        ...prev,
-        ...optionDefaultAnswer,
-      }));
+      if (!submitted)
+        setAnswer((prev) => ({
+          ...prev,
+          ...optionDefaultAnswer,
+        }));
 
       inputElementsRendered += Object.keys(optionAnswerKeys).length;
     }
@@ -812,10 +819,10 @@ export function useCustom({
     loading,
     handleRemoveAllCustomComponents,
     solved,
-    optionCount,
+    setAccept,
+    submitted,
     setAnswer,
     setSolved,
-    setAccept,
     handleRenderAnswerBoxes,
     handleRenderMatch,
     handleRenderOptions,

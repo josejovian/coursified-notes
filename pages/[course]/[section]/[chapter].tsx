@@ -12,6 +12,7 @@ import {
   AnswerType,
   ChapterAddressType,
   CourseType,
+  QuizAnswerSheetType,
   QuizAnswerType,
   QuizConfigType,
   QuizPhaseType,
@@ -19,8 +20,10 @@ import {
 } from "@/src/type";
 import {
   checkChapterProgress,
+  getQuizAnswerSheet,
   getSpecificChapterAddress,
   storeChapterProgress,
+  storeQuizAnswerSheet,
 } from "@/src/utils";
 import {
   Button,
@@ -72,7 +75,7 @@ const CourseMaterial = ({
   const stateSubmitted = useState(false);
   const stateChecking = useState(false);
   const [checking, setChecking] = stateChecking;
-  const setSubmmited = stateSubmitted[1];
+  const [submitted, setSubmitted] = stateSubmitted;
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const { addToast } = useToast();
@@ -220,11 +223,32 @@ const CourseMaterial = ({
 
   const handleSetupQuiz = useCallback(() => {
     if (quizDetails && !quizPhase) {
+      const existing = getQuizAnswerSheet(chapterAddress);
+
+      console.log(existing);
+
+      if (!submitted && existing && Object.keys(existing).length) {
+        setQuizAnswerSheet(existing);
+        setSubmitted(true);
+        setAnswer(existing.answers as any);
+      }
+
       setQuizPhase("onboarding");
       setLoading(false);
       setSwapChapters(false);
     }
-  }, [quizDetails, quizPhase, setLoading, setQuizPhase, setSwapChapters]);
+  }, [
+    chapterAddress,
+    quizDetails,
+    quizPhase,
+    setAnswer,
+    setLoading,
+    setQuizAnswerSheet,
+    setQuizPhase,
+    setSubmitted,
+    setSwapChapters,
+    submitted,
+  ]);
 
   useEffect(() => {
     handleSetupQuiz();
@@ -236,7 +260,7 @@ const CourseMaterial = ({
     if (quizPhase === "working") {
     } else {
       setSolved(-1);
-      setSubmmited(false);
+      setSubmitted(false);
       setAnswer({});
       setAccept({});
       setQuizPhase(undefined);
@@ -248,7 +272,7 @@ const CourseMaterial = ({
     setLoading,
     setQuizPhase,
     setSolved,
-    setSubmmited,
+    setSubmitted,
   ]);
 
   const handlePreviousPage = useCallback(() => {
@@ -285,6 +309,35 @@ const CourseMaterial = ({
     nextDestination,
   ]);
 
+  const handleSubmitQuiz = useCallback(() => {
+    const now = new Date().getTime();
+    const points = Object.values(quizAnswerSheet.answers).reduce(
+      (prev, { points = 0 }) => prev + points,
+      0
+    );
+    setSubmitted(true);
+    setQuizPhase("submitted");
+    setQuizAnswerSheet((prev) => {
+      const finalAnswerSheet: QuizAnswerSheetType = {
+        ...prev,
+        submittedAt: now,
+        points,
+        answers: answer as any,
+      };
+
+      storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
+
+      return finalAnswerSheet;
+    });
+  }, [
+    answer,
+    chapterAddress,
+    quizAnswerSheet.answers,
+    setQuizAnswerSheet,
+    setQuizPhase,
+    setSubmitted,
+  ]);
+
   const renderQuizControls = useMemo(
     () =>
       quizPhase === "onboarding" ? (
@@ -296,38 +349,31 @@ const CourseMaterial = ({
             if (quizDetails)
               end.setMinutes(end.getMinutes() + quizDetails.duration);
 
-            setQuizPhase("working");
-            setLoading(true);
-            setQuizAnswerSheet((prev) => ({
-              ...prev,
-              startAt: now.getTime(),
-              endAt: end.getTime(),
-            }));
+            if (!submitted) {
+              setQuizPhase("working");
+              setLoading(true);
+              setQuizAnswerSheet((prev) => ({
+                ...prev,
+                startAt: now.getTime(),
+                endAt: end.getTime(),
+              }));
+            } else {
+              setQuizPhase("submitted");
+              setLoading(true);
+            }
           }}
           disabled={trueLoading}
         >
-          Start
+          {submitted ? "View" : "Start"}
         </Button>
       ) : (
         <>
           <Button
             size="l"
-            onClick={() => {
-              const now = new Date().getTime();
-              const points = Object.values(quizAnswerSheet.answers).reduce(
-                (prev, { points = 0 }) => prev + points,
-                0
-              );
-              setQuizPhase("submitted");
-              setQuizAnswerSheet((prev) => ({
-                ...prev,
-                submittedAt: now,
-                points,
-              }));
-            }}
+            onClick={handleSubmitQuiz}
             disabled={
               // Object.values(answer).length !== Object.values(accept).length
-              false
+              submitted
             }
           >
             Submit
@@ -335,12 +381,13 @@ const CourseMaterial = ({
         </>
       ),
     [
-      quizAnswerSheet.answers,
+      handleSubmitQuiz,
       quizDetails,
       quizPhase,
       setLoading,
       setQuizAnswerSheet,
       setQuizPhase,
+      submitted,
       trueLoading,
     ]
   );
@@ -368,7 +415,7 @@ const CourseMaterial = ({
             size="l"
             onClick={() => {
               setChecking(true);
-              setSubmmited(true);
+              setSubmitted(true);
 
               if (
                 Object.values(answer).length === Object.values(accept).length
@@ -418,7 +465,7 @@ const CourseMaterial = ({
       checking,
       handleNextPage,
       setChecking,
-      setSubmmited,
+      setSubmitted,
       answer,
       accept,
       handleCheckAnswer,
@@ -516,13 +563,11 @@ const CourseMaterial = ({
         />
         <main className="relative flex flex-col flex-auto justify-between w-full overflow-hidden">
           {renderPageContents}
-          {quizDetails && bottomRef.current && endAt && (
+          {quizDetails && bottomRef.current && endAt && !submitted && (
             <CourseQuizTimer
               bottom={bottomRef.current.getBoundingClientRect().height}
               endAt={endAt}
-              onTimeOut={() => {
-                setQuizPhase("submitted");
-              }}
+              onTimeOut={handleSubmitQuiz}
             />
           )}
           <div

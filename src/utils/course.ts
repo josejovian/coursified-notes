@@ -1,8 +1,9 @@
 import {
-	ChapterAddressType,
-	CourseType,
-	RequirementMap,
-	SectionType,
+  ChapterAddressType,
+  CourseType,
+  QuizAnswerSheetType,
+  RequirementMap,
+  SectionType,
 } from "../type/Course";
 import { uncapitalize } from "./capitalize";
 
@@ -10,165 +11,208 @@ export const regexPracticeInput = /\[input\;([^\\])*\]/g;
 export const regexPracticeInputWithAnswer = /\[input\;([^\`])*/g;
 
 export function getPracticeId(string: string) {
-	if (!string) return null;
+  if (!string) return null;
 
-	const split = (string.match(regexPracticeInput) ?? [""])[0].split(";");
+  const split = (string.match(regexPracticeInput) ?? [""])[0].split(";");
 
-	if (split.length !== 2) return null;
+  if (split.length !== 2) return null;
 
-	return split[1].slice(0, -1);
+  return split[1].slice(0, -1);
 }
 
 export function getPracticeAnswer(string: string) {
-	if (!string) return null;
+  if (!string) return null;
 
-	const answer = string.match(regexPracticeInputWithAnswer) ?? [];
+  const answer = string.match(regexPracticeInputWithAnswer) ?? [];
 
-	if (answer.length !== 1) return null;
+  if (answer.length !== 1) return null;
 
-	const question = answer[0].replace(regexPracticeInput, "");
+  const question = answer[0].replace(regexPracticeInput, "");
 
-	return question;
+  return question;
 }
 
 export function getLocalChapterAddress(section: string, chapter: string) {
-	return `${section}/${chapter}`;
+  return `${section}/${chapter}`;
 }
 
 export function getSpecificChapterAddress(
-	chapterAddress: ChapterAddressType,
-	string: string
+  chapterAddress: ChapterAddressType,
+  string: string
 ) {
-	return {
-		...chapterAddress,
-		chapter: `${chapterAddress.chapter}@${string}`,
-		page: string === "practice" ? undefined : chapterAddress.page,
-	};
+  return {
+    ...chapterAddress,
+    chapter: `${chapterAddress.chapter}@${string}`,
+    page: string === "practice" ? undefined : chapterAddress.page,
+  };
 }
 
 export function getCourseKey(course: string) {
-	return `course-${course}`;
+  return `course-${course}`;
 }
 
 export function storeChapterProgress(
-	chapterAddress: ChapterAddressType,
-	answer: any
+  chapterAddress: ChapterAddressType,
+  answer: any
 ): void {
-	const { course, section, chapter, page } = chapterAddress;
-	const localAddress = getLocalChapterAddress(section, chapter);
-	const existingAnswer = JSON.parse(
-		localStorage.getItem(getCourseKey(course)) ?? "{}"
-	);
-	if (page !== undefined) {
-		if (!existingAnswer[localAddress]) {
-			existingAnswer[localAddress] = [];
-		}
-		existingAnswer[localAddress][page] = answer;
-	} else {
-		if (!existingAnswer[localAddress]) {
-			existingAnswer[localAddress] = {};
-		}
-		existingAnswer[localAddress] = answer;
-	}
+  const { course, section, chapter, page } = chapterAddress;
+  const localAddress = getLocalChapterAddress(section, chapter);
+  const existingAnswer = JSON.parse(
+    localStorage.getItem(getCourseKey(course)) ?? "{}"
+  );
+  if (page !== undefined) {
+    if (!existingAnswer[localAddress]) {
+      existingAnswer[localAddress] = [];
+    }
+    existingAnswer[localAddress][page] = answer;
+  } else {
+    if (!existingAnswer[localAddress]) {
+      existingAnswer[localAddress] = {};
+    }
+    existingAnswer[localAddress] = answer;
+  }
 
-	localStorage.setItem(getCourseKey(course), JSON.stringify(existingAnswer));
+  localStorage.setItem(getCourseKey(course), JSON.stringify(existingAnswer));
 }
 
 export function checkChapterProgress(
-	chapterAddress: ChapterAddressType
+  chapterAddress: ChapterAddressType
 ): { [key: string]: string } | null {
-	const { course, section, chapter, page } = chapterAddress;
-	const localAddress = getLocalChapterAddress(section, chapter);
+  const { course, section, chapter, page } = chapterAddress;
+  const localAddress = getLocalChapterAddress(section, chapter);
 
-	let existingAnswer = localStorage.getItem(getCourseKey(course));
+  let existingAnswer = localStorage.getItem(getCourseKey(course));
 
-	if (existingAnswer) {
-		const parsed = JSON.parse(existingAnswer)[localAddress] ?? {};
-		return parsed;
-	}
+  if (existingAnswer) {
+    const parsed = JSON.parse(existingAnswer)[localAddress] ?? {};
+    return parsed;
+  }
 
-	return null;
+  return null;
 }
 
 export function checkCourseProgress(id: string, sections: SectionType[]) {
-	const rawSectionChapterProgresses = sections.map((section: SectionType) => {
-		let completedChapters = 0;
+  const rawSectionChapterProgresses = sections.map((section: SectionType) => {
+    let completedChapters = 0;
 
-		return section.chapters.map((chapter) => {
-			let totalSteps = 0;
-			let steps = 0;
-			const { requirements, pages } = chapter;
+    return section.chapters.map((chapter) => {
+      let totalSteps = 0;
+      let steps = 0;
+      const { requirements, pages } = chapter;
 
-			if (pages) {
-			}
+      if (pages) {
+      }
 
-			const localAddress = {
-				course: id,
-				section: section.id ?? uncapitalize(section.title),
-				chapter: chapter.id ?? uncapitalize(chapter.title),
-			};
+      const localAddress = {
+        course: id,
+        section: section.id ?? uncapitalize(section.title),
+        chapter: chapter.id ?? uncapitalize(chapter.title),
+      };
 
-			const localReadAddress = getSpecificChapterAddress(
-				localAddress,
-				"read"
-			);
+      const localReadAddress = getSpecificChapterAddress(localAddress, "read");
 
-			const localPracticeAddress = getSpecificChapterAddress(
-				localAddress,
-				"practice"
-			);
+      const localPracticeAddress = getSpecificChapterAddress(
+        localAddress,
+        "practice"
+      );
 
-			let readProgress = 0;
-			let practiceProgress = 0;
+      if (localAddress.chapter === "quiz") {
+        const answer = getQuizAnswerSheet(localAddress);
 
-			if (typeof window !== "undefined") {
-				const chapterProgress = checkChapterProgress(localReadAddress);
-				const chapterPracticeProgress =
-					checkChapterProgress(localPracticeAddress);
+        if (answer && Object.values(answer))
+          return {
+            percentage: 1,
+            requirements: {
+              read: {
+                category: "read",
+                completed: true,
+              },
+            } as RequirementMap,
+          };
+      }
 
-				if (chapterProgress)
-					readProgress = Object.values(chapterProgress).length;
+      let readProgress = 0;
+      let practiceProgress = 0;
 
-				if (chapterPracticeProgress)
-					practiceProgress = Object.values(
-						chapterPracticeProgress
-					).length;
-			}
+      if (typeof window !== "undefined") {
+        const chapterProgress = checkChapterProgress(localReadAddress);
+        const chapterPracticeProgress =
+          checkChapterProgress(localPracticeAddress);
 
-			let requirementsProgresses: RequirementMap = {
-				read: undefined,
-				practice: undefined,
-			};
+        if (chapterProgress)
+          readProgress = Object.values(chapterProgress).length;
 
-			if (requirements) {
-				requirementsProgresses = {
-					read: requirements.read
-						? {
-								...requirements.read,
-								params: {
-									...requirements.read.params,
-									progress: readProgress,
-								},
-						  }
-						: undefined,
-					practice: requirements.practice
-						? {
-								...requirements.practice,
-								params: {
-									...requirements.practice.params,
-									progress: practiceProgress,
-								},
-						  }
-						: undefined,
-				};
-			}
+        if (chapterPracticeProgress)
+          practiceProgress = Object.values(chapterPracticeProgress).length;
+      }
 
-			return {
-				percentage: Math.floor((steps * 100) / totalSteps),
-				requirements: requirementsProgresses,
-			};
-		});
-	});
+      let requirementsProgresses: RequirementMap = {
+        read: undefined,
+        practice: undefined,
+      };
 
-	return rawSectionChapterProgresses;
+      if (requirements) {
+        requirementsProgresses = {
+          read: requirements.read
+            ? {
+                ...requirements.read,
+                params: {
+                  ...requirements.read.params,
+                  progress: readProgress,
+                },
+              }
+            : undefined,
+          practice: requirements.practice
+            ? {
+                ...requirements.practice,
+                params: {
+                  ...requirements.practice.params,
+                  progress: practiceProgress,
+                },
+              }
+            : undefined,
+        };
+      }
+
+      return {
+        percentage: Math.floor((steps * 100) / totalSteps),
+        requirements: requirementsProgresses,
+      };
+    });
+  });
+
+  return rawSectionChapterProgresses;
+}
+
+export function storeQuizAnswerSheet(
+  chapterAddress: ChapterAddressType,
+  answer: QuizAnswerSheetType
+): void {
+  const { course, section, chapter, page } = chapterAddress;
+  const localAddress = getLocalChapterAddress(section, chapter);
+  const existingAnswer = JSON.parse(
+    localStorage.getItem(getCourseKey(course)) ?? "{}"
+  );
+
+  if (!existingAnswer[localAddress]) {
+    existingAnswer[localAddress] = {};
+  }
+  existingAnswer[localAddress] = answer;
+
+  localStorage.setItem(getCourseKey(course), JSON.stringify(existingAnswer));
+}
+
+export function getQuizAnswerSheet(
+  chapterAddress: ChapterAddressType
+): QuizAnswerSheetType | null {
+  const { course, section, chapter, page } = chapterAddress;
+  const localAddress = getLocalChapterAddress(section, chapter);
+  let existingAnswer = localStorage.getItem(getCourseKey(course));
+
+  if (existingAnswer) {
+    const parsed = JSON.parse(existingAnswer)[localAddress] ?? {};
+    return parsed;
+  }
+
+  return null;
 }
