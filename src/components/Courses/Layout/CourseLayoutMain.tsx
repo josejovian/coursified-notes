@@ -272,10 +272,18 @@ export function CourseLayoutMain({
             }));
           }}
           placeholder={placeholder}
+          helperText={
+            quizPhase === "submitted" && userAnswerStatus(id) === "error" ? (
+              <>
+                Answer: <b>{accept[id]}</b>
+              </>
+            ) : undefined
+          }
         />
       );
     },
     [
+      accept,
       answer,
       quizPhase,
       setAccept,

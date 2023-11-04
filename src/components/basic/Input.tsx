@@ -21,7 +21,7 @@ interface InputProps
   classWrapper?: string;
   className?: string;
   color?: ColorType;
-  helperText?: string;
+  helperText?: ReactNode;
   type?: string;
   state?: "success" | "error";
   disabled?: boolean;
@@ -54,14 +54,15 @@ export function Input({
   }, [mounted, onMount]);
 
   return (
-    <div className={clsx(classWrapper, "flex")}>
+    <div className={clsx(classWrapper)}>
       <input
         className={clsx(
           "border border-secondary-4 p-4",
           INPUT_SIZE_CLASS[size],
           INPUT_COLOR_CLASS[color],
           state === "error" && "bg-danger-1 border-danger-4 outline-danger-4",
-          state === "success" && "bg-success-1 border-success-4 outline-success-4",
+          state === "success" &&
+            "bg-success-1 border-success-4 outline-success-4",
           className
         )}
         type={type}
@@ -69,7 +70,7 @@ export function Input({
         {...props}
       />
       {helperText && (
-        <span
+        <div
           className={clsx(
             "mt-4",
             state === "error" && "text-danger-4",
@@ -77,7 +78,7 @@ export function Input({
           )}
         >
           {helperText}
-        </span>
+        </div>
       )}
     </div>
   );
