@@ -16,10 +16,14 @@ import {
   Paragraph,
   Icon,
   CourseQuizList,
+  IconText,
 } from "@/src/components";
 import { useScreen } from "@/src/hooks";
 import Image from "next/image";
 import { MdChevronLeft } from "react-icons/md";
+import { getHMS } from "@/src/utils/date";
+import { CourseQuizTimer } from "../Quiz/CourseQuizTimer";
+import { BsFillClockFill } from "react-icons/bs";
 
 interface SideProps {
   courseDetail: CourseType;
@@ -30,6 +34,7 @@ interface SideProps {
   quizPhase?: QuizPhaseType;
   trueLoading?: boolean;
   onQuizBack?: () => void;
+  onQuizNoTimeLeft?: () => void;
 }
 
 export function CourseLayoutSide({
@@ -39,13 +44,15 @@ export function CourseLayoutSide({
   quizDetails,
   quizAnswerSheet,
   quizPhase,
-  onQuizBack,
   trueLoading,
+  onQuizBack,
+  onQuizNoTimeLeft,
 }: SideProps) {
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const textWrapperRef = useRef<HTMLDivElement>(null);
   const { width } = useScreen();
   const [open, setOpen] = useState(false);
+  const [left, setLeft] = useState<number>();
   const showQuizQuestions =
     quizDetails &&
     quizQuestions &&
@@ -88,6 +95,15 @@ export function CourseLayoutSide({
             <Paragraph as="p" color="secondary-1">
               {quizDetails.description}
             </Paragraph>
+            {!quizAnswerSheet?.submittedAt && (
+              <IconText icon={BsFillClockFill} color="secondary-1">
+                <CourseQuizTimer
+                  onQuizNoTimeLeft={onQuizNoTimeLeft}
+                  endAt={quizAnswerSheet?.endAt}
+                  isStopped={!!quizAnswerSheet?.submittedAt}
+                />
+              </IconText>
+            )}
           </div>
           <Image
             src="/calculus.jpg"
@@ -126,7 +142,17 @@ export function CourseLayoutSide({
           />
         </div>
       ),
-    [description, id, onQuizBack, quizDetails, quizPhase, title]
+    [
+      description,
+      id,
+      onQuizBack,
+      onQuizNoTimeLeft,
+      quizAnswerSheet?.endAt,
+      quizAnswerSheet?.submittedAt,
+      quizDetails,
+      quizPhase,
+      title,
+    ]
   );
 
   const renderSideToggleButton = useMemo(

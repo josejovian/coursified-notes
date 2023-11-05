@@ -225,9 +225,13 @@ const CourseMaterial = ({
     if (quizDetails && !quizPhase) {
       const existing = getQuizAnswerSheet(chapterAddress);
 
-      console.log(existing);
-
-      if (!submitted && existing && Object.keys(existing).length) {
+      if (existing && Object.keys(existing).length && !existing.submittedAt) {
+        setQuizAnswerSheet(existing);
+        setAnswer(existing.answers as any);
+        addToast({
+          phrase: "courseQuizContinueFromBackUp",
+        });
+      } else if (!submitted && existing && Object.keys(existing).length) {
         setQuizAnswerSheet(existing);
         setSubmitted(true);
         setAnswer(existing.answers as any);
@@ -238,6 +242,7 @@ const CourseMaterial = ({
       setSwapChapters(false);
     }
   }, [
+    addToast,
     chapterAddress,
     quizDetails,
     quizPhase,
@@ -338,34 +343,76 @@ const CourseMaterial = ({
     setSubmitted,
   ]);
 
+  const handleBackupQuizBeforeSubmit = useCallback(() => {
+    const finalAnswerSheet: QuizAnswerSheetType = {
+      ...quizAnswerSheet,
+      answers: answer as any,
+    };
+
+    console.log("Quiz Answer Sheet: ", quizAnswerSheet);
+
+    if (quizAnswerSheet.submittedAt) return;
+
+    if (quizAnswerSheet.startAt) {
+      storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
+    }
+  }, [answer, chapterAddress, quizAnswerSheet]);
+
+  useEffect(() => {
+    handleBackupQuizBeforeSubmit();
+  }, [answer, handleBackupQuizBeforeSubmit]);
+
   const renderQuizControls = useMemo(
     () =>
       quizPhase === "onboarding" ? (
-        <Button
-          size="l"
-          onClick={() => {
-            const now = new Date();
-            const end = new Date();
-            if (quizDetails)
-              end.setMinutes(end.getMinutes() + quizDetails.duration);
+        <>
+          <Button
+            size="l"
+            onClick={() => {
+              if (
+                quizAnswerSheet &&
+                quizAnswerSheet.startAt &&
+                !quizAnswerSheet.submittedAt
+              ) {
+                setQuizPhase("working");
+                setLoading(true);
+                return;
+              }
 
-            if (!submitted) {
-              setQuizPhase("working");
-              setLoading(true);
-              setQuizAnswerSheet((prev) => ({
-                ...prev,
-                startAt: now.getTime(),
-                endAt: end.getTime(),
-              }));
-            } else {
-              setQuizPhase("submitted");
-              setLoading(true);
-            }
-          }}
-          disabled={trueLoading}
-        >
-          {submitted ? "View" : "Start"}
-        </Button>
+              const now = new Date();
+              const end = new Date();
+              if (quizDetails)
+                end.setMinutes(end.getMinutes() + quizDetails.duration);
+
+              if (!submitted) {
+                setQuizPhase("working");
+                setLoading(true);
+                setQuizAnswerSheet((prev) => ({
+                  ...prev,
+                  startAt: now.getTime(),
+                  endAt: end.getTime(),
+                }));
+              } else {
+                setQuizPhase("submitted");
+                setLoading(true);
+              }
+            }}
+            disabled={trueLoading}
+          >
+            {(() => {
+              if (submitted) return "View";
+              if (quizAnswerSheet.startAt) return "Resume";
+              return "Start";
+            })()}
+          </Button>
+          {/* <Button
+            onClick={() => {
+              storeChapterProgress(chapterAddress, undefined);
+            }}
+          >
+            Clear
+          </Button> */}
+        </>
       ) : (
         <>
           <Button
@@ -382,6 +429,7 @@ const CourseMaterial = ({
       ),
     [
       handleSubmitQuiz,
+      quizAnswerSheet,
       quizDetails,
       quizPhase,
       setLoading,
@@ -554,6 +602,12 @@ const CourseMaterial = ({
           onQuizBack={() => {
             router.back();
           }}
+          onQuizNoTimeLeft={() => {
+            addToast({
+              phrase: "courseQuizForceSubmit",
+            });
+            handleSubmitQuiz();
+          }}
           quizDetails={quizPhase !== "onboarding" ? quizDetails : undefined}
           quizAnswerSheet={quizAnswerSheet}
           quizQuestions={quizQuestions}
@@ -563,13 +617,6 @@ const CourseMaterial = ({
         />
         <main className="relative flex flex-col flex-auto justify-between w-full overflow-hidden">
           {renderPageContents}
-          {quizDetails && bottomRef.current && endAt && !submitted && (
-            <CourseQuizTimer
-              bottom={bottomRef.current.getBoundingClientRect().height}
-              endAt={endAt}
-              onTimeOut={handleSubmitQuiz}
-            />
-          )}
           <div
             className={clsx(
               "flex justify-center items-center p-8",

@@ -421,7 +421,7 @@ export function useCustom({
         disabled={
           solved === 1 ||
           userAnswerStatus(practiceId) === "success" ||
-          (quizPhase && quizPhase !== "working")
+          quizPhase !== "working"
         }
         color="danger"
         state={submitted ? userAnswerStatus(practiceId) : undefined}

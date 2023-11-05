@@ -1,3 +1,8 @@
+function padZero(n: number) {
+  if (n < 10) return `0${n}`;
+  return n;
+}
+
 export function getHMS(t: number) {
   let time = t;
   time /= 1000;
@@ -14,11 +19,11 @@ export function getHMS(t: number) {
 
   seconds = Math.ceil(time);
 
-  let hourPhrase = `${hours}h`;
-  let minutePhrase = `${minutes}m`;
-  let secondPhrase = `${seconds}s`;
+  let hourPhrase = `${padZero(hours)}`;
+  let minutePhrase = `${padZero(minutes)}`;
+  let secondPhrase = `${padZero(seconds)}`;
 
-  if (hours === 0) return [minutePhrase, secondPhrase].join(" ");
+  if (hours === 0) return [minutePhrase, secondPhrase].join(":");
 
-  return [hourPhrase, minutePhrase, secondPhrase].join(" ");
+  return [hourPhrase, minutePhrase, secondPhrase].join(":");
 }
