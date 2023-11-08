@@ -35,8 +35,8 @@ interface UseCustomProps {
   stateLoading: StateType<boolean>;
   stateAccept: StateType<AnswerType>;
   stateSubmitted: StateType<boolean>;
-  stateQuizPhase: StateType<QuizPhaseType>;
   inputRef: MutableRefObject<Record<string, boolean>>;
+  inputIsDisabled?: boolean;
   handleCheckAnswer: (ans: string, id: string, flag?: boolean) => boolean;
 }
 
@@ -47,8 +47,8 @@ export function useCustom({
   stateLoading,
   stateAccept,
   stateSubmitted,
-  stateQuizPhase,
   inputRef,
+  inputIsDisabled,
   handleCheckAnswer,
 }: UseCustomProps) {
   const [active, setActive] = stateActive;
@@ -57,7 +57,6 @@ export function useCustom({
   const [loading, setLoading] = stateLoading;
   const [accept, setAccept] = stateAccept;
   const [submitted, setSubmitted] = stateSubmitted;
-  const quizPhase = stateQuizPhase[0];
 
   const answerInputBoxParentElement = useRef<InputBoxElementType[]>([]);
   const matchParentElement = useRef<MatchBoxElementType[]>([]);
@@ -332,9 +331,7 @@ export function useCustom({
     ) => {
       const identifier = `Option-${practiceId}-${choiceId}`;
       const parsed = content.replaceAll("\\{", "{").replaceAll("\\}", "}");
-      const disabled = Boolean(
-        solved || (quizPhase && quizPhase !== "working")
-      );
+      const disabled = Boolean(solved || inputIsDisabled);
 
       const correct = Boolean(
         answer[practiceId] &&
@@ -362,7 +359,7 @@ export function useCustom({
         />
       );
     },
-    [accept, answer, handleToggleOption, quizPhase, solved]
+    [accept, answer, handleToggleOption, inputIsDisabled, solved]
   );
 
   const renderMatchBox = useCallback(
@@ -421,7 +418,7 @@ export function useCustom({
         disabled={
           solved === 1 ||
           userAnswerStatus(practiceId) === "success" ||
-          quizPhase !== "working"
+          inputIsDisabled
         }
         color="danger"
         state={submitted ? userAnswerStatus(practiceId) : undefined}
@@ -431,7 +428,7 @@ export function useCustom({
       answer,
       solved,
       userAnswerStatus,
-      quizPhase,
+      inputIsDisabled,
       submitted,
       accept,
       setSubmitted,

@@ -88,8 +88,8 @@ export function CourseLayoutMain({
     statePage,
     stateSolved,
     stateSubmitted,
-    stateQuizPhase,
     inputRef,
+    inputIsDisabled: quizPhase && quizPhase !== "working",
   });
 
   const { practice } = addreses;
