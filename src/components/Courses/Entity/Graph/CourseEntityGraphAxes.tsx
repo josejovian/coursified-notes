@@ -44,7 +44,8 @@ export function CourseEntityGraphAxes({
                 position: "absolute",
                 left:
                   (idx - 1) * gridSize[1] +
-                  (gridSizeCategory === "md" ? 12 : 4),
+                  (gridSizeCategory === "md" ? 12 : 4) +
+                  (xValue > 0 ? 8 : 0),
               }}
               key={`GraphX_${functions}_${idx}`}
             >{`${xValue}`}</TeX>
