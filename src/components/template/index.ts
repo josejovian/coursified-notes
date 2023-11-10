@@ -1,2 +1,2 @@
-export * from "./Generic";
+export * from "./TemplateGeneric";
 export * from "./SlantedBackground";

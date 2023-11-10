@@ -31,6 +31,8 @@ import {
   CourseQuizOnboarding,
   CourseLayoutSide,
   Paragraph,
+  TemplateGeneric,
+  IconText,
 } from "@/src/components";
 import { SwapPageContext } from "@/src/contexts";
 import {
@@ -41,8 +43,9 @@ import {
   readChapterMd,
 } from "@/src/lib/mdx";
 import { useProgress, useQuiz, useToast } from "@/src/hooks";
-import { CourseLayoutContentTemplate } from "@/src/components/Courses/Layout/CourseLayoutContentTemplate";
 import { CourseQuizTimer } from "@/src/components/Courses/Quiz/CourseQuizTimer";
+import { BsFillClockFill } from "react-icons/bs";
+import Link from "next/link";
 
 interface CourseMaterialProps {
   markdown: any;
@@ -84,6 +87,7 @@ const CourseMaterial = ({
     () => JSON.parse(rawCourseDetail) as CourseType,
     [rawCourseDetail]
   );
+  const { title, description } = courseDetail;
 
   const { stateQuizAnswerSheet, quizDetails, quizQuestions, stateQuizPhase } =
     useQuiz({
@@ -593,42 +597,95 @@ const CourseMaterial = ({
 
   return (
     <SwapPageContext.Provider value={stateSwapPages}>
-      <div
-        id="CourseMaterial"
-        className="flex relative w-full h-screen overflow-hidden"
+      <TemplateGeneric
+        sideHeaderImage={{
+          src: "/calculus.jpg",
+        }}
+        sideHeaderElement={
+          quizPhase !== "onboarding" && quizDetails ? (
+            <>
+              {quizPhase === "submitted" && (
+                <Paragraph
+                  onClick={() => {
+                    router.back();
+                  }}
+                  color="secondary-1"
+                >
+                  Back to Course
+                </Paragraph>
+              )}
+              <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
+                Quiz - {quizDetails.title}
+              </Paragraph>
+              <Paragraph as="p" color="secondary-1">
+                {quizDetails.description}
+              </Paragraph>
+              {!quizAnswerSheet?.submittedAt && (
+                <IconText icon={BsFillClockFill} color="secondary-1">
+                  <CourseQuizTimer
+                    onQuizNoTimeLeft={() => {
+                      addToast({
+                        phrase: "courseQuizForceSubmit",
+                      });
+                      handleSubmitQuiz();
+                    }}
+                    endAt={quizAnswerSheet?.endAt}
+                    isStopped={!!quizAnswerSheet?.submittedAt}
+                  />
+                </IconText>
+              )}
+            </>
+          ) : (
+            <>
+              <Link href={`/${id}`} legacyBehavior>
+                <a>
+                  <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
+                    {title}
+                  </Paragraph>
+                </a>
+              </Link>
+              <Paragraph as="p" color="secondary-1">
+                {description}
+              </Paragraph>
+              <Paragraph size="m-alt" color="secondary-1">
+                Jose Jovian
+              </Paragraph>
+            </>
+          )
+        }
+        sideElement={
+          <CourseLayoutSide
+            quizPhase={quizPhase}
+            onQuizBack={() => {
+              router.back();
+            }}
+            onQuizNoTimeLeft={() => {
+              addToast({
+                phrase: "courseQuizForceSubmit",
+              });
+              handleSubmitQuiz();
+            }}
+            quizDetails={quizPhase !== "onboarding" ? quizDetails : undefined}
+            quizAnswerSheet={quizAnswerSheet}
+            quizQuestions={quizQuestions}
+            courseDetail={courseDetailWithProgress}
+            chapterAddress={chapterAddress}
+            trueLoading={trueLoading}
+          />
+        }
       >
-        <CourseLayoutSide
-          quizPhase={quizPhase}
-          onQuizBack={() => {
-            router.back();
-          }}
-          onQuizNoTimeLeft={() => {
-            addToast({
-              phrase: "courseQuizForceSubmit",
-            });
-            handleSubmitQuiz();
-          }}
-          quizDetails={quizPhase !== "onboarding" ? quizDetails : undefined}
-          quizAnswerSheet={quizAnswerSheet}
-          quizQuestions={quizQuestions}
-          courseDetail={courseDetailWithProgress}
-          chapterAddress={chapterAddress}
-          trueLoading={trueLoading}
-        />
-        <main className="relative flex flex-col flex-auto justify-between w-full overflow-hidden">
-          {renderPageContents}
-          <div
-            className={clsx(
-              "flex justify-center items-center p-8",
-              "gap-8 w-full bg-gray-100",
-              "border-t border-zinc-400"
-            )}
-            ref={bottomRef}
-          >
-            {quizDetails ? renderQuizControls : renderPageControls}
-          </div>
-        </main>
-      </div>
+        {renderPageContents}
+        <div
+          className={clsx(
+            "flex justify-center items-center p-8",
+            "gap-8 w-full bg-gray-100",
+            "border-t border-zinc-400"
+          )}
+          ref={bottomRef}
+        >
+          {quizDetails ? renderQuizControls : renderPageControls}
+        </div>
+      </TemplateGeneric>
     </SwapPageContext.Provider>
   );
 };
