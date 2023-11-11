@@ -38,6 +38,7 @@ interface CourseMaterialContentProps {
   quizQuestions?: MutableRefObject<Record<string, QuizQuestionType>>;
   handleCheckAnswer: (ans: string, id: string, flag?: boolean) => boolean;
   onChapterChange?: () => void;
+  inputIsDisabled?: boolean;
 }
 
 export function CourseLayoutMain({
@@ -49,12 +50,12 @@ export function CourseLayoutMain({
   stateAccept,
   stateLoading,
   stateSubmitted,
-  stateQuizPhase,
   statePage,
   trueLoading,
   quizQuestions,
   handleCheckAnswer,
   onChapterChange,
+  inputIsDisabled,
 }: CourseMaterialContentProps) {
   const router = useRouter();
   const checking = stateChecking[0];
@@ -70,7 +71,6 @@ export function CourseLayoutMain({
   const optionCount = useRef<Record<string, number>>({});
   const optionDict = useRef<Record<string, string[]>>({});
   const page = statePage[0];
-  const quizPhase = stateQuizPhase[0];
 
   const {
     handleOnePairMatch,
@@ -89,7 +89,7 @@ export function CourseLayoutMain({
     stateSolved,
     stateSubmitted,
     inputRef,
-    inputIsDisabled: quizPhase && quizPhase !== "working",
+    inputIsDisabled,
   });
 
   const { practice } = addreses;
@@ -246,9 +246,9 @@ export function CourseLayoutMain({
             }
           }}
           defaultValue={answer[id]}
-          disabled={solved === 1 || (quizPhase && quizPhase !== "working")}
+          disabled={solved === 1 || inputIsDisabled}
           state={
-            (submitted && solved) || quizPhase === "submitted"
+            (submitted && solved) || inputIsDisabled
               ? userAnswerStatus(id)
               : undefined
           }
@@ -273,7 +273,7 @@ export function CourseLayoutMain({
           }}
           placeholder={placeholder}
           helperText={
-            quizPhase === "submitted" && userAnswerStatus(id) === "error" ? (
+            inputIsDisabled && userAnswerStatus(id) === "error" ? (
               <>
                 Answer: <b>{accept[id]}</b>
               </>
@@ -285,7 +285,7 @@ export function CourseLayoutMain({
     [
       accept,
       answer,
-      quizPhase,
+      inputIsDisabled,
       setAccept,
       setAnswer,
       setSolved,

@@ -549,6 +549,7 @@ const CourseMaterial = ({
           handleCheckAnswer={handleCheckAnswer}
           onChapterChange={() => setPage(0)}
           quizQuestions={quizQuestions}
+          inputIsDisabled={quizPhase !== "working"}
         />
       ),
     [
@@ -595,8 +596,8 @@ const CourseMaterial = ({
     };
   }, [handleRouteChangeComplete, handleRouteChangeStart, router.events]);
 
-  return (
-    <SwapPageContext.Provider value={stateSwapPages}>
+  const renderPage = useMemo(
+    () => (
       <TemplateGeneric
         sideHeaderImage={{
           src: "/calculus.jpg",
@@ -686,6 +687,30 @@ const CourseMaterial = ({
           {quizDetails ? renderQuizControls : renderPageControls}
         </div>
       </TemplateGeneric>
+    ),
+    [
+      addToast,
+      chapterAddress,
+      courseDetailWithProgress,
+      description,
+      handleSubmitQuiz,
+      id,
+      quizAnswerSheet,
+      quizDetails,
+      quizPhase,
+      quizQuestions,
+      renderPageContents,
+      renderPageControls,
+      renderQuizControls,
+      router,
+      title,
+      trueLoading,
+    ]
+  );
+
+  return (
+    <SwapPageContext.Provider value={stateSwapPages}>
+      {renderPage}
     </SwapPageContext.Provider>
   );
 };
