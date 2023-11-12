@@ -32,17 +32,11 @@ export function useQuiz({
   const quizDetails = useMemo<QuizConfigType | undefined>(() => {
     const currentSection = courseDetail.sections[chapterAddress.sectionIndex!];
 
-    return chapterAddress.chapter === "quiz"
-      ? ({
-          ...currentSection.quiz,
-          title: currentSection.title,
-        } as any)
-      : undefined;
-  }, [
-    chapterAddress.chapter,
-    chapterAddress.sectionIndex,
-    courseDetail.sections,
-  ]);
+    return {
+      ...currentSection.quiz,
+      title: currentSection.title,
+    } as any;
+  }, [chapterAddress.sectionIndex, courseDetail.sections]);
 
   const quizQuestions = useRef<Record<string, QuizQuestionType>>({});
 

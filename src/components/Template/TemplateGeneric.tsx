@@ -10,10 +10,12 @@ interface GenericProps {
   sideHeaderElement?: ReactNode;
   sideHeaderImage?: ImageProps;
   sideElement: ReactNode;
+  bottomElement?: ReactNode;
 }
 
 export function TemplateGeneric({
   children,
+  bottomElement,
   sideHeaderElement,
   sideHeaderImage,
   sideElement,
@@ -78,6 +80,7 @@ export function TemplateGeneric({
             />
           )}
         </div>
+        <hr />
       </>
     ),
     [sideHeaderElement, sideHeaderImage]
@@ -104,14 +107,13 @@ export function TemplateGeneric({
           )}
         >
           {renderSideHeader}
-          <hr />
           {sideElement}
         </aside>
         {renderSideToggleButton}
       </>
       <main className="relative flex flex-col flex-auto justify-between w-full overflow-hidden">
         {children}
-        {}
+        {bottomElement}
       </main>
     </div>
   );

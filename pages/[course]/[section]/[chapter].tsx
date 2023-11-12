@@ -46,6 +46,8 @@ import { useProgress, useQuiz, useToast } from "@/src/hooks";
 import { CourseQuizTimer } from "@/src/components/Courses/Quiz/CourseQuizTimer";
 import { BsFillClockFill } from "react-icons/bs";
 import Link from "next/link";
+import { CourseLayoutQuiz } from "@/src/components/Courses/Layout/CourseLayoutQuiz";
+import { CourseLayoutMaterial } from "@/src/components/Courses/Layout/CourseLayoutMaterial";
 
 interface CourseMaterialProps {
   markdown: any;
@@ -61,6 +63,7 @@ const CourseMaterial = ({
   const router = useRouter();
 
   const statePage = useState(0);
+  const stateMaxPage = useState(0);
   const [page, setPage] = statePage;
   const stateSolved = useState(-1);
   const [solved, setSolved] = stateSolved;
@@ -88,17 +91,6 @@ const CourseMaterial = ({
     [rawCourseDetail]
   );
   const { title, description } = courseDetail;
-
-  const { stateQuizAnswerSheet, quizDetails, quizQuestions, stateQuizPhase } =
-    useQuiz({
-      chapterAddress,
-      courseDetail,
-      answer,
-      accept,
-    });
-  const [quizPhase, setQuizPhase] = stateQuizPhase;
-  const [quizAnswerSheet, setQuizAnswerSheet] = stateQuizAnswerSheet;
-  const { endAt } = quizAnswerSheet;
 
   const { id, sections } = courseDetail;
 
@@ -134,51 +126,6 @@ const CourseMaterial = ({
     }),
     [chapterBaseAddress]
   );
-
-  const nextDestination = useMemo(() => {
-    const { sections } = courseDetail;
-    let nextAddress: ChapterAddressType = chapterAddress;
-    let lastSection = false;
-
-    sections.some((section, idx1) => {
-      if (section.id === chapterAddress.section) {
-        const { chapters } = section;
-        chapters.some((chapter, idx2) => {
-          if (chapter.id === chapterAddress.chapter) {
-            if (idx2 + 1 === chapters.length) {
-              if (idx1 + 1 === sections.length) {
-                lastSection = true;
-              } else {
-                const nextSection = sections[idx1 + 1];
-                nextAddress = {
-                  ...nextAddress,
-                  section: nextSection.id ?? "",
-                  chapter: nextSection.chapters[0].id ?? "",
-                };
-              }
-            } else {
-              nextAddress = {
-                ...nextAddress,
-                chapter: chapters[idx2 + 1].id ?? "",
-              };
-            }
-            return true;
-          }
-          return false;
-        });
-        return true;
-      }
-      return false;
-    });
-
-    if (lastSection) {
-      return `/${chapterAddress.course}`;
-    }
-
-    const { section, chapter } = nextAddress;
-
-    return `/${chapterAddress.course}/${section}/${chapter}`;
-  }, [chapterAddress, courseDetail]);
 
   const { read, practice } = addresses;
 
@@ -220,357 +167,19 @@ const CourseMaterial = ({
   );
 
   useEffect(() => {
+    console.log("Set Max Page: ", markdown.length);
     setMaxPage(markdown.length);
     setLoading(false);
     updateData();
   }, [markdown, setLoading, updateData]);
 
-  const handleSetupQuiz = useCallback(() => {
-    if (quizDetails && !quizPhase) {
-      const existing = getQuizAnswerSheet(chapterAddress);
-
-      if (existing && Object.keys(existing).length && !existing.submittedAt) {
-        setQuizAnswerSheet(existing);
-        setAnswer(existing.answers as any);
-        addToast({
-          phrase: "courseQuizContinueFromBackUp",
-        });
-      } else if (!submitted && existing && Object.keys(existing).length) {
-        setQuizAnswerSheet(existing);
-        setSubmitted(true);
-        setAnswer(existing.answers as any);
-      }
-
-      setQuizPhase("onboarding");
-      setLoading(false);
-      setSwapChapters(false);
-    }
-  }, [
-    addToast,
-    chapterAddress,
-    quizDetails,
-    quizPhase,
-    setAnswer,
-    setLoading,
-    setQuizAnswerSheet,
-    setQuizPhase,
-    setSubmitted,
-    setSwapChapters,
-    submitted,
-  ]);
-
-  useEffect(() => {
-    handleSetupQuiz();
-  }, [quizDetails, handleSetupQuiz]);
-
   const handleCleanUpStates = useCallback(() => {
     setLoading(true);
-
-    if (quizPhase === "working") {
-    } else {
-      setSolved(-1);
-      setSubmitted(false);
-      setAnswer({});
-      setAccept({});
-      setQuizPhase(undefined);
-    }
-  }, [
-    quizPhase,
-    setAccept,
-    setAnswer,
-    setLoading,
-    setQuizPhase,
-    setSolved,
-    setSubmitted,
-  ]);
-
-  const handlePreviousPage = useCallback(() => {
-    handleCleanUpStates();
-    if (page > 0) setPage((prev) => prev - 1);
-  }, [handleCleanUpStates, page, setPage]);
-
-  const handleNextPage = useCallback(() => {
-    handleCleanUpStates();
-    if (solved !== 0) storeChapterProgress(read, true);
-    if (page < maxPage - 1) {
-      setPage((prev) => prev + 1);
-    } else {
-      storeChapterProgress(
-        {
-          ...chapterBaseAddress,
-          page: undefined,
-        },
-        true
-      );
-      setTimeout(() => {
-        router.replace(nextDestination);
-      }, 250);
-    }
-  }, [
-    handleCleanUpStates,
-    solved,
-    read,
-    page,
-    maxPage,
-    setPage,
-    chapterBaseAddress,
-    router,
-    nextDestination,
-  ]);
-
-  const handleSubmitQuiz = useCallback(() => {
-    const now = new Date().getTime();
-    const points = Object.values(quizAnswerSheet.answers).reduce(
-      (prev, { points = 0 }) => prev + points,
-      0
-    );
-    setSubmitted(true);
-    setQuizPhase("submitted");
-    setQuizAnswerSheet((prev) => {
-      const finalAnswerSheet: QuizAnswerSheetType = {
-        ...prev,
-        submittedAt: now,
-        points,
-        answers: answer as any,
-      };
-
-      storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
-
-      return finalAnswerSheet;
-    });
-  }, [
-    answer,
-    chapterAddress,
-    quizAnswerSheet.answers,
-    setQuizAnswerSheet,
-    setQuizPhase,
-    setSubmitted,
-  ]);
-
-  const handleBackupQuizBeforeSubmit = useCallback(() => {
-    const finalAnswerSheet: QuizAnswerSheetType = {
-      ...quizAnswerSheet,
-      answers: answer as any,
-    };
-
-    console.log("Quiz Answer Sheet: ", quizAnswerSheet);
-
-    if (quizAnswerSheet.submittedAt) return;
-
-    if (quizAnswerSheet.startAt) {
-      storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
-    }
-  }, [answer, chapterAddress, quizAnswerSheet]);
-
-  useEffect(() => {
-    handleBackupQuizBeforeSubmit();
-  }, [answer, handleBackupQuizBeforeSubmit]);
-
-  const renderQuizControls = useMemo(
-    () =>
-      quizPhase === "onboarding" ? (
-        <>
-          <Button
-            size="l"
-            onClick={() => {
-              if (
-                quizAnswerSheet &&
-                quizAnswerSheet.startAt &&
-                !quizAnswerSheet.submittedAt
-              ) {
-                setQuizPhase("working");
-                setLoading(true);
-                return;
-              }
-
-              const now = new Date();
-              const end = new Date();
-              if (quizDetails)
-                end.setMinutes(end.getMinutes() + quizDetails.duration);
-
-              if (!submitted) {
-                setQuizPhase("working");
-                setLoading(true);
-                setQuizAnswerSheet((prev) => ({
-                  ...prev,
-                  startAt: now.getTime(),
-                  endAt: end.getTime(),
-                }));
-              } else {
-                setQuizPhase("submitted");
-                setLoading(true);
-              }
-            }}
-            disabled={trueLoading}
-          >
-            {(() => {
-              if (submitted) return "View";
-              if (quizAnswerSheet.startAt) return "Resume";
-              return "Start";
-            })()}
-          </Button>
-          {/* <Button
-            onClick={() => {
-              storeChapterProgress(chapterAddress, undefined);
-            }}
-          >
-            Clear
-          </Button> */}
-        </>
-      ) : (
-        <>
-          <Button
-            size="l"
-            onClick={handleSubmitQuiz}
-            disabled={
-              // Object.values(answer).length !== Object.values(accept).length
-              submitted
-            }
-          >
-            Submit
-          </Button>
-        </>
-      ),
-    [
-      handleSubmitQuiz,
-      quizAnswerSheet,
-      quizDetails,
-      quizPhase,
-      setLoading,
-      setQuizAnswerSheet,
-      setQuizPhase,
-      submitted,
-      trueLoading,
-    ]
-  );
-
-  const renderPageControls = useMemo(
-    () => (
-      <>
-        <Button
-          color="secondary"
-          size="l"
-          onClick={handlePreviousPage}
-          disabled={page <= 0 || trueLoading}
-        >
-          Back
-        </Button>
-        <Paragraph as="span" size="l">
-          {page + 1} / {maxPage}
-        </Paragraph>
-        {solved !== 0 ? (
-          <Button size="l" onClick={handleNextPage} disabled={trueLoading}>
-            Next
-          </Button>
-        ) : (
-          <Button
-            size="l"
-            onClick={() => {
-              setChecking(true);
-              setSubmitted(true);
-
-              if (
-                Object.values(answer).length === Object.values(accept).length
-              ) {
-                const correct = !Object.entries(answer).some(
-                  ([key, answer]) => {
-                    return !handleCheckAnswer(answer ?? "", key);
-                  }
-                );
-
-                if (correct) {
-                  setSolved(1);
-                  addToast({
-                    phrase: "courseMaterialPracticeAnsweredCorrect",
-                  });
-                } else {
-                  addToast({
-                    phrase: "courseMaterialPracticeAnsweredIncorrect",
-                  });
-                }
-              } else {
-                setTimeout(() => {
-                  setChecking(false);
-                }, 1000);
-                addToast({
-                  phrase: "courseMaterialPracticeAnsweredIncorrect",
-                });
-              }
-            }}
-            disabled={
-              trueLoading || checking
-              // Object.values(answer).length !== Object.values(accept).length ||
-              // Object.values(answer).filter((x) => x === "").length > 1
-            }
-          >
-            Check
-          </Button>
-        )}
-      </>
-    ),
-    [
-      trueLoading,
-      handlePreviousPage,
-      page,
-      maxPage,
-      solved,
-      checking,
-      handleNextPage,
-      setChecking,
-      setSubmitted,
-      answer,
-      accept,
-      handleCheckAnswer,
-      setSolved,
-      addToast,
-    ]
-  );
-
-  const renderPageContents = useMemo(
-    () =>
-      quizPhase === "onboarding" && quizDetails ? (
-        <CourseQuizOnboarding
-          quizDetails={quizDetails}
-          trueLoading={trueLoading}
-        />
-      ) : (
-        <CourseLayoutMain
-          addreses={addresses}
-          markdown={chapterContent}
-          stateAccept={stateAccept}
-          stateAnswer={stateAnswer}
-          stateLoading={stateLoading}
-          trueLoading={trueLoading}
-          stateSolved={stateSolved}
-          stateSubmitted={stateSubmitted}
-          stateChecking={stateChecking}
-          stateQuizPhase={stateQuizPhase}
-          statePage={statePage}
-          handleCheckAnswer={handleCheckAnswer}
-          onChapterChange={() => setPage(0)}
-          quizQuestions={quizQuestions}
-          inputIsDisabled={quizPhase !== "working"}
-        />
-      ),
-    [
-      quizPhase,
-      quizDetails,
-      trueLoading,
-      addresses,
-      chapterContent,
-      stateAccept,
-      stateAnswer,
-      stateLoading,
-      stateSolved,
-      stateSubmitted,
-      stateChecking,
-      stateQuizPhase,
-      statePage,
-      handleCheckAnswer,
-      quizQuestions,
-      setPage,
-    ]
-  );
+    setSolved(-1);
+    setSubmitted(false);
+    setAnswer({});
+    setAccept({});
+  }, [setAccept, setAnswer, setLoading, setSolved, setSubmitted]);
 
   const handleRouteChangeStart = useCallback(
     (next: string) => {
@@ -596,117 +205,88 @@ const CourseMaterial = ({
     };
   }, [handleRouteChangeComplete, handleRouteChangeStart, router.events]);
 
-  const renderPage = useMemo(
+  const renderCourseQuiz = useMemo(
     () => (
-      <TemplateGeneric
-        sideHeaderImage={{
-          src: "/calculus.jpg",
-        }}
-        sideHeaderElement={
-          quizPhase !== "onboarding" && quizDetails ? (
-            <>
-              {quizPhase === "submitted" && (
-                <Paragraph
-                  onClick={() => {
-                    router.back();
-                  }}
-                  color="secondary-1"
-                >
-                  Back to Course
-                </Paragraph>
-              )}
-              <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
-                Quiz - {quizDetails.title}
-              </Paragraph>
-              <Paragraph as="p" color="secondary-1">
-                {quizDetails.description}
-              </Paragraph>
-              {!quizAnswerSheet?.submittedAt && (
-                <IconText icon={BsFillClockFill} color="secondary-1">
-                  <CourseQuizTimer
-                    onQuizNoTimeLeft={() => {
-                      addToast({
-                        phrase: "courseQuizForceSubmit",
-                      });
-                      handleSubmitQuiz();
-                    }}
-                    endAt={quizAnswerSheet?.endAt}
-                    isStopped={!!quizAnswerSheet?.submittedAt}
-                  />
-                </IconText>
-              )}
-            </>
-          ) : (
-            <>
-              <Link href={`/${id}`} legacyBehavior>
-                <a>
-                  <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
-                    {title}
-                  </Paragraph>
-                </a>
-              </Link>
-              <Paragraph as="p" color="secondary-1">
-                {description}
-              </Paragraph>
-              <Paragraph size="m-alt" color="secondary-1">
-                Jose Jovian
-              </Paragraph>
-            </>
-          )
-        }
-        sideElement={
-          <CourseLayoutSide
-            quizPhase={quizPhase}
-            onQuizBack={() => {
-              router.back();
-            }}
-            onQuizNoTimeLeft={() => {
-              addToast({
-                phrase: "courseQuizForceSubmit",
-              });
-              handleSubmitQuiz();
-            }}
-            quizDetails={quizPhase !== "onboarding" ? quizDetails : undefined}
-            quizAnswerSheet={quizAnswerSheet}
-            quizQuestions={quizQuestions}
-            courseDetail={courseDetailWithProgress}
-            chapterAddress={chapterAddress}
-            trueLoading={trueLoading}
-          />
-        }
-      >
-        {renderPageContents}
-        <div
-          className={clsx(
-            "flex justify-center items-center p-8",
-            "gap-8 w-full bg-gray-100",
-            "border-t border-zinc-400"
-          )}
-          ref={bottomRef}
-        >
-          {quizDetails ? renderQuizControls : renderPageControls}
-        </div>
-      </TemplateGeneric>
+      <CourseLayoutQuiz
+        addreses={addresses}
+        chapterAddress={chapterAddress}
+        chapterContent={chapterContent}
+        courseDetailWithProgress={courseDetailWithProgress}
+        handleCheckAnswer={handleCheckAnswer}
+        stateAccept={stateAccept}
+        stateAnswer={stateAnswer}
+        stateChecking={stateChecking}
+        stateLoading={stateLoading}
+        statePage={statePage}
+        stateSolved={stateSolved}
+        stateSubmitted={stateSubmitted}
+        stateSwapChapters={stateSwapChapters}
+        trueLoading={trueLoading}
+      />
     ),
     [
-      addToast,
+      addresses,
       chapterAddress,
+      chapterContent,
       courseDetailWithProgress,
-      description,
-      handleSubmitQuiz,
-      id,
-      quizAnswerSheet,
-      quizDetails,
-      quizPhase,
-      quizQuestions,
-      renderPageContents,
-      renderPageControls,
-      renderQuizControls,
-      router,
-      title,
+      handleCheckAnswer,
+      stateAccept,
+      stateAnswer,
+      stateChecking,
+      stateLoading,
+      statePage,
+      stateSolved,
+      stateSubmitted,
+      stateSwapChapters,
       trueLoading,
     ]
   );
+
+  const renderCourseMaterial = useMemo(
+    () => (
+      <CourseLayoutMaterial
+        addreses={addresses}
+        chapterAddress={chapterAddress}
+        chapterBaseAddress={chapterBaseAddress}
+        chapterContent={chapterContent}
+        courseDetailWithProgress={courseDetailWithProgress}
+        handleCheckAnswer={handleCheckAnswer}
+        stateAccept={stateAccept}
+        stateAnswer={stateAnswer}
+        stateChecking={stateChecking}
+        stateLoading={stateLoading}
+        statePage={statePage}
+        stateMaxPage={stateMaxPage}
+        stateSolved={stateSolved}
+        stateSubmitted={stateSubmitted}
+        trueLoading={trueLoading}
+      />
+    ),
+    [
+      addresses,
+      chapterAddress,
+      chapterBaseAddress,
+      chapterContent,
+      courseDetailWithProgress,
+      handleCheckAnswer,
+      stateAccept,
+      stateAnswer,
+      stateChecking,
+      stateLoading,
+      stateMaxPage,
+      statePage,
+      stateSolved,
+      stateSubmitted,
+      trueLoading,
+    ]
+  );
+
+  const renderPage = useMemo(() => {
+    if (chapterAddress.chapter === "quiz") {
+      return renderCourseQuiz;
+    }
+    return renderCourseMaterial;
+  }, [chapterAddress.chapter, renderCourseMaterial, renderCourseQuiz]);
 
   return (
     <SwapPageContext.Provider value={stateSwapPages}>

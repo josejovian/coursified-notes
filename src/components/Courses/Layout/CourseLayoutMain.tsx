@@ -32,7 +32,6 @@ interface CourseMaterialContentProps {
   stateLoading: StateType<boolean>;
   stateChecking: StateType<boolean>;
   stateSubmitted: StateType<boolean>;
-  stateQuizPhase: StateType<QuizPhaseType>;
   statePage: StateType<number>;
   trueLoading: boolean;
   quizQuestions?: MutableRefObject<Record<string, QuizQuestionType>>;
@@ -85,7 +84,6 @@ export function CourseLayoutMain({
     stateActive,
     stateAnswer,
     stateLoading,
-    statePage,
     stateSolved,
     stateSubmitted,
     inputRef,

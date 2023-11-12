@@ -28,7 +28,6 @@ import { Option } from "../components/Courses/Entity/Option/CourseEntityOption";
 import { Graph, Input, MatchBox } from "../components";
 
 interface UseCustomProps {
-  statePage: StateType<number>;
   stateAnswer: StateType<Partial<AnswerType>>;
   stateActive: StateType<any>;
   stateSolved: StateType<number>;
