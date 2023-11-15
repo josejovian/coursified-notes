@@ -1,4 +1,10 @@
-import { MutableRefObject, useCallback, useEffect, useMemo } from "react";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   AddressesType,
   AnswerType,
@@ -33,9 +39,14 @@ export function CourseLayoutQuiz({
   stateSubmitted,
   stateSwapChapters,
   statePage,
+  courseDetail,
   courseDetailWithProgress,
   chapterAddress,
   trueLoading,
+  // quizDetails,
+  // quizQuestions,
+  // stateQuizAnswerSheet,
+  // stateQuizPhase,
   handleCheckAnswer,
 }: {
   addreses: AddressesType;
@@ -47,7 +58,12 @@ export function CourseLayoutQuiz({
   stateChecking: StateType<boolean>;
   stateSubmitted: StateType<boolean>;
   stateSwapChapters: StateType<boolean>;
+  stateQuizPhase: StateType<QuizPhaseType>;
   statePage: StateType<number>;
+  // stateQuizAnswerSheet: StateType<QuizAnswerSheetType>;
+  // quizQuestions: MutableRefObject<Record<string, QuizQuestionType>>;
+  // quizDetails: QuizConfigType;
+  courseDetail: CourseType;
   courseDetailWithProgress: CourseType;
   chapterAddress: ChapterAddressType;
   trueLoading: boolean;
@@ -57,21 +73,24 @@ export function CourseLayoutQuiz({
     updateCheckingState?: boolean
   ) => boolean;
 }) {
+  useEffect(() => {
+    console.log("Chapter Address", chapterAddress);
+  }, [chapterAddress]);
+
   const [answer, setAnswer] = stateAnswer;
   const [submitted, setSubmitted] = stateSubmitted;
   const setSwapChapters = stateSwapChapters[1];
   const accept = stateAccept[0];
-  const { stateQuizAnswerSheet, quizDetails, quizQuestions, stateQuizPhase } =
-    useQuiz({
-      chapterAddress,
-      courseDetail: courseDetailWithProgress,
-      answer,
-      accept,
-    });
-  const [quizPhase, setQuizPhase] = stateQuizPhase;
+  const { stateQuizAnswerSheet, quizDetails, quizQuestions } = useQuiz({
+    chapterAddress,
+    courseDetail,
+    answer,
+    accept,
+  });
+  const [quizPhase, setQuizPhase] = useState<QuizPhaseType>();
   const [quizAnswerSheet, setQuizAnswerSheet] = stateQuizAnswerSheet;
   const { endAt } = quizAnswerSheet;
-  const setLoading = stateLoading[1];
+  const [loading, setLoading] = stateLoading;
   const setPage = statePage[1];
 
   const { addToast } = useToast();
@@ -112,8 +131,6 @@ export function CourseLayoutQuiz({
       answers: answer as any,
     };
 
-    console.log("Quiz Answer Sheet: ", quizAnswerSheet);
-
     if (quizAnswerSheet.submittedAt) return;
 
     if (quizAnswerSheet.startAt) {
@@ -124,17 +141,20 @@ export function CourseLayoutQuiz({
   const handleSetupQuiz = useCallback(() => {
     if (quizDetails && !quizPhase) {
       const existing = getQuizAnswerSheet(chapterAddress);
+      console.log(existing?.submittedAt);
 
-      if (existing && Object.keys(existing).length && !existing.submittedAt) {
+      const exists = existing && Object.keys(existing).length;
+
+      if (exists && existing.submittedAt) {
+        setQuizAnswerSheet(existing);
+        setSubmitted(true);
+        setAnswer(existing.answers as any);
+      } else if (exists && !existing.submittedAt) {
         setQuizAnswerSheet(existing);
         setAnswer(existing.answers as any);
         addToast({
           phrase: "courseQuizContinueFromBackUp",
         });
-      } else if (!submitted && existing && Object.keys(existing).length) {
-        setQuizAnswerSheet(existing);
-        setSubmitted(true);
-        setAnswer(existing.answers as any);
       }
 
       setQuizPhase("onboarding");
@@ -149,22 +169,25 @@ export function CourseLayoutQuiz({
     setAnswer,
     setLoading,
     setQuizAnswerSheet,
-    setQuizPhase,
     setSubmitted,
     setSwapChapters,
-    submitted,
   ]);
+
+  useEffect(() => {
+    console.log("Rerender: ", submitted);
+  }, [submitted]);
 
   useEffect(() => {
     handleSetupQuiz();
   }, [quizDetails, handleSetupQuiz]);
+
   useEffect(() => {
     handleBackupQuizBeforeSubmit();
   }, [answer, handleBackupQuizBeforeSubmit]);
 
   const renderPageContents = useMemo(
     () =>
-      quizPhase === "onboarding" && quizDetails ? (
+      (!quizPhase || quizPhase === "onboarding") && quizDetails ? (
         <CourseQuizOnboarding
           quizDetails={quizDetails}
           trueLoading={trueLoading}
@@ -207,7 +230,7 @@ export function CourseLayoutQuiz({
   );
   const renderQuizControls = useMemo(
     () =>
-      quizPhase === "onboarding" ? (
+      !quizPhase || quizPhase === "onboarding" ? (
         <>
           <Button
             size="l"
@@ -236,6 +259,7 @@ export function CourseLayoutQuiz({
                   endAt: end.getTime(),
                 }));
               } else {
+                console.log("Viewing Finished Quiz");
                 setQuizPhase("submitted");
                 setLoading(true);
               }
@@ -243,8 +267,9 @@ export function CourseLayoutQuiz({
             disabled={trueLoading}
           >
             {(() => {
-              if (submitted) return "View";
-              if (quizAnswerSheet.startAt) return "Resume";
+              if (quizAnswerSheet.submittedAt) return "View";
+              if (quizAnswerSheet.startAt && !quizAnswerSheet.submittedAt)
+                return "Resume";
               return "Start";
             })()}
           </Button>
@@ -285,6 +310,7 @@ export function CourseLayoutQuiz({
 
   return (
     <TemplateGeneric
+      trueLoading={trueLoading}
       sideHeaderImage={{
         src: "/calculus.jpg",
       }}
@@ -294,7 +320,7 @@ export function CourseLayoutQuiz({
             {quizPhase === "submitted" && (
               <Paragraph
                 onClick={() => {
-                  router.back();
+                  setQuizPhase("onboarding");
                 }}
                 color="secondary-1"
               >

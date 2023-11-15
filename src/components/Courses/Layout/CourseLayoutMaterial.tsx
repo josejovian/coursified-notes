@@ -46,6 +46,7 @@ export function CourseLayoutMaterial({
   chapterAddress,
   trueLoading,
   handleCheckAnswer,
+  handleCleanUpStates,
 }: {
   addreses: AddressesType;
   chapterBaseAddress: any;
@@ -66,6 +67,7 @@ export function CourseLayoutMaterial({
     practiceId: string,
     updateCheckingState?: boolean
   ) => boolean;
+  handleCleanUpStates: () => void;
 }) {
   const { read } = addreses;
   const [answer, setAnswer] = stateAnswer;
@@ -129,20 +131,14 @@ export function CourseLayoutMaterial({
   const { id, sections } = courseDetailWithProgress;
   const { title, description } = courseDetailWithProgress;
 
-  const handleCleanUpStates = useCallback(() => {
-    setLoading(true);
-    setSolved(-1);
-    setSubmitted(false);
-    setAnswer({});
-    setAccept({});
-  }, [setAccept, setAnswer, setLoading, setSolved, setSubmitted]);
-
   const handlePreviousPage = useCallback(() => {
+    setLoading(true);
     handleCleanUpStates();
     if (page > 0) setPage((prev) => prev - 1);
-  }, [handleCleanUpStates, page, setPage]);
+  }, [handleCleanUpStates, page, setLoading, setPage]);
 
   const handleNextPage = useCallback(() => {
+    setLoading(true);
     handleCleanUpStates();
     if (solved !== 0) storeChapterProgress(read, true);
     if (page < maxPage - 1) {
@@ -160,6 +156,7 @@ export function CourseLayoutMaterial({
       }, 250);
     }
   }, [
+    setLoading,
     handleCleanUpStates,
     solved,
     read,

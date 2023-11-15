@@ -50,6 +50,7 @@ export function CourseLayoutSide({
     quizDetails &&
     quizQuestions &&
     quizAnswerSheet &&
+    quizPhase &&
     quizPhase !== "onboarding";
 
   return (

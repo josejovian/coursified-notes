@@ -24,19 +24,19 @@ export function useQuiz({
   answer,
   accept,
 }: useQuizProps) {
-  const stateQuizPhase = useState<QuizPhaseType>();
-
   const stateQuizAnswerSheet = useState<QuizAnswerSheetType>();
   const [quizAnswerSheet, setQuizAnswerSheet] = stateQuizAnswerSheet;
 
   const quizDetails = useMemo<QuizConfigType | undefined>(() => {
     const currentSection = courseDetail.sections[chapterAddress.sectionIndex!];
 
-    return {
-      ...currentSection.quiz,
-      title: currentSection.title,
-    } as any;
-  }, [chapterAddress.sectionIndex, courseDetail.sections]);
+    return chapterAddress.chapter === "quiz"
+      ? ({
+          ...currentSection.quiz,
+          title: currentSection.title,
+        } as any)
+      : undefined;
+  }, [chapterAddress, courseDetail.sections]);
 
   const quizQuestions = useRef<Record<string, QuizQuestionType>>({});
 
@@ -98,14 +98,7 @@ export function useQuiz({
         setQuizAnswerSheet,
       ] as StateType<QuizAnswerSheetType>,
       quizAnswers,
-      stateQuizPhase,
     }),
-    [
-      quizDetails,
-      quizAnswerSheet,
-      quizAnswers,
-      setQuizAnswerSheet,
-      stateQuizPhase,
-    ]
+    [quizDetails, quizAnswerSheet, quizAnswers, setQuizAnswerSheet]
   );
 }

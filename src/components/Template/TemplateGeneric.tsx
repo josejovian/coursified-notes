@@ -1,6 +1,6 @@
 import { ReactNode, useMemo, useRef, useState, useEffect } from "react";
 import clsx from "clsx";
-import { Button, Icon } from "../Basic";
+import { Button, Icon, Loader } from "../Basic";
 import { useScreen } from "@/src/hooks";
 import { MdChevronLeft } from "react-icons/md";
 import Image, { ImageProps } from "next/image";
@@ -11,6 +11,7 @@ interface GenericProps {
   sideHeaderImage?: ImageProps;
   sideElement: ReactNode;
   bottomElement?: ReactNode;
+  trueLoading?: boolean;
 }
 
 export function TemplateGeneric({
@@ -19,6 +20,7 @@ export function TemplateGeneric({
   sideHeaderElement,
   sideHeaderImage,
   sideElement,
+  trueLoading,
 }: GenericProps) {
   const headerWrapperRef = useRef<HTMLDivElement>(null);
   const textWrapperRef = useRef<HTMLDivElement>(null);
@@ -91,6 +93,15 @@ export function TemplateGeneric({
       id="CourseMaterial"
       className="flex relative w-full h-screen overflow-hidden"
     >
+      <div
+        className={clsx(
+          "fixed top-0 left-0 self-center w-full h-full justify-self-center mx-auto",
+          "flex justify-center items-center z-20 bg-white",
+          !trueLoading && "hidden"
+        )}
+      >
+        <Loader />
+      </div>
       <>
         <aside
           id="CourseMaterial_side"

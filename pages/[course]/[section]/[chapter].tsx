@@ -67,7 +67,7 @@ const CourseMaterial = ({
   const [page, setPage] = statePage;
   const stateSolved = useState(-1);
   const [solved, setSolved] = stateSolved;
-  const [maxPage, setMaxPage] = useState(0);
+  const [maxPage, setMaxPage] = stateMaxPage;
   const stateLoading = useState(true);
   const stateSwapChapters = useState(false);
   const stateSwapPages = useState(false);
@@ -90,6 +90,10 @@ const CourseMaterial = ({
     () => JSON.parse(rawCourseDetail) as CourseType,
     [rawCourseDetail]
   );
+
+  const stateQuizPhase = useState<QuizPhaseType>();
+  const [quizPhase, setQuizPhase] = stateQuizPhase;
+
   const { title, description } = courseDetail;
 
   const { id, sections } = courseDetail;
@@ -103,6 +107,10 @@ const CourseMaterial = ({
     }),
     [courseDetail, sectionData]
   );
+
+  useEffect(() => {
+    console.log(courseDetailWithProgress);
+  }, [courseDetailWithProgress]);
 
   const chapterContent = useMemo(() => markdown[page].code, [markdown, page]);
 
@@ -166,35 +174,43 @@ const CourseMaterial = ({
     [accept, practice, setChecking]
   );
 
-  useEffect(() => {
+  const handleSetMaxPage = useCallback(() => {
     console.log("Set Max Page: ", markdown.length);
     setMaxPage(markdown.length);
     setLoading(false);
     updateData();
-  }, [markdown, setLoading, updateData]);
+  }, [markdown.length, setLoading, setMaxPage, updateData]);
 
-  const handleCleanUpStates = useCallback(() => {
-    setLoading(true);
-    setSolved(-1);
-    setSubmitted(false);
-    setAnswer({});
-    setAccept({});
-  }, [setAccept, setAnswer, setLoading, setSolved, setSubmitted]);
+  useEffect(() => {
+    handleSetMaxPage();
+  }, [handleSetMaxPage, swapChapters]);
+
+  const handleCleanUpStates = useCallback(
+    (reason?: string) => {
+      console.log("CleanUpState: ", reason);
+      setSolved(-1);
+      setSubmitted(false);
+      setChecking(false);
+      setAnswer({});
+      setAccept({});
+    },
+    [setAccept, setAnswer, setChecking, setSolved, setSubmitted]
+  );
 
   const handleRouteChangeStart = useCallback(
     (next: string) => {
       if (next === `/${chapterAddress.course}`) return;
 
       setSwapChapters(true);
-      handleCleanUpStates();
+      handleCleanUpStates("Route Change Start");
     },
     [chapterAddress.course, handleCleanUpStates, setSwapChapters]
   );
 
   const handleRouteChangeComplete = useCallback(() => {
     setSwapChapters(false);
-    handleCleanUpStates();
-  }, [handleCleanUpStates, setSwapChapters]);
+    // handleCleanUpStates("Route Change End");
+  }, [setSwapChapters]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", handleRouteChangeStart);
@@ -211,6 +227,7 @@ const CourseMaterial = ({
         addreses={addresses}
         chapterAddress={chapterAddress}
         chapterContent={chapterContent}
+        courseDetail={courseDetail}
         courseDetailWithProgress={courseDetailWithProgress}
         handleCheckAnswer={handleCheckAnswer}
         stateAccept={stateAccept}
@@ -221,6 +238,7 @@ const CourseMaterial = ({
         stateSolved={stateSolved}
         stateSubmitted={stateSubmitted}
         stateSwapChapters={stateSwapChapters}
+        stateQuizPhase={stateQuizPhase}
         trueLoading={trueLoading}
       />
     ),
@@ -228,6 +246,7 @@ const CourseMaterial = ({
       addresses,
       chapterAddress,
       chapterContent,
+      courseDetail,
       courseDetailWithProgress,
       handleCheckAnswer,
       stateAccept,
@@ -235,6 +254,7 @@ const CourseMaterial = ({
       stateChecking,
       stateLoading,
       statePage,
+      stateQuizPhase,
       stateSolved,
       stateSubmitted,
       stateSwapChapters,
@@ -251,6 +271,7 @@ const CourseMaterial = ({
         chapterContent={chapterContent}
         courseDetailWithProgress={courseDetailWithProgress}
         handleCheckAnswer={handleCheckAnswer}
+        handleCleanUpStates={handleCleanUpStates}
         stateAccept={stateAccept}
         stateAnswer={stateAnswer}
         stateChecking={stateChecking}
@@ -269,6 +290,7 @@ const CourseMaterial = ({
       chapterContent,
       courseDetailWithProgress,
       handleCheckAnswer,
+      handleCleanUpStates,
       stateAccept,
       stateAnswer,
       stateChecking,

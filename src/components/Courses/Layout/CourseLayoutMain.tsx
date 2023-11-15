@@ -187,11 +187,13 @@ export function CourseLayoutMain({
 
   useEffect(() => {
     handleGetExistingAnswerIfAny();
-  }, [accept, handleGetExistingAnswerIfAny]);
+  }, [loading, handleGetExistingAnswerIfAny]);
 
   const handlePrepareNewPage = useCallback(() => {
     if (loading) {
       graphRef.current = {};
+      inputRef.current = {};
+
       handleRemoveAllCustomComponents();
       handleConvertCodeToComponents();
       setLoading(false);
@@ -208,9 +210,10 @@ export function CourseLayoutMain({
   }, [page, handlePrepareNewPage]);
 
   const handleRouteChangeStart = useCallback(() => {
+    setLoading(true);
     onChapterChange && onChapterChange();
     handleRemoveAllCustomComponents();
-  }, [handleRemoveAllCustomComponents, onChapterChange]);
+  }, [handleRemoveAllCustomComponents, onChapterChange, setLoading]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", handleRouteChangeStart);
