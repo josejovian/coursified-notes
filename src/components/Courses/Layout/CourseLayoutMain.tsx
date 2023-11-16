@@ -75,7 +75,6 @@ export function CourseLayoutMain({
     handleOnePairMatch,
     handleRenderAnswerBoxes,
     handleRenderMatch,
-    handleRenderOptions,
     handleConvertCodeToComponents,
     handleRemoveAllCustomComponents,
   } = useCustom({
@@ -110,23 +109,6 @@ export function CourseLayoutMain({
   useEffect(() => {
     handleOnePairMatch();
   }, [active, handleOnePairMatch]);
-
-  useEffect(() => {
-    handleRenderAnswerBoxes();
-    handleRenderMatch();
-    handleRenderOptions();
-  }, [
-    page,
-    active,
-    accept,
-    answer,
-    solved,
-    submitted,
-    userAnswerStatus,
-    handleRenderAnswerBoxes,
-    handleRenderMatch,
-    handleRenderOptions,
-  ]);
 
   const handleRemoveUndefinedAnswers = useCallback(() => {
     const entries = Object.entries(answer);
@@ -230,6 +212,23 @@ export function CourseLayoutMain({
 
   const handleConvertPractice = useCallback(
     ({ id, answer: answerKey, placeholder, indent }: any) => {
+      if (!inputRef.current[id]) {
+        inputRef.current[id] = true;
+
+        let answerKeys = {};
+
+        answerKeys = {
+          ...answerKeys,
+          [id]: answerKey,
+        };
+
+        setSolved(0);
+        setAccept((prev) => ({
+          ...prev,
+          ...answerKeys,
+        }));
+      }
+
       return (
         <Input
           className={clsx(indent && "ml-14")}
@@ -254,24 +253,7 @@ export function CourseLayoutMain({
               : undefined
           }
           mounted={inputRef.current[id]}
-          onMount={() => {
-            if (inputRef.current[id]) return;
-
-            inputRef.current[id] = true;
-
-            let answerKeys = {};
-
-            answerKeys = {
-              ...answerKeys,
-              [id]: answerKey,
-            };
-
-            setSolved(0);
-            setAccept((prev) => ({
-              ...prev,
-              ...answerKeys,
-            }));
-          }}
+          onMount={() => {}}
           placeholder={placeholder}
           helperText={
             inputIsDisabled && userAnswerStatus(id) === "error" ? (
@@ -296,28 +278,124 @@ export function CourseLayoutMain({
       userAnswerStatus,
     ]
   );
+  const handleToggleOption = useCallback(
+    (questionId: string, choiceId: number) => {
+      if (solved) return;
 
-  const handleRenderOption = useCallback(({ id, content, truth }: any) => {
-    let existingCount = optionCount.current[id] ?? 0;
-    let existingDict = optionDict.current[id] ?? [];
-    let index = existingDict.findIndex((value) => value === content);
+      setAnswer((prev) => {
+        const array = prev[questionId] ?? "";
+        const newArray = array.split("");
 
-    if (index === -1) {
-      index = existingDict.length;
-      existingDict.push(content);
-      optionCount.current[id] = existingCount + 1;
-      optionDict.current[id] = existingDict;
-    }
+        return {
+          ...prev,
+          [questionId]: prev[questionId]
+            ? newArray
+                .map((v, idx) => {
+                  if (idx !== choiceId) {
+                    return v;
+                  }
+                  return v === "1" ? "0" : "1";
+                })
+                .join("")
+            : prev[questionId],
+        };
+      });
+    },
+    [setAnswer, solved]
+  );
 
-    const identifier = `${id}-${index}`;
+  const handleRenderOption = useCallback(
+    ({ practiceId, choiceId, content, value }: any) => {
+      const identifier = `Option-${practiceId}-${choiceId}`;
+      const parsed = content.replaceAll("\\{", "{").replaceAll("\\}", "}");
+      const disabled = Boolean(solved || inputIsDisabled);
 
-    return (
-      <div
-        id={identifier}
-        className="CustomMaterialInvoker OptionElm"
-      >{`[option]@${id}@${index}@${content}@${truth ? 1 : 0}`}</div>
-    );
-  }, []);
+      const correct = Boolean(
+        answer[practiceId] &&
+          accept[practiceId] &&
+          answer[practiceId]?.at(choiceId) === accept[practiceId].at(choiceId)
+      );
+
+      console.log("Rerender!");
+
+      return (
+        <Option
+          id={identifier}
+          content={parsed}
+          selected={Boolean(
+            answer[practiceId] && answer[practiceId]?.at(choiceId) === "1"
+          )}
+          onSelect={() => {
+            if (disabled) return;
+
+            handleToggleOption(practiceId, choiceId);
+          }}
+          correct={correct}
+          disabled={disabled}
+        />
+      );
+    },
+    [accept, answer, handleToggleOption, inputIsDisabled, solved]
+  );
+
+  const handleRenderOptionNew = useCallback(
+    ({ id, options }: { id: string; options: [number, string][] }) => {
+      if (!accept[id]) {
+        setAccept((prev) => ({
+          ...prev,
+          [id]: options.map(([truth]) => truth).join(""),
+        }));
+      }
+
+      if (!answer[id]) {
+        setAnswer((prev) => ({
+          ...prev,
+          [id]: options.map(() => 0).join(""),
+        }));
+      }
+
+      return (
+        <>
+          {options.map(([truth, option], idx) => {
+            const identifier = `Option-${id}-${idx}`;
+            const parsed = option.replaceAll("\\{", "{").replaceAll("\\}", "}");
+            const disabled = Boolean(solved || inputIsDisabled);
+
+            const correct = Boolean(
+              answer[id] &&
+                accept[id] &&
+                answer[id]?.at(idx) === accept[id].at(idx)
+            );
+
+            return (
+              <Option
+                key={identifier}
+                id={identifier}
+                content={parsed}
+                selected={Boolean(answer[id] && answer[id]?.at(idx) === "1")}
+                onSelect={() => {
+                  if (disabled) return;
+
+                  handleToggleOption(id, idx);
+                }}
+                correct={correct}
+                disabled={disabled}
+              />
+            );
+          })}
+        </>
+      );
+    },
+    [
+      accept,
+      answer,
+      handleToggleOption,
+      inputIsDisabled,
+      setAccept,
+      setAnswer,
+      solved,
+    ]
+  );
 
   const handleRenderQuizQuestionHeading = useCallback(
     ({ id, ids, weight = "10" }: any) => {
@@ -409,7 +487,8 @@ export function CourseLayoutMain({
               className="CustomMaterialInvoker hidden"
             >{`[match]@${id}@${left}@${right}`}</div>
           ),
-          Option: handleRenderOption,
+          Option: () => <></>,
+          Options: handleRenderOptionNew,
           Question: handleRenderQuizQuestionHeading,
         }}
       />
@@ -417,7 +496,7 @@ export function CourseLayoutMain({
     [
       Content,
       handleConvertPractice,
-      handleRenderOption,
+      handleRenderOptionNew,
       handleRenderQuizQuestionHeading,
       solved,
     ]

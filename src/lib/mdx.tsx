@@ -8,6 +8,8 @@ import {
   SectionType,
 } from "../type/Course";
 import { bundleMDX } from "mdx-bundler";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 const { readdirSync, readFileSync } = require("fs");
 const { join } = require("path");
@@ -80,21 +82,7 @@ export async function readChapterMd(
 ) {
   const raw = await readChapter(course, section, chapter);
 
-  const split = raw
-    .replace(/\{/g, "\\{")
-    .replace(/\}/g, "\\}")
-    .replace(
-      /\$\$(([^\$])*)\$\$/g,
-      (match: string, p1: string, offset: number, str: string, grp: string) => {
-        const result = p1
-          .replace(/\\\\/g, `\\\\\\\\`)
-          .replace(/(\r\n|\n|\r)/gm, " ");
-
-        return `<TeX block>${result}</TeX>`;
-      }
-    )
-    .replace(/\$(([^\$])*)\$/g, "<TeX>$1</TeX>")
-    .split("===");
+  const split = raw.split("===");
 
   const results = await Promise.all(
     split.map(async (page: string) => {
@@ -102,8 +90,15 @@ export async function readChapterMd(
         source: page,
 
         mdxOptions(options, frontmatter) {
-          options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkGfm];
-          options.rehypePlugins = [...(options.rehypePlugins ?? [])];
+          options.remarkPlugins = [
+            ...(options.remarkPlugins ?? []),
+            remarkGfm,
+            remarkMath,
+          ];
+          options.rehypePlugins = [
+            ...(options.rehypePlugins ?? []),
+            rehypeKatex,
+          ];
 
           return options;
         },

@@ -67,21 +67,15 @@ Find the $c$ value such that $f$ is continuous on $x = 0$.
 $$f(x)=-x^2+100\sin{x}+\csc^2{x}$$
 At which following interval(s), if any, is f continuous on?
 
-<Option id="input8" content="#-\infty \lt x\lt \infty#" />
-<Option id="input8" content="#-\infty\lt x \lt0# and #0\lt x \lt\infty#." />
-<Option
-  id="input8"
-  content="#-\infty \lt x \lt \infty# , where #x\neq n\pi# and n is an integer."
-  truth
-/>
-<Option
-  id="input8"
-  content="#-\infty \lt x \lt \infty# , where #x\neq n\frac{\pi}{2}# and n is an integer."
-/>
-<Option
-  id="input8"
-  content="#-\infty \lt x \lt \infty# , where #x\neq n\frac{\pi}{4}# and n is an integer."
-/>
+export const q8_options = [
+	[0, "#-\\infty \\lt x\\lt \\infty#"],
+	[0, "#-\\infty\\lt x \\lt0# and #0\\lt x \\lt\\infty#."],
+	[1, "#-\\infty \\lt x \\lt \\infty# , where #x\\neq n\\pi# and n is an integer."],
+	[0, "#-\\infty \\lt x \\lt \\infty# , where #x\\neq n\\frac{\\pi}{2}# and n is an integer."],
+	[0, "#-\\infty \\lt x \\lt \\infty# , where #x\\neq n\\frac{\\pi}{4}# and n is an integer."]
+];
+
+<Options id="input8" options={q8_options} />
 
 <hr />
 
@@ -94,49 +88,22 @@ At which following interval(s), if any, is f continuous on?
 
 The function $f(x)$ is shown in the above graph. Select all the TRUE statements about $f$.
 
-<Option id="input9" content="The given function is defined at #x=3#." truth />
-<Option
-  id="input9"
-  content="The given function is continuous at #x=3#."
-  truth
-/>
-<Option
-  id="input9"
-  content="The given function has removable discontinuity #x=3#."
-/>
-<Option
-  id="input9"
-  content="The given function has jump discontinuity #x=3#."
-/>
-<Option
-  id="input9"
-  content="The given function has infinite discontinuity #x=3#."
-/>
-<Option
-  id="input9"
-  content="The limit of the given function, as #x# approaches #3#, exists."
-  truth
-/>
-<Option id="input9" content="The given function is defined at #x=1#." />
-<Option id="input9" content="The given function is continuous at #x=1#." />
-<Option
-  id="input9"
-  content="The given function has removable discontinuity #x=1#."
-  truth
-/>
-<Option
-  id="input9"
-  content="The given function has jump discontinuity #x=1#."
-/>
-<Option
-  id="input9"
-  content="The given function has infinite discontinuity #x=1#."
-/>
-<Option
-  id="input9"
-  content="The limit of the given function, as #x# approaches #1#, exists."
-  truth
-/>
+export const q9_options = [
+	[0, "The given function is defined at #x=3#."],
+	[0, "The given function is continuous at #x=3#."],
+	[1, "The given function has removable discontinuity #x=3#."],
+	[0, "The given function has jump discontinuity #x=3#."],
+	[0, "The given function has infinite discontinuity #x=3#."],
+	[1, "The limit of the given function, as #x# approaches #3#, exists."],
+	[0, "The given function is defined at #x=1#."],
+	[0, "The given function is continuous at #x=1#."],
+	[1, "The given function has removable discontinuity #x=1#."],
+	[0, "The given function has jump discontinuity #x=1#."],
+	[0, "The given function has infinite discontinuity #x=1#."],
+	[1, "The limit of the given function, as #x# approaches #1#, exists."]
+];
+
+<Options id="input9" options={q9_options} />
 
 <hr />
 
@@ -145,21 +112,12 @@ The function $f(x)$ is shown in the above graph. Select all the TRUE statements 
 $$f(x)=\ln{\sin{x}}$$
 At which following interval(s), if any, is f continuous on?
 
-<Option id="input10" content="#0\lt x\lt\infty#" />
-<Option
-  id="input10"
-  content="#n\pi\lt x\lt(n+1)\pi# , where n is an integer."
-/>
-<Option
-  id="input10"
-  content="#0\lt x\lt\infty# , where #x\neq n\pi# and n is an integer."
-/>
-<Option
-  id="input10"
-  content="#2n\pi\lt x\lt(2n+1)\pi# , where n is an integer."
-  truth
-/>
-<Option
-  id="input10"
-  content=" #0\lt x\lt\infty# ,  where #x\neq 2n\pi# and n is an integer."
-/>
+export const q10_options = [
+	[0, "#0\\lt x\\lt\\infty#"],
+	[0, "#n\\pi\\lt x\\lt(n+1)\\pi# , where n is an integer."],
+	[0, "#0\\lt x\\lt\\infty# , where #x\\neq n\\pi# and n is an integer."],
+	[1, "#2n\\pi\\lt x\\lt(2n+1)\\pi# , where n is an integer."],
+	[0, "#0\\lt x\\lt\\infty# ,  where #x\\neq 2n\\pi# and n is an integer."],
+];
+
+<Options id="input10" options={q10_options} />

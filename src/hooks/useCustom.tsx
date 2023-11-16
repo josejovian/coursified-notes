@@ -338,8 +338,6 @@ export function useCustom({
           answer[practiceId]?.at(choiceId) === accept[practiceId].at(choiceId)
       );
 
-      console.log(answer);
-
       return (
         <Option
           id={identifier}
