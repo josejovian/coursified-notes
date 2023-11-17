@@ -30,9 +30,9 @@ import { getQuizAnswerSheet, storeQuizAnswerSheet } from "@/src/utils";
 
 export function CourseLayoutQuiz({
   addreses,
+  answerRef,
+  acceptRef,
   chapterContent,
-  stateAccept,
-  stateAnswer,
   stateChecking,
   stateLoading,
   stateSolved,
@@ -52,8 +52,8 @@ export function CourseLayoutQuiz({
   addreses: AddressesType;
   chapterContent: any;
   stateSolved: StateType<number>;
-  stateAnswer: StateType<Partial<AnswerType>>;
-  stateAccept: StateType<AnswerType>;
+  answerRef: MutableRefObject<Partial<AnswerType>>;
+  acceptRef: MutableRefObject<AnswerType>;
   stateLoading: StateType<boolean>;
   stateChecking: StateType<boolean>;
   stateSubmitted: StateType<boolean>;
@@ -73,14 +73,11 @@ export function CourseLayoutQuiz({
     updateCheckingState?: boolean
   ) => boolean;
 }) {
-  useEffect(() => {
-    console.log("Chapter Address", chapterAddress);
-  }, [chapterAddress]);
+  const answer = answerRef.current;
+  const accept = acceptRef.current;
 
-  const [answer, setAnswer] = stateAnswer;
   const [submitted, setSubmitted] = stateSubmitted;
   const setSwapChapters = stateSwapChapters[1];
-  const accept = stateAccept[0];
   const { stateQuizAnswerSheet, quizDetails, quizQuestions } = useQuiz({
     chapterAddress,
     courseDetail,
@@ -148,10 +145,10 @@ export function CourseLayoutQuiz({
       if (exists && existing.submittedAt) {
         setQuizAnswerSheet(existing);
         setSubmitted(true);
-        setAnswer(existing.answers as any);
+        answerRef.current = existing.answers as any;
       } else if (exists && !existing.submittedAt) {
         setQuizAnswerSheet(existing);
-        setAnswer(existing.answers as any);
+        answerRef.current = existing.answers as any;
         addToast({
           phrase: "courseQuizContinueFromBackUp",
         });
@@ -163,10 +160,10 @@ export function CourseLayoutQuiz({
     }
   }, [
     addToast,
+    answerRef,
     chapterAddress,
     quizDetails,
     quizPhase,
-    setAnswer,
     setLoading,
     setQuizAnswerSheet,
     setSubmitted,
@@ -196,8 +193,8 @@ export function CourseLayoutQuiz({
         <CourseLayoutMain
           addreses={addreses}
           markdown={chapterContent}
-          stateAccept={stateAccept}
-          stateAnswer={stateAnswer}
+          acceptRef={acceptRef}
+          answerRef={answerRef}
           stateLoading={stateLoading}
           trueLoading={trueLoading}
           stateSolved={stateSolved}
@@ -216,8 +213,8 @@ export function CourseLayoutQuiz({
       trueLoading,
       addreses,
       chapterContent,
-      stateAccept,
-      stateAnswer,
+      acceptRef,
+      answerRef,
       stateLoading,
       stateSolved,
       stateSubmitted,

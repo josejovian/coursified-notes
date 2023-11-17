@@ -27,8 +27,8 @@ interface CourseMaterialContentProps {
   markdown: any;
   addreses: AddressesType;
   stateSolved: StateType<number>;
-  stateAnswer: StateType<Partial<AnswerType>>;
-  stateAccept: StateType<AnswerType>;
+  answerRef: MutableRefObject<Partial<AnswerType>>;
+  acceptRef: MutableRefObject<AnswerType>;
   stateLoading: StateType<boolean>;
   stateChecking: StateType<boolean>;
   stateSubmitted: StateType<boolean>;
@@ -43,10 +43,10 @@ interface CourseMaterialContentProps {
 export function CourseLayoutMain({
   markdown,
   addreses,
+  acceptRef,
+  answerRef,
   stateChecking,
   stateSolved,
-  stateAnswer,
-  stateAccept,
   stateLoading,
   stateSubmitted,
   statePage,
@@ -59,8 +59,6 @@ export function CourseLayoutMain({
   const router = useRouter();
   const checking = stateChecking[0];
   const [loading, setLoading] = stateLoading;
-  const [answer, setAnswer] = stateAnswer;
-  const [accept, setAccept] = stateAccept;
   const [solved, setSolved] = stateSolved;
   const [submitted, setSubmmited] = stateSubmitted;
   const stateActive = useState<any>(null);
@@ -70,24 +68,8 @@ export function CourseLayoutMain({
   const optionCount = useRef<Record<string, number>>({});
   const optionDict = useRef<Record<string, string[]>>({});
   const page = statePage[0];
-
-  const {
-    handleOnePairMatch,
-    handleRenderAnswerBoxes,
-    handleRenderMatch,
-    handleConvertCodeToComponents,
-    handleRemoveAllCustomComponents,
-  } = useCustom({
-    handleCheckAnswer,
-    stateAccept,
-    stateActive,
-    stateAnswer,
-    stateLoading,
-    stateSolved,
-    stateSubmitted,
-    inputRef,
-    inputIsDisabled,
-  });
+  const answer = answerRef.current;
+  const accept = acceptRef.current;
 
   const { practice } = addreses;
 
@@ -106,10 +88,6 @@ export function CourseLayoutMain({
     [answer, handleCheckAnswer]
   );
 
-  useEffect(() => {
-    handleOnePairMatch();
-  }, [active, handleOnePairMatch]);
-
   const handleRemoveUndefinedAnswers = useCallback(() => {
     const entries = Object.entries(answer);
     const newAnswer: { [key: string]: string } = {};
@@ -122,9 +100,9 @@ export function CourseLayoutMain({
       }
     });
     if (different) {
-      setAnswer(newAnswer);
+      answerRef.current = newAnswer;
     }
-  }, [answer, setAnswer]);
+  }, [answer, answerRef]);
 
   useEffect(() => {
     handleRemoveUndefinedAnswers();
@@ -135,6 +113,8 @@ export function CourseLayoutMain({
     const practiceIds = Object.keys(accept);
 
     if (practiceIds.length === 0) return;
+
+    console.log("Eixisting Answers: ", existingAnswers);
 
     let currentAnswers = {};
     let allAnswersAreCorrect = true;
@@ -161,11 +141,11 @@ export function CourseLayoutMain({
       Object.keys(currentAnswers).length === practiceIds.length &&
       practiceIds.length > 0
     ) {
-      setAnswer(currentAnswers);
+      answerRef.current = accept;
       setSubmmited(true);
       setSolved(1);
     }
-  }, [practice, accept, handleCheckAnswer, setAnswer, setSubmmited, setSolved]);
+  }, [practice, accept, handleCheckAnswer, answerRef, setSubmmited, setSolved]);
 
   useEffect(() => {
     handleGetExistingAnswerIfAny();
@@ -176,16 +156,9 @@ export function CourseLayoutMain({
       graphRef.current = {};
       inputRef.current = {};
 
-      handleRemoveAllCustomComponents();
-      handleConvertCodeToComponents();
       setLoading(false);
     }
-  }, [
-    handleConvertCodeToComponents,
-    handleRemoveAllCustomComponents,
-    loading,
-    setLoading,
-  ]);
+  }, [loading, setLoading]);
 
   useEffect(() => {
     handlePrepareNewPage();
@@ -194,8 +167,7 @@ export function CourseLayoutMain({
   const handleRouteChangeStart = useCallback(() => {
     setLoading(true);
     onChapterChange && onChapterChange();
-    handleRemoveAllCustomComponents();
-  }, [handleRemoveAllCustomComponents, onChapterChange, setLoading]);
+  }, [onChapterChange, setLoading]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", handleRouteChangeStart);
@@ -205,7 +177,6 @@ export function CourseLayoutMain({
   }, [
     onChapterChange,
     handlePrepareNewPage,
-    handleRemoveAllCustomComponents,
     router.events,
     handleRouteChangeStart,
   ]);
@@ -223,10 +194,10 @@ export function CourseLayoutMain({
         };
 
         setSolved(0);
-        setAccept((prev) => ({
-          ...prev,
+        acceptRef.current = {
+          ...acceptRef.current,
           ...answerKeys,
-        }));
+        };
       }
 
       return (
@@ -234,16 +205,16 @@ export function CourseLayoutMain({
           className={clsx(indent && "ml-14")}
           key={`InputBox-${id}`}
           id={`InputBox-${id}`}
-          onBlur={(e) => {
-            const { value } = e.target;
+          onBlur={() => {
+            setSubmmited(false);
+          }}
+          onChange={(e) => {
+            const { value } = e.target as HTMLInputElement;
 
-            if (answer[id] !== value) {
-              setSubmmited(false);
-              setAnswer((prev) => ({
-                ...prev,
-                [id]: value === "" ? undefined : value,
-              }));
-            }
+            answerRef.current = {
+              ...answerRef.current,
+              [id]: value === "" ? undefined : value,
+            };
           }}
           defaultValue={answer[id]}
           disabled={solved === 1 || inputIsDisabled}
@@ -267,10 +238,10 @@ export function CourseLayoutMain({
     },
     [
       accept,
+      acceptRef,
       answer,
+      answerRef,
       inputIsDisabled,
-      setAccept,
-      setAnswer,
       setSolved,
       setSubmmited,
       solved,
@@ -282,76 +253,39 @@ export function CourseLayoutMain({
     (questionId: string, choiceId: number) => {
       if (solved) return;
 
-      setAnswer((prev) => {
-        const array = prev[questionId] ?? "";
-        const newArray = array.split("");
+      const prev = answerRef.current;
+      const array = prev[questionId] ?? "";
+      const newArray = array.split("");
 
-        return {
-          ...prev,
-          [questionId]: prev[questionId]
-            ? newArray
-                .map((v, idx) => {
-                  if (idx !== choiceId) {
-                    return v;
-                  }
-                  return v === "1" ? "0" : "1";
-                })
-                .join("")
-            : prev[questionId],
-        };
-      });
+      answerRef.current = {
+        ...prev,
+        [questionId]: prev[questionId]
+          ? newArray
+              .map((v, idx) => {
+                if (idx !== choiceId) {
+                  return v;
+                }
+                return v === "1" ? "0" : "1";
+              })
+              .join("")
+          : prev[questionId],
+      };
     },
-    [setAnswer, solved]
-  );
-
-  const handleRenderOption = useCallback(
-    ({ practiceId, choiceId, content, value }: any) => {
-      const identifier = `Option-${practiceId}-${choiceId}`;
-      const parsed = content.replaceAll("\\{", "{").replaceAll("\\}", "}");
-      const disabled = Boolean(solved || inputIsDisabled);
-
-      const correct = Boolean(
-        answer[practiceId] &&
-          accept[practiceId] &&
-          answer[practiceId]?.at(choiceId) === accept[practiceId].at(choiceId)
-      );
-
-      console.log("Rerender!");
-
-      return (
-        <Option
-          id={identifier}
-          content={parsed}
-          selected={Boolean(
-            answer[practiceId] && answer[practiceId]?.at(choiceId) === "1"
-          )}
-          onSelect={() => {
-            if (disabled) return;
-
-            handleToggleOption(practiceId, choiceId);
-          }}
-          correct={correct}
-          disabled={disabled}
-        />
-      );
-    },
-    [accept, answer, handleToggleOption, inputIsDisabled, solved]
+    [answerRef, solved]
   );
 
   const handleRenderOptionNew = useCallback(
     ({ id, options }: { id: string; options: [number, string][] }) => {
-      if (!accept[id]) {
-        setAccept((prev) => ({
-          ...prev,
-          [id]: options.map(([truth]) => truth).join(""),
-        }));
-      }
+      acceptRef.current = {
+        ...acceptRef.current,
+        [id]: options.map(([truth]) => truth).join(""),
+      };
 
       if (!answer[id]) {
-        setAnswer((prev) => ({
-          ...prev,
+        answerRef.current = {
+          ...answerRef.current,
           [id]: options.map(() => 0).join(""),
-        }));
+        };
       }
 
       return (
@@ -388,11 +322,11 @@ export function CourseLayoutMain({
     },
     [
       accept,
+      acceptRef,
       answer,
+      answerRef,
       handleToggleOption,
       inputIsDisabled,
-      setAccept,
-      setAnswer,
       solved,
     ]
   );

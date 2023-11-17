@@ -60,17 +60,14 @@ export function Option({
     ReactDOM.render(renderWrapper(content), contentRef.current);
   }, [content, renderWrapper]);
 
-  useEffect(() => {
-    handleRenderMarkdown();
-  }, [handleRenderMarkdown]);
-
   return (
+    // <input type="checkbox" checked="checked"></input>
     <div
       role="option"
       aria-label="option"
       aria-selected={selected}
       className={clsx(
-        "flex align-self-end items-center",
+        "relative flex align-self-end items-center",
         "w-full 2xl:w-1/2 px-8 py-2 leading-7",
         "transition-colors rounded-sm shadow-sm border",
         disabled
@@ -115,7 +112,7 @@ export function Option({
           IconComponent={MdCheck}
         />
       </div>
-      <span ref={contentRef} />
+      <span ref={contentRef}>{renderWrapper(content)}</span>
     </div>
   );
 }

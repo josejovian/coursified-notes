@@ -74,10 +74,10 @@ const CourseMaterial = ({
   const swapPages = stateSwapPages[0];
   const [loading, setLoading] = stateLoading;
   const [swapChapters, setSwapChapters] = stateSwapChapters;
-  const stateAnswer = useState<Partial<AnswerType>>({});
-  const [answer, setAnswer] = stateAnswer;
-  const stateAccept = useState<AnswerType>({});
-  const [accept, setAccept] = stateAccept;
+  const answerRef = useRef<Partial<AnswerType>>({});
+  const acceptRef = useRef<AnswerType>({});
+  const answer = answerRef.current;
+  const accept = acceptRef.current;
   const stateSubmitted = useState(false);
   const stateChecking = useState(false);
   const [checking, setChecking] = stateChecking;
@@ -188,13 +188,13 @@ const CourseMaterial = ({
   const handleCleanUpStates = useCallback(
     (reason?: string) => {
       console.log("CleanUpState: ", reason);
+      answerRef.current = {};
+      acceptRef.current = {};
       setSolved(-1);
       setSubmitted(false);
       setChecking(false);
-      setAnswer({});
-      setAccept({});
     },
-    [setAccept, setAnswer, setChecking, setSolved, setSubmitted]
+    [setChecking, setSolved, setSubmitted]
   );
 
   const handleRouteChangeStart = useCallback(
@@ -230,8 +230,8 @@ const CourseMaterial = ({
         courseDetail={courseDetail}
         courseDetailWithProgress={courseDetailWithProgress}
         handleCheckAnswer={handleCheckAnswer}
-        stateAccept={stateAccept}
-        stateAnswer={stateAnswer}
+        acceptRef={acceptRef}
+        answerRef={answerRef}
         stateChecking={stateChecking}
         stateLoading={stateLoading}
         statePage={statePage}
@@ -249,8 +249,6 @@ const CourseMaterial = ({
       courseDetail,
       courseDetailWithProgress,
       handleCheckAnswer,
-      stateAccept,
-      stateAnswer,
       stateChecking,
       stateLoading,
       statePage,
@@ -272,8 +270,8 @@ const CourseMaterial = ({
         courseDetailWithProgress={courseDetailWithProgress}
         handleCheckAnswer={handleCheckAnswer}
         handleCleanUpStates={handleCleanUpStates}
-        stateAccept={stateAccept}
-        stateAnswer={stateAnswer}
+        acceptRef={acceptRef}
+        answerRef={answerRef}
         stateChecking={stateChecking}
         stateLoading={stateLoading}
         statePage={statePage}
@@ -291,8 +289,6 @@ const CourseMaterial = ({
       courseDetailWithProgress,
       handleCheckAnswer,
       handleCleanUpStates,
-      stateAccept,
-      stateAnswer,
       stateChecking,
       stateLoading,
       stateMaxPage,

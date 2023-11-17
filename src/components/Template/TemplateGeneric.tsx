@@ -106,7 +106,7 @@ export function TemplateGeneric({
         <aside
           id="CourseMaterial_side"
           className={clsx(
-            "border-r border-zinc-400 flex flex-col flex-grow overflow-hidden h-full bg-white z-10",
+            "border-r border-zinc-400 flex flex-col flex-grow h-full bg-white z-10",
             width >= 1024
               ? "translate-x-0 !duration-0"
               : [
@@ -118,7 +118,7 @@ export function TemplateGeneric({
           )}
         >
           {renderSideHeader}
-          {sideElement}
+          <div className="overflow-y-scroll">{sideElement}</div>
         </aside>
         {renderSideToggleButton}
       </>

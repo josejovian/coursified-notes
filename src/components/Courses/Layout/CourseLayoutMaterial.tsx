@@ -34,8 +34,8 @@ export function CourseLayoutMaterial({
   addreses,
   chapterContent,
   chapterBaseAddress,
-  stateAccept,
-  stateAnswer,
+  acceptRef,
+  answerRef,
   stateChecking,
   stateLoading,
   stateSolved,
@@ -52,8 +52,8 @@ export function CourseLayoutMaterial({
   chapterBaseAddress: any;
   chapterContent: any;
   stateSolved: StateType<number>;
-  stateAnswer: StateType<Partial<AnswerType>>;
-  stateAccept: StateType<AnswerType>;
+  answerRef: MutableRefObject<Partial<AnswerType>>;
+  acceptRef: MutableRefObject<AnswerType>;
   stateLoading: StateType<boolean>;
   stateChecking: StateType<boolean>;
   stateSubmitted: StateType<boolean>;
@@ -70,8 +70,6 @@ export function CourseLayoutMaterial({
   handleCleanUpStates: () => void;
 }) {
   const { read } = addreses;
-  const [answer, setAnswer] = stateAnswer;
-  const [accept, setAccept] = stateAccept;
   const setSubmitted = stateSubmitted[1];
   const setSolved = stateSolved[1];
   const setLoading = stateLoading[1];
@@ -79,6 +77,8 @@ export function CourseLayoutMaterial({
   const [checking, setChecking] = stateChecking;
   const [page, setPage] = statePage;
   const [maxPage, setMaxPage] = stateMaxPage;
+  const answer = answerRef.current;
+  const accept = acceptRef.current;
 
   const { addToast } = useToast();
   const router = useRouter();
@@ -173,8 +173,8 @@ export function CourseLayoutMaterial({
       <CourseLayoutMain
         addreses={addreses}
         markdown={chapterContent}
-        stateAccept={stateAccept}
-        stateAnswer={stateAnswer}
+        acceptRef={acceptRef}
+        answerRef={answerRef}
         stateLoading={stateLoading}
         trueLoading={trueLoading}
         stateSolved={stateSolved}
@@ -186,12 +186,12 @@ export function CourseLayoutMaterial({
       />
     ),
     [
-      trueLoading,
       addreses,
       chapterContent,
-      stateAccept,
-      stateAnswer,
+      acceptRef,
+      answerRef,
       stateLoading,
+      trueLoading,
       stateSolved,
       stateSubmitted,
       stateChecking,
@@ -229,11 +229,9 @@ export function CourseLayoutMaterial({
               if (
                 Object.values(answer).length === Object.values(accept).length
               ) {
-                const correct = !Object.entries(answer).some(
-                  ([key, answer]) => {
-                    return !handleCheckAnswer(answer ?? "", key);
-                  }
-                );
+                const correct = !Object.entries(answer).some(([key, ans]) => {
+                  return !handleCheckAnswer(ans ?? "", key);
+                });
 
                 if (correct) {
                   setSolved(1);

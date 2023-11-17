@@ -43,7 +43,7 @@ export function CourseJourney({
   return (
     <div
       className={clsx(
-        "border-zinc-400 overflow-y-scroll",
+        "border-zinc-400",
         className,
         !noBorder && "border-t border-x"
       )}
