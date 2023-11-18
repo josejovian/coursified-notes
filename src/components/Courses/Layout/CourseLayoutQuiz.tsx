@@ -4,6 +4,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useRef,
 } from "react";
 import {
   AddressesType,
@@ -32,6 +33,7 @@ export function CourseLayoutQuiz({
   addreses,
   answerRef,
   acceptRef,
+  mountedRef,
   chapterContent,
   stateChecking,
   stateLoading,
@@ -39,6 +41,8 @@ export function CourseLayoutQuiz({
   stateSubmitted,
   stateSwapChapters,
   statePage,
+  stateProblemCount,
+  stateLastUpdate,
   courseDetail,
   courseDetailWithProgress,
   chapterAddress,
@@ -54,12 +58,15 @@ export function CourseLayoutQuiz({
   stateSolved: StateType<number>;
   answerRef: MutableRefObject<Partial<AnswerType>>;
   acceptRef: MutableRefObject<AnswerType>;
+  mountedRef: MutableRefObject<Record<string, boolean>>;
   stateLoading: StateType<boolean>;
   stateChecking: StateType<boolean>;
   stateSubmitted: StateType<boolean>;
   stateSwapChapters: StateType<boolean>;
   stateQuizPhase: StateType<QuizPhaseType>;
   statePage: StateType<number>;
+  stateProblemCount: StateType<number>;
+  stateLastUpdate: StateType<number>;
   // stateQuizAnswerSheet: StateType<QuizAnswerSheetType>;
   // quizQuestions: MutableRefObject<Record<string, QuizQuestionType>>;
   // quizDetails: QuizConfigType;
@@ -75,19 +82,20 @@ export function CourseLayoutQuiz({
 }) {
   const answer = answerRef.current;
   const accept = acceptRef.current;
-
   const [submitted, setSubmitted] = stateSubmitted;
   const setSwapChapters = stateSwapChapters[1];
-  const { stateQuizAnswerSheet, quizDetails, quizQuestions } = useQuiz({
+  const { quizAnswerSheetRef, quizDetails, quizQuestions } = useQuiz({
     chapterAddress,
     courseDetail,
     answer,
     accept,
   });
+  const quizQuestionsRef = useRef<Record<string, QuizQuestionType>>({});
+  const quizAnswerSheet = quizAnswerSheetRef.current;
   const [quizPhase, setQuizPhase] = useState<QuizPhaseType>();
-  const [quizAnswerSheet, setQuizAnswerSheet] = stateQuizAnswerSheet;
   const { endAt } = quizAnswerSheet;
   const [loading, setLoading] = stateLoading;
+  const [lastUpdate, setLastUpdate] = useState(0);
   const setPage = statePage[1];
 
   const { addToast } = useToast();
@@ -95,59 +103,56 @@ export function CourseLayoutQuiz({
 
   const handleSubmitQuiz = useCallback(() => {
     const now = new Date().getTime();
-    const points = Object.values(quizAnswerSheet.answers).reduce(
+    const points = Object.values(quizAnswerSheetRef.current.answers).reduce(
       (prev, { points = 0 }) => prev + points,
       0
     );
-    setSubmitted(true);
+    console.log("Store Answers: ");
+    console.log(answerRef.current);
+    // setSubmitted(true);
     setQuizPhase("submitted");
-    setQuizAnswerSheet((prev) => {
-      const finalAnswerSheet: QuizAnswerSheetType = {
-        ...prev,
-        submittedAt: now,
-        points,
-        answers: answer as any,
-      };
-
-      storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
-
-      return finalAnswerSheet;
-    });
-  }, [
-    answer,
-    chapterAddress,
-    quizAnswerSheet.answers,
-    setQuizAnswerSheet,
-    setQuizPhase,
-    setSubmitted,
-  ]);
-
-  const handleBackupQuizBeforeSubmit = useCallback(() => {
     const finalAnswerSheet: QuizAnswerSheetType = {
-      ...quizAnswerSheet,
-      answers: answer as any,
+      ...quizAnswerSheetRef.current,
+      submittedAt: now,
+      points,
+      answers: answerRef.current as any,
     };
 
-    if (quizAnswerSheet.submittedAt) return;
+    storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
 
-    if (quizAnswerSheet.startAt) {
-      storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
-    }
-  }, [answer, chapterAddress, quizAnswerSheet]);
+    quizAnswerSheetRef.current = finalAnswerSheet;
+  }, [answerRef, chapterAddress, quizAnswerSheetRef]);
+
+  const handleBackupQuizBeforeSubmit = useCallback(
+    (ans: Partial<AnswerType>) => {
+      const finalAnswerSheet: QuizAnswerSheetType = {
+        ...quizAnswerSheet,
+        answers: ans as any,
+      };
+
+      if (quizAnswerSheet.submittedAt) return;
+
+      if (quizAnswerSheet.startAt) {
+        storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
+      }
+    },
+    [chapterAddress, quizAnswerSheet]
+  );
 
   const handleSetupQuiz = useCallback(() => {
     if (quizDetails && !quizPhase) {
       const existing = getQuizAnswerSheet(chapterAddress);
       console.log(existing?.submittedAt);
+      console.log(acceptRef.current);
 
       const exists = existing && Object.keys(existing).length;
 
       if (exists && existing.submittedAt) {
-        setQuizAnswerSheet(existing);
+        quizAnswerSheetRef.current = existing;
         setSubmitted(true);
         answerRef.current = existing.answers as any;
       } else if (exists && !existing.submittedAt) {
-        setQuizAnswerSheet(existing);
+        quizAnswerSheetRef.current = existing;
         answerRef.current = existing.answers as any;
         addToast({
           phrase: "courseQuizContinueFromBackUp",
@@ -159,13 +164,14 @@ export function CourseLayoutQuiz({
       setSwapChapters(false);
     }
   }, [
+    acceptRef,
     addToast,
     answerRef,
     chapterAddress,
+    quizAnswerSheetRef,
     quizDetails,
     quizPhase,
     setLoading,
-    setQuizAnswerSheet,
     setSubmitted,
     setSwapChapters,
   ]);
@@ -177,10 +183,6 @@ export function CourseLayoutQuiz({
   useEffect(() => {
     handleSetupQuiz();
   }, [quizDetails, handleSetupQuiz]);
-
-  useEffect(() => {
-    handleBackupQuizBeforeSubmit();
-  }, [answer, handleBackupQuizBeforeSubmit]);
 
   const renderPageContents = useMemo(
     () =>
@@ -195,14 +197,18 @@ export function CourseLayoutQuiz({
           markdown={chapterContent}
           acceptRef={acceptRef}
           answerRef={answerRef}
+          mountedRef={mountedRef}
           stateLoading={stateLoading}
           trueLoading={trueLoading}
           stateSolved={stateSolved}
           stateSubmitted={stateSubmitted}
           stateChecking={stateChecking}
           statePage={statePage}
+          stateProblemCount={stateProblemCount}
+          stateLastUpdate={stateLastUpdate}
           handleCheckAnswer={handleCheckAnswer}
           onChapterChange={() => setPage(0)}
+          onAnswerUpdate={handleBackupQuizBeforeSubmit}
           quizQuestions={quizQuestions}
           inputIsDisabled={quizPhase !== "working"}
         />
@@ -215,12 +221,16 @@ export function CourseLayoutQuiz({
       chapterContent,
       acceptRef,
       answerRef,
+      mountedRef,
       stateLoading,
       stateSolved,
       stateSubmitted,
       stateChecking,
       statePage,
+      stateProblemCount,
+      stateLastUpdate,
       handleCheckAnswer,
+      handleBackupQuizBeforeSubmit,
       quizQuestions,
       setPage,
     ]
@@ -238,7 +248,7 @@ export function CourseLayoutQuiz({
                 !quizAnswerSheet.submittedAt
               ) {
                 setQuizPhase("working");
-                setLoading(true);
+                // setLoading(true);
                 return;
               }
 
@@ -249,16 +259,13 @@ export function CourseLayoutQuiz({
 
               if (!submitted) {
                 setQuizPhase("working");
-                setLoading(true);
-                setQuizAnswerSheet((prev) => ({
-                  ...prev,
-                  startAt: now.getTime(),
-                  endAt: end.getTime(),
-                }));
+                // setLoading(true);
+                quizAnswerSheetRef.current.startAt = now.getTime();
+                quizAnswerSheetRef.current.endAt = end.getTime();
               } else {
                 console.log("Viewing Finished Quiz");
                 setQuizPhase("submitted");
-                setLoading(true);
+                // setLoading(true);
               }
             }}
             disabled={trueLoading}
@@ -295,12 +302,91 @@ export function CourseLayoutQuiz({
     [
       handleSubmitQuiz,
       quizAnswerSheet,
+      quizAnswerSheetRef,
       quizDetails,
       quizPhase,
-      setLoading,
-      setQuizAnswerSheet,
-      setQuizPhase,
       submitted,
+      trueLoading,
+    ]
+  );
+
+  const renderSideHeader = useMemo(
+    () =>
+      quizDetails && (
+        <>
+          {quizPhase === "submitted" && (
+            <Paragraph
+              onClick={() => {
+                setQuizPhase("onboarding");
+              }}
+              color="secondary-1"
+            >
+              Back to Course
+            </Paragraph>
+          )}
+          <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
+            Quiz - {quizDetails.title}
+          </Paragraph>
+          <Paragraph as="p" color="secondary-1">
+            {quizDetails.description}
+          </Paragraph>
+          {!quizAnswerSheet.submittedAt && (
+            <IconText icon={BsFillClockFill} color="secondary-1">
+              <CourseQuizTimer
+                onQuizNoTimeLeft={() => {
+                  addToast({
+                    phrase: "courseQuizForceSubmit",
+                  });
+                  handleSubmitQuiz();
+                }}
+                endAt={quizAnswerSheet?.endAt}
+                isStopped={!!quizAnswerSheet?.submittedAt}
+              />
+            </IconText>
+          )}
+        </>
+      ),
+    [
+      addToast,
+      handleSubmitQuiz,
+      quizAnswerSheet?.endAt,
+      quizAnswerSheet.submittedAt,
+      quizDetails,
+      quizPhase,
+    ]
+  );
+
+  const renderSide = useMemo(
+    () => (
+      <CourseLayoutSide
+        quizPhase={quizPhase}
+        onQuizBack={() => {
+          router.back();
+        }}
+        onQuizNoTimeLeft={() => {
+          addToast({
+            phrase: "courseQuizForceSubmit",
+          });
+          handleSubmitQuiz();
+        }}
+        quizDetails={quizPhase !== "onboarding" ? quizDetails : undefined}
+        quizAnswerSheetRef={quizAnswerSheetRef}
+        quizQuestions={quizQuestions}
+        courseDetail={courseDetailWithProgress}
+        chapterAddress={chapterAddress}
+        trueLoading={trueLoading}
+      />
+    ),
+    [
+      addToast,
+      chapterAddress,
+      courseDetailWithProgress,
+      handleSubmitQuiz,
+      quizAnswerSheetRef,
+      quizDetails,
+      quizPhase,
+      quizQuestions,
+      router,
       trueLoading,
     ]
   );
@@ -360,7 +446,7 @@ export function CourseLayoutQuiz({
             handleSubmitQuiz();
           }}
           quizDetails={quizPhase !== "onboarding" ? quizDetails : undefined}
-          quizAnswerSheet={quizAnswerSheet}
+          quizAnswerSheetRef={quizAnswerSheetRef}
           quizQuestions={quizQuestions}
           courseDetail={courseDetailWithProgress}
           chapterAddress={chapterAddress}

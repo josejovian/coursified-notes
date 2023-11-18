@@ -36,12 +36,15 @@ export function CourseLayoutMaterial({
   chapterBaseAddress,
   acceptRef,
   answerRef,
+  mountedRef,
   stateChecking,
   stateLoading,
   stateSolved,
   stateSubmitted,
   statePage,
   stateMaxPage,
+  stateProblemCount,
+  stateLastUpdate,
   courseDetailWithProgress,
   chapterAddress,
   trueLoading,
@@ -54,11 +57,14 @@ export function CourseLayoutMaterial({
   stateSolved: StateType<number>;
   answerRef: MutableRefObject<Partial<AnswerType>>;
   acceptRef: MutableRefObject<AnswerType>;
+  mountedRef: MutableRefObject<Record<string, boolean>>;
   stateLoading: StateType<boolean>;
   stateChecking: StateType<boolean>;
   stateSubmitted: StateType<boolean>;
   statePage: StateType<number>;
   stateMaxPage: StateType<number>;
+  stateProblemCount: StateType<number>;
+  stateLastUpdate: StateType<number>;
   courseDetailWithProgress: CourseType;
   chapterAddress: ChapterAddressType;
   trueLoading: boolean;
@@ -175,12 +181,15 @@ export function CourseLayoutMaterial({
         markdown={chapterContent}
         acceptRef={acceptRef}
         answerRef={answerRef}
+        mountedRef={mountedRef}
         stateLoading={stateLoading}
         trueLoading={trueLoading}
         stateSolved={stateSolved}
         stateSubmitted={stateSubmitted}
         stateChecking={stateChecking}
         statePage={statePage}
+        stateProblemCount={stateProblemCount}
+        stateLastUpdate={stateLastUpdate}
         handleCheckAnswer={handleCheckAnswer}
         onChapterChange={() => setPage(0)}
       />
@@ -190,12 +199,15 @@ export function CourseLayoutMaterial({
       chapterContent,
       acceptRef,
       answerRef,
+      mountedRef,
       stateLoading,
       trueLoading,
       stateSolved,
       stateSubmitted,
       stateChecking,
       statePage,
+      stateProblemCount,
+      stateLastUpdate,
       handleCheckAnswer,
       setPage,
     ]
@@ -227,11 +239,14 @@ export function CourseLayoutMaterial({
               setSubmitted(true);
 
               if (
-                Object.values(answer).length === Object.values(accept).length
+                Object.values(answerRef.current).length ===
+                Object.values(accept).length
               ) {
-                const correct = !Object.entries(answer).some(([key, ans]) => {
-                  return !handleCheckAnswer(ans ?? "", key);
-                });
+                const correct = !Object.entries(answerRef.current).some(
+                  ([key, ans]) => {
+                    return !handleCheckAnswer(ans ?? "", key);
+                  }
+                );
 
                 if (correct) {
                   setSolved(1);
@@ -266,7 +281,7 @@ export function CourseLayoutMaterial({
     [
       accept,
       addToast,
-      answer,
+      answerRef,
       checking,
       handleCheckAnswer,
       handleNextPage,

@@ -15,7 +15,7 @@ interface CourseQuizListProps {
   chapterAddress?: ChapterAddressType;
   questions: MutableRefObject<Record<string, QuizQuestionType>>;
   quizPhase?: QuizPhaseType;
-  quizAnswerSheet: QuizAnswerSheetType;
+  quizAnswerSheetRef: MutableRefObject<QuizAnswerSheetType>;
   className?: string;
   disabled?: boolean;
   noBorder?: boolean;
@@ -27,13 +27,13 @@ export function CourseQuizList({
   className,
   questions: refQuestions,
   quizPhase,
-  quizAnswerSheet,
+  quizAnswerSheetRef,
   disabled,
   onClickQuestion,
   noBorder,
   noPadding,
 }: CourseQuizListProps) {
-  const { answers, points } = quizAnswerSheet;
+  const { answers, points } = quizAnswerSheetRef.current;
   const questions = Object.values(refQuestions.current);
 
   const answered = useMemo(() => {

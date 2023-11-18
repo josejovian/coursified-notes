@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AnswerType,
   ChapterAddressType,
@@ -24,8 +24,9 @@ export function useQuiz({
   answer,
   accept,
 }: useQuizProps) {
-  const stateQuizAnswerSheet = useState<QuizAnswerSheetType>();
-  const [quizAnswerSheet, setQuizAnswerSheet] = stateQuizAnswerSheet;
+  const quizAnswerSheetRef = useRef<QuizAnswerSheetType>({
+    answers: {},
+  });
 
   const quizDetails = useMemo<QuizConfigType | undefined>(() => {
     const currentSection = courseDetail.sections[chapterAddress.sectionIndex!];
@@ -86,19 +87,21 @@ export function useQuiz({
     return individualQuestions as Record<string, QuizAnswerType>;
   }, [accept, answer, quizDetails]);
 
+  useEffect(() => {
+    if (quizAnswerSheetRef.current && quizAnswers)
+      quizAnswerSheetRef.current = {
+        ...quizAnswerSheetRef.current,
+        answers: quizAnswers,
+      };
+  });
+
   return useMemo(
     () => ({
       quizDetails,
       quizQuestions,
-      stateQuizAnswerSheet: [
-        {
-          ...quizAnswerSheet,
-          answers: quizAnswers,
-        },
-        setQuizAnswerSheet,
-      ] as StateType<QuizAnswerSheetType>,
+      quizAnswerSheetRef,
       quizAnswers,
     }),
-    [quizDetails, quizAnswerSheet, quizAnswers, setQuizAnswerSheet]
+    [quizDetails, quizAnswerSheetRef, quizAnswers]
   );
 }

@@ -118,7 +118,7 @@ export function TemplateGeneric({
           )}
         >
           {renderSideHeader}
-          <div className="overflow-y-scroll">{sideElement}</div>
+          <div className="overflow-y-auto">{sideElement}</div>
         </aside>
         {renderSideToggleButton}
       </>

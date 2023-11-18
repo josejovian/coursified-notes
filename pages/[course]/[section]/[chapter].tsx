@@ -71,11 +71,14 @@ const CourseMaterial = ({
   const stateLoading = useState(true);
   const stateSwapChapters = useState(false);
   const stateSwapPages = useState(false);
+  const stateProblemCount = useState(0);
+  const stateLastUpdate = useState(0);
   const swapPages = stateSwapPages[0];
   const [loading, setLoading] = stateLoading;
   const [swapChapters, setSwapChapters] = stateSwapChapters;
   const answerRef = useRef<Partial<AnswerType>>({});
   const acceptRef = useRef<AnswerType>({});
+  const mountedRef = useRef<Record<string, boolean>>({});
   const answer = answerRef.current;
   const accept = acceptRef.current;
   const stateSubmitted = useState(false);
@@ -190,6 +193,7 @@ const CourseMaterial = ({
       console.log("CleanUpState: ", reason);
       answerRef.current = {};
       acceptRef.current = {};
+      mountedRef.current = {};
       setSolved(-1);
       setSubmitted(false);
       setChecking(false);
@@ -232,9 +236,12 @@ const CourseMaterial = ({
         handleCheckAnswer={handleCheckAnswer}
         acceptRef={acceptRef}
         answerRef={answerRef}
+        mountedRef={mountedRef}
         stateChecking={stateChecking}
         stateLoading={stateLoading}
         statePage={statePage}
+        stateProblemCount={stateProblemCount}
+        stateLastUpdate={stateLastUpdate}
         stateSolved={stateSolved}
         stateSubmitted={stateSubmitted}
         stateSwapChapters={stateSwapChapters}
@@ -250,8 +257,10 @@ const CourseMaterial = ({
       courseDetailWithProgress,
       handleCheckAnswer,
       stateChecking,
+      stateLastUpdate,
       stateLoading,
       statePage,
+      stateProblemCount,
       stateQuizPhase,
       stateSolved,
       stateSubmitted,
@@ -272,10 +281,13 @@ const CourseMaterial = ({
         handleCleanUpStates={handleCleanUpStates}
         acceptRef={acceptRef}
         answerRef={answerRef}
+        mountedRef={mountedRef}
         stateChecking={stateChecking}
         stateLoading={stateLoading}
         statePage={statePage}
         stateMaxPage={stateMaxPage}
+        stateProblemCount={stateProblemCount}
+        stateLastUpdate={stateLastUpdate}
         stateSolved={stateSolved}
         stateSubmitted={stateSubmitted}
         trueLoading={trueLoading}
@@ -290,9 +302,11 @@ const CourseMaterial = ({
       handleCheckAnswer,
       handleCleanUpStates,
       stateChecking,
+      stateLastUpdate,
       stateLoading,
       stateMaxPage,
       statePage,
+      stateProblemCount,
       stateSolved,
       stateSubmitted,
       trueLoading,

@@ -7,6 +7,7 @@ import {
   QuizConfigType,
   QuizPhaseType,
   QuizQuestionType,
+  StateType,
 } from "@/src/type";
 import clsx from "clsx";
 import Link from "next/link";
@@ -29,10 +30,11 @@ interface SideProps {
   courseDetail: CourseType;
   chapterAddress: ChapterAddressType;
   quizDetails?: QuizConfigType;
-  quizAnswerSheet?: QuizAnswerSheetType;
+  quizAnswerSheetRef?: MutableRefObject<QuizAnswerSheetType>;
   quizQuestions?: MutableRefObject<Record<string, QuizQuestionType>>;
   quizPhase?: QuizPhaseType;
   trueLoading?: boolean;
+  stateProblemCount?: StateType<number>;
   onQuizBack?: () => void;
   onQuizNoTimeLeft?: () => void;
 }
@@ -42,16 +44,20 @@ export function CourseLayoutSide({
   chapterAddress,
   quizQuestions,
   quizDetails,
-  quizAnswerSheet,
+  quizAnswerSheetRef,
+  stateProblemCount,
   quizPhase,
   trueLoading,
 }: SideProps) {
   const showQuizQuestions =
     quizDetails &&
     quizQuestions &&
-    quizAnswerSheet &&
+    quizAnswerSheetRef &&
     quizPhase &&
     quizPhase !== "onboarding";
+
+  console.warn("Rerender Side Element: ");
+  console.warn(quizQuestions?.current);
 
   return (
     <>
@@ -59,7 +65,7 @@ export function CourseLayoutSide({
         <CourseQuizList
           questions={quizQuestions}
           quizPhase={quizPhase}
-          quizAnswerSheet={quizAnswerSheet}
+          quizAnswerSheetRef={quizAnswerSheetRef}
           onClickQuestion={(id) =>
             document.getElementById(`q${id}`)?.scrollIntoView()
           }

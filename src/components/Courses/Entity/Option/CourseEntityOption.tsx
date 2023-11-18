@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
 } from "react";
 import { BsFillSquareFill } from "react-icons/bs";
 import * as ReactDOM from "react-dom";
@@ -22,17 +23,18 @@ export interface OptionProps {
   disabled?: boolean;
   id?: string;
   correct?: boolean;
-  onSelect?: () => void;
+  onSelect?: (v: boolean) => void;
 }
 export function Option({
   content,
-  selected,
+  selected: isSelected,
   disabled,
   id,
   correct,
   onSelect,
 }: OptionProps) {
   const contentRef = useRef<HTMLSpanElement>(null);
+  const [selected, setState] = useState(isSelected);
 
   const handleReplaceHashtag = useCallback((string: string) => {
     return string.replaceAll("#", "$");
@@ -61,8 +63,7 @@ export function Option({
   }, [content, renderWrapper]);
 
   return (
-    // <input type="checkbox" checked="checked"></input>
-    <div
+    <label
       role="option"
       aria-label="option"
       aria-selected={selected}
@@ -85,8 +86,16 @@ export function Option({
                   ],
             ]
       )}
-      onClick={onSelect}
     >
+      <input
+        type="checkbox"
+        className="invisible"
+        onChange={(e) => {
+          onSelect && onSelect(e.target.checked);
+          setState(e.target.checked);
+        }}
+        defaultChecked={isSelected}
+      ></input>
       <div
         className={clsx(
           "w-6 h-6 min-w-6 mr-4 border flex items-center justify-center",
@@ -113,6 +122,6 @@ export function Option({
         />
       </div>
       <span ref={contentRef}>{renderWrapper(content)}</span>
-    </div>
+    </label>
   );
 }
