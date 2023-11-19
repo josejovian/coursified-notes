@@ -9,7 +9,8 @@ interface GenericProps {
   children: ReactNode;
   sideHeaderElement?: ReactNode;
   sideHeaderImage?: ImageProps;
-  sideElement: ReactNode;
+  sideBodyElement?: ReactNode;
+  sideElement?: ReactNode;
   bottomElement?: ReactNode;
   trueLoading?: boolean;
 }
@@ -19,6 +20,7 @@ export function TemplateGeneric({
   bottomElement,
   sideHeaderElement,
   sideHeaderImage,
+  sideBodyElement,
   sideElement,
   trueLoading,
 }: GenericProps) {
@@ -117,8 +119,12 @@ export function TemplateGeneric({
             width < 1024 && "transition-all"
           )}
         >
-          {renderSideHeader}
-          <div className="overflow-y-auto">{sideElement}</div>
+          {sideElement ?? (
+            <>
+              {renderSideHeader}
+              <div className="overflow-y-auto">{sideBodyElement}</div>
+            </>
+          )}
         </aside>
         {renderSideToggleButton}
       </>

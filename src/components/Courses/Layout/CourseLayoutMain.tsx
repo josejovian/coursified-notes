@@ -38,10 +38,10 @@ interface CourseMaterialContentProps {
   stateProblemCount: StateType<number>;
   stateLastUpdate: StateType<number>;
   trueLoading: boolean;
-  quizQuestions?: MutableRefObject<Record<string, QuizQuestionType>>;
   handleCheckAnswer: (ans: string, id: string, flag?: boolean) => boolean;
   onChapterChange?: () => void;
   onAnswerUpdate?: (answer: Partial<AnswerType>) => void;
+  onQuestionMount?: (id: string, question: QuizQuestionType) => void;
   inputIsDisabled?: boolean;
 }
 
@@ -59,10 +59,10 @@ export function CourseLayoutMain({
   stateProblemCount,
   stateLastUpdate,
   trueLoading,
-  quizQuestions,
   handleCheckAnswer,
   onChapterChange,
   onAnswerUpdate,
+  onQuestionMount,
   inputIsDisabled,
 }: CourseMaterialContentProps) {
   const router = useRouter();
@@ -307,10 +307,9 @@ export function CourseLayoutMain({
 
       answerRef.current = newAnswer;
 
-      console.log("New Answer: ");
-      console.log(newAnswer);
+      onAnswerUpdate && onAnswerUpdate(newAnswer);
     },
-    [answerRef, solved]
+    [answerRef, onAnswerUpdate, solved]
   );
 
   useEffect(() => {
@@ -384,12 +383,11 @@ export function CourseLayoutMain({
 
   const handleRenderQuizQuestionHeading = useCallback(
     ({ id, ids, weight = "10" }: any) => {
-      if (!quizQuestions) return <></>;
-
-      quizQuestions.current[id] = {
-        inputIds: ids.split(","),
-        weight: Number(weight),
-      };
+      onQuestionMount &&
+        onQuestionMount(id, {
+          inputIds: ids.split(","),
+          weight: Number(weight),
+        });
 
       return (
         <Paragraph
@@ -405,7 +403,7 @@ export function CourseLayoutMain({
         </Paragraph>
       );
     },
-    [quizQuestions]
+    [onQuestionMount]
   );
 
   const renderContent = useMemo(() => {

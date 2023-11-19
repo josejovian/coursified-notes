@@ -94,7 +94,9 @@ export type QuizAnswerStatusType =
   | "incorrect";
 
 export interface QuizAnswerSheetType {
-  answers: Record<string, QuizAnswerType>;
+  answers: Partial<AnswerType>;
+  summary: Record<string, QuizAnswerType>;
+  questions: Record<string, QuizQuestionType>;
   startAt?: number;
   endAt?: number;
   submittedAt?: number;

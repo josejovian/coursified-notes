@@ -33,17 +33,20 @@ export function CourseQuizList({
   noBorder,
   noPadding,
 }: CourseQuizListProps) {
-  const { answers, points } = quizAnswerSheetRef.current;
-  const questions = Object.values(refQuestions.current);
-
-  const answered = useMemo(() => {
+  const {
+    summary,
+    points,
+    questions: objectQuestions,
+  } = quizAnswerSheetRef.current;
+  const questions = Object.values(objectQuestions);
+  const answered = (() => {
     let count = 0;
-    answers &&
-      Object.values(answers).forEach((answer) => {
+    summary &&
+      Object.values(summary).forEach((answer) => {
         if (answer.answered) count++;
       });
     return count;
-  }, [answers]);
+  })();
 
   return (
     <div
@@ -71,10 +74,10 @@ export function CourseQuizList({
 
           return (
             <CourseQuizListQuestion
+              key={inputIds.join("")}
               question={question}
               phase={quizPhase}
-              answer={answers[index + 1]}
-              key={inputIds.join("")}
+              answer={summary[index + 1]}
               index={index + 1}
               active={quizPhase === "submitted"}
               onClick={onClickQuestion}

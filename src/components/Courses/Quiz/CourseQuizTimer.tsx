@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { getHMS } from "@/src/utils/date";
+import { StateType } from "@/src/type";
 
 export function CourseQuizTimer({
+  stateLeft,
   endAt,
   isStopped,
   onQuizNoTimeLeft,
 }: {
+  stateLeft: StateType<number>;
   endAt?: number;
   isStopped?: boolean;
   onQuizNoTimeLeft?: () => void;
 }) {
-  const [left, setLeft] = useState(0);
+  const [left, setLeft] = stateLeft;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,7 +28,7 @@ export function CourseQuizTimer({
           setLeft(Math.floor(timeLeft));
         }
       }
-    }, 1000);
+    }, 100);
     return () => clearInterval(interval);
   }, [endAt, isStopped, onQuizNoTimeLeft, setLeft]);
 

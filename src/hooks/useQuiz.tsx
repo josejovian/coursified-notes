@@ -26,6 +26,8 @@ export function useQuiz({
 }: useQuizProps) {
   const quizAnswerSheetRef = useRef<QuizAnswerSheetType>({
     answers: {},
+    summary: {},
+    questions: {},
   });
 
   const quizDetails = useMemo<QuizConfigType | undefined>(() => {
@@ -87,13 +89,13 @@ export function useQuiz({
     return individualQuestions as Record<string, QuizAnswerType>;
   }, [accept, answer, quizDetails]);
 
-  useEffect(() => {
-    if (quizAnswerSheetRef.current && quizAnswers)
-      quizAnswerSheetRef.current = {
-        ...quizAnswerSheetRef.current,
-        answers: quizAnswers,
-      };
-  });
+  // useEffect(() => {
+  //   if (quizAnswerSheetRef.current && quizAnswers)
+  //     quizAnswerSheetRef.current = {
+  //       ...quizAnswerSheetRef.current,
+  //       answers: quizAnswers,
+  //     };
+  // });
 
   return useMemo(
     () => ({

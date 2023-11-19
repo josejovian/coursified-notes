@@ -26,7 +26,7 @@ export function CourseQuizListQuestion({
   const { weight } = question;
 
   const status = useMemo(() => {
-    if (!answer || !answer) return "unanswered";
+    if (!answer) return "unanswered";
 
     if (phase === "submitted") return answer.correct ? "correct" : "incorrect";
 

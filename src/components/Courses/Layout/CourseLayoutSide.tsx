@@ -56,8 +56,8 @@ export function CourseLayoutSide({
     quizPhase &&
     quizPhase !== "onboarding";
 
-  console.warn("Rerender Side Element: ");
-  console.warn(quizQuestions?.current);
+  // console.log("Rerender Side Element: ");
+  // console.log(quizQuestions?.current);
 
   return (
     <>

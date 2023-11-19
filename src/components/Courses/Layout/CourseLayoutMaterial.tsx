@@ -318,7 +318,7 @@ export function CourseLayoutMaterial({
           </Paragraph>
         </>
       }
-      sideElement={
+      sideBodyElement={
         <CourseJourney
           course={courseDetailWithProgress}
           chapterAddress={chapterAddress}
