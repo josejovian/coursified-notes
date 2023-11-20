@@ -188,7 +188,10 @@ export function CourseLayoutQuiz({
 
       const finalAnswerSheet: QuizAnswerSheetType = {
         ...quizAnswerSheet,
-        answers: ans,
+        answers: {
+          ...quizAnswerSheet.answers,
+          ...ans,
+        },
         summary,
       };
 
@@ -279,6 +282,9 @@ export function CourseLayoutQuiz({
           onQuestionMount={(id, question) => {
             quizAnswerSheetRef.current.questions[id] = question;
           }}
+          onOptionsMount={(id, answer) => {
+            quizAnswerSheetRef.current.answers[id] = answer;
+          }}
           inputIsDisabled={quizPhase !== "working"}
         />
       ),
@@ -317,7 +323,7 @@ export function CourseLayoutQuiz({
                 !quizAnswerSheet.submittedAt
               ) {
                 setQuizPhase("working");
-                setLoading(true);
+                // setLoading(true);
                 return;
               }
 
@@ -328,13 +334,13 @@ export function CourseLayoutQuiz({
 
               if (!submitted) {
                 setQuizPhase("working");
-                setLoading(true);
+                // setLoading(true);
                 quizAnswerSheetRef.current.startAt = now.getTime();
                 quizAnswerSheetRef.current.endAt = end.getTime();
               } else {
                 console.log("Viewing Finished Quiz");
                 setQuizPhase("submitted");
-                setLoading(true);
+                // setLoading(true);
               }
             }}
             disabled={trueLoading}
@@ -374,7 +380,6 @@ export function CourseLayoutQuiz({
       quizAnswerSheetRef,
       quizDetails,
       quizPhase,
-      setLoading,
       setQuizPhase,
       submitted,
       trueLoading,

@@ -29,6 +29,7 @@ import { CourseLayoutMain } from "./CourseLayoutMain";
 import { storeChapterProgress } from "@/src/utils";
 import Link from "next/link";
 import { CourseJourney } from "../Journey";
+import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";
 
 export function CourseLayoutMaterial({
   addreses,
@@ -298,34 +299,38 @@ export function CourseLayoutMaterial({
 
   return (
     <TemplateGeneric
-      sideHeaderImage={{
-        src: "/calculus.jpg",
-      }}
-      sideHeaderElement={
+      sideElement={
         <>
-          <Link href={`/${id}`} legacyBehavior>
-            <a>
-              <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
-                {title}
+          <CourseLayoutSideHeader
+            sideHeaderImage={{
+              src: "/calculus.jpg",
+            }}
+          >
+            <>
+              <Link href={`/${id}`} legacyBehavior>
+                <a>
+                  <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
+                    {title}
+                  </Paragraph>
+                </a>
+              </Link>
+              <Paragraph as="p" color="secondary-1">
+                {description}
               </Paragraph>
-            </a>
-          </Link>
-          <Paragraph as="p" color="secondary-1">
-            {description}
-          </Paragraph>
-          <Paragraph size="m-alt" color="secondary-1">
-            Jose Jovian
-          </Paragraph>
+              <Paragraph size="m-alt" color="secondary-1">
+                Jose Jovian
+              </Paragraph>
+            </>
+          </CourseLayoutSideHeader>
+          <CourseJourney
+            course={courseDetailWithProgress}
+            chapterAddress={chapterAddress}
+            disabled={trueLoading}
+            noBorder
+            noPadding
+            scrollable
+          />
         </>
-      }
-      sideBodyElement={
-        <CourseJourney
-          course={courseDetailWithProgress}
-          chapterAddress={chapterAddress}
-          disabled={trueLoading}
-          noBorder
-          noPadding
-        />
       }
     >
       {renderPageContents}

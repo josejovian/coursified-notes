@@ -45,75 +45,6 @@ export function CourseLayoutQuizSide({
   const [left, setLeft] = stateLeft;
   const { addToast } = useToast();
 
-  const renderHeader = useMemo(
-    () => (
-      <CourseLayoutSideHeader sideHeaderImage={sideHeaderImage}>
-        {quizDetails && (
-          <>
-            {quizPhase === "submitted" && (
-              <Paragraph
-                onClick={() => {
-                  setQuizPhase("onboarding");
-                }}
-                color="secondary-1"
-              >
-                Back to Course
-              </Paragraph>
-            )}
-            <Paragraph as="h2" size="l" weight="bold" color="secondary-1">
-              Quiz - {quizDetails.title}
-            </Paragraph>
-            <Paragraph as="p" color="secondary-1">
-              {quizDetails.description}
-            </Paragraph>
-            {!quizAnswerSheetRef.current.submittedAt && (
-              <IconText icon={BsFillClockFill} color="secondary-1">
-                <CourseQuizTimer
-                  stateLeft={stateLeft}
-                  onQuizNoTimeLeft={onQuizNoTimeLeft}
-                  endAt={quizAnswerSheetRef.current.endAt}
-                  isStopped={!!quizAnswerSheetRef.current.submittedAt}
-                />
-              </IconText>
-            )}
-          </>
-        )}
-      </CourseLayoutSideHeader>
-    ),
-    [
-      onQuizNoTimeLeft,
-      quizAnswerSheetRef,
-      quizDetails,
-      quizPhase,
-      setQuizPhase,
-      sideHeaderImage,
-      stateLeft,
-    ]
-  );
-
-  const renderBody = useMemo(
-    () => (
-      <CourseLayoutSide
-        quizPhase={quizPhase}
-        quizDetails={quizPhase !== "onboarding" ? quizDetails : undefined}
-        quizAnswerSheetRef={quizAnswerSheetRef}
-        quizQuestions={quizQuestions}
-        courseDetail={courseDetail}
-        chapterAddress={chapterAddress}
-        trueLoading={trueLoading}
-      />
-    ),
-    [
-      chapterAddress,
-      courseDetail,
-      quizAnswerSheetRef,
-      quizDetails,
-      quizPhase,
-      quizQuestions,
-      trueLoading,
-    ]
-  );
-
   return (
     <>
       {" "}
@@ -126,6 +57,7 @@ export function CourseLayoutQuizSide({
                   setQuizPhase("onboarding");
                 }}
                 color="secondary-1"
+                className="cursor-pointer"
               >
                 Back to Course
               </Paragraph>

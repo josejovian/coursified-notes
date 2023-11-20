@@ -10,6 +10,7 @@ interface CourseJourneyProps {
   disabled?: boolean;
   noBorder?: boolean;
   noPadding?: boolean;
+  scrollable?: boolean;
 }
 
 export function CourseJourney({
@@ -19,6 +20,7 @@ export function CourseJourney({
   disabled,
   noBorder,
   noPadding,
+  scrollable,
 }: CourseJourneyProps) {
   const { id, sections } = course;
 
@@ -45,6 +47,7 @@ export function CourseJourney({
       className={clsx(
         "border-zinc-400",
         className,
+        scrollable && "overflow-y-scroll",
         !noBorder && "border-t border-x"
       )}
     >

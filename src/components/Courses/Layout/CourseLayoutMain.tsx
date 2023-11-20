@@ -42,6 +42,7 @@ interface CourseMaterialContentProps {
   onChapterChange?: () => void;
   onAnswerUpdate?: (answer: Partial<AnswerType>) => void;
   onQuestionMount?: (id: string, question: QuizQuestionType) => void;
+  onOptionsMount?: (id: string, answer: string) => void;
   inputIsDisabled?: boolean;
 }
 
@@ -63,6 +64,7 @@ export function CourseLayoutMain({
   onChapterChange,
   onAnswerUpdate,
   onQuestionMount,
+  onOptionsMount,
   inputIsDisabled,
 }: CourseMaterialContentProps) {
   const router = useRouter();
@@ -324,18 +326,21 @@ export function CourseLayoutMain({
       if (!mountedRef.current[id]) {
         mountedRef.current[id] = true;
         setProblemCount((prev) => prev + 1);
+
+        const acceptedString = options.map(([truth]) => truth).join("");
+        const templateString = options.map(() => 0).join("");
+
         acceptRef.current = {
           ...accept,
-          [id]: options.map(([truth]) => truth).join(""),
+          [id]: acceptedString,
         };
-        // setProblemCount((prev) => prev + 1);
-      }
 
-      if (!answer[id]) {
         answerRef.current = {
           ...answer,
-          [id]: options.map(() => 0).join(""),
+          [id]: templateString,
         };
+
+        onOptionsMount && onOptionsMount(id, templateString);
       }
 
       return (
@@ -376,6 +381,7 @@ export function CourseLayoutMain({
       handleToggleOption,
       inputIsDisabled,
       mountedRef,
+      onOptionsMount,
       setProblemCount,
       solved,
     ]

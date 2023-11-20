@@ -7,9 +7,7 @@ import Image, { ImageProps } from "next/image";
 
 interface GenericProps {
   children: ReactNode;
-  sideHeaderElement?: ReactNode;
   sideHeaderImage?: ImageProps;
-  sideBodyElement?: ReactNode;
   sideElement?: ReactNode;
   bottomElement?: ReactNode;
   trueLoading?: boolean;
@@ -18,9 +16,6 @@ interface GenericProps {
 export function TemplateGeneric({
   children,
   bottomElement,
-  sideHeaderElement,
-  sideHeaderImage,
-  sideBodyElement,
   sideElement,
   trueLoading,
 }: GenericProps) {
@@ -61,35 +56,6 @@ export function TemplateGeneric({
     [open, width]
   );
 
-  const renderSideHeader = useMemo(
-    () => (
-      <>
-        <div ref={headerWrapperRef} className="flex relative bg-black">
-          {sideHeaderElement && (
-            <div
-              ref={textWrapperRef}
-              className="absolute top-0 p-8 flex flex-col gap-4 z-10"
-            >
-              {sideHeaderElement}
-            </div>
-          )}
-          {sideHeaderImage && (
-            // eslint-disable-next-line jsx-a11y/alt-text
-            <Image
-              {...sideHeaderImage}
-              width="512"
-              height="512"
-              alt="Banner"
-              className="fixed top-0 left-0 object-none object-center opacity-20"
-            />
-          )}
-        </div>
-        <hr />
-      </>
-    ),
-    [sideHeaderElement, sideHeaderImage]
-  );
-
   return (
     <div
       id="CourseMaterial"
@@ -119,12 +85,7 @@ export function TemplateGeneric({
             width < 1024 && "transition-all"
           )}
         >
-          {sideElement ?? (
-            <>
-              {renderSideHeader}
-              <div className="overflow-y-auto">{sideBodyElement}</div>
-            </>
-          )}
+          {sideElement}
         </aside>
         {renderSideToggleButton}
       </>
