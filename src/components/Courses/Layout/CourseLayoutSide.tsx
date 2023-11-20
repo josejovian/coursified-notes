@@ -34,7 +34,6 @@ interface SideProps {
   quizQuestions?: MutableRefObject<Record<string, QuizQuestionType>>;
   quizPhase?: QuizPhaseType;
   trueLoading?: boolean;
-  stateProblemCount?: StateType<number>;
   onQuizBack?: () => void;
   onQuizNoTimeLeft?: () => void;
 }
@@ -45,7 +44,6 @@ export function CourseLayoutSide({
   quizQuestions,
   quizDetails,
   quizAnswerSheetRef,
-  stateProblemCount,
   quizPhase,
   trueLoading,
 }: SideProps) {
@@ -55,9 +53,6 @@ export function CourseLayoutSide({
     quizAnswerSheetRef &&
     quizPhase &&
     quizPhase !== "onboarding";
-
-  // console.log("Rerender Side Element: ");
-  // console.log(quizQuestions?.current);
 
   return (
     <>
@@ -80,6 +75,7 @@ export function CourseLayoutSide({
           disabled={trueLoading}
           noBorder
           noPadding
+          scrollable
         />
       )}
     </>

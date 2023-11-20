@@ -133,13 +133,6 @@ export function useCustom({
         const array = prev[questionId] ?? "";
         const newArray = array.split("");
 
-        // console.log("ID: ", choiceId);
-
-        // if (newArray.length === choiceId) {
-        //   console.log("ChoiceID: ", choiceId);
-        //   newArray[choiceId] = "0";
-        // }
-
         return {
           ...prev,
           [questionId]: prev[questionId]

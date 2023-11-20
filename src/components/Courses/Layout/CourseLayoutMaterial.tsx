@@ -189,8 +189,6 @@ export function CourseLayoutMaterial({
         stateSubmitted={stateSubmitted}
         stateChecking={stateChecking}
         statePage={statePage}
-        stateProblemCount={stateProblemCount}
-        stateLastUpdate={stateLastUpdate}
         handleCheckAnswer={handleCheckAnswer}
         onChapterChange={() => setPage(0)}
       />
@@ -207,8 +205,6 @@ export function CourseLayoutMaterial({
       stateSubmitted,
       stateChecking,
       statePage,
-      stateProblemCount,
-      stateLastUpdate,
       handleCheckAnswer,
       setPage,
     ]

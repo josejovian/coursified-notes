@@ -38,16 +38,11 @@ export function CourseLayoutQuizSide({
   trueLoading?: boolean;
   onQuizNoTimeLeft: () => void;
 }) {
-  const headerWrapperRef = useRef<HTMLDivElement>(null);
-  const textWrapperRef = useRef<HTMLDivElement>(null);
   const [quizPhase, setQuizPhase] = stateQuizPhase;
   const stateLeft = useState(0);
-  const [left, setLeft] = stateLeft;
-  const { addToast } = useToast();
 
   return (
     <>
-      {" "}
       <CourseLayoutSideHeader sideHeaderImage={sideHeaderImage}>
         {quizDetails && (
           <>

@@ -35,8 +35,6 @@ interface CourseMaterialContentProps {
   stateChecking: StateType<boolean>;
   stateSubmitted: StateType<boolean>;
   statePage: StateType<number>;
-  stateProblemCount: StateType<number>;
-  stateLastUpdate: StateType<number>;
   trueLoading: boolean;
   handleCheckAnswer: (ans: string, id: string, flag?: boolean) => boolean;
   onChapterChange?: () => void;
@@ -57,8 +55,6 @@ export function CourseLayoutMain({
   stateLoading,
   stateSubmitted,
   statePage,
-  stateProblemCount,
-  stateLastUpdate,
   trueLoading,
   handleCheckAnswer,
   onChapterChange,
@@ -73,15 +69,10 @@ export function CourseLayoutMain({
   const [solved, setSolved] = stateSolved;
   const [submitted, setSubmmited] = stateSubmitted;
   const stateActive = useState<any>(null);
-  const active = stateActive[0];
   const inputRef = useRef<Record<string, boolean>>({});
   const graphRef = useRef<Record<string, string>>({});
-  const optionCount = useRef<Record<string, number>>({});
-  const optionDict = useRef<Record<string, string[]>>({});
-  const [lastUpdate, setLastUpdate] = stateLastUpdate;
-  const [problemCount, setProblemCount] = stateProblemCount;
-  const debouncedLastUpdate = useDebounce(lastUpdate);
   const page = statePage[0];
+  const accept = acceptRef.current;
 
   const { practice } = addreses;
 
@@ -101,37 +92,11 @@ export function CourseLayoutMain({
     [answerRef, handleCheckAnswer]
   );
 
-  const handleRemoveUndefinedAnswers = useCallback(() => {
-    const answer = answerRef.current;
-    const entries = Object.entries(answer);
-    const newAnswer: { [key: string]: string } = {};
-    let different = false;
-    entries.forEach(([k, v]) => {
-      if (typeof v !== "undefined") {
-        newAnswer[k] = v;
-      } else {
-        different = true;
-      }
-    });
-    if (different) {
-      answerRef.current = newAnswer;
-    }
-  }, [answerRef]);
-
-  // useEffect(() => {
-  //   handleRemoveUndefinedAnswers();
-  // }, [answer, handleRemoveUndefinedAnswers]);
-
   const handleGetExistingAnswerIfAny = useCallback(() => {
-    const accept = acceptRef.current;
-    const answer = answerRef.current;
-
     const existingAnswers = checkChapterProgress(practice);
     const practiceIds = Object.keys(accept);
 
     if (practiceIds.length === 0) return;
-
-    console.log("Eixisting Answers: ", existingAnswers);
 
     let currentAnswers = {};
     let allAnswersAreCorrect = true;
@@ -162,14 +127,7 @@ export function CourseLayoutMain({
       setSubmmited(true);
       setSolved(1);
     }
-  }, [
-    acceptRef,
-    answerRef,
-    practice,
-    handleCheckAnswer,
-    setSubmmited,
-    setSolved,
-  ]);
+  }, [practice, accept, handleCheckAnswer, answerRef, setSubmmited, setSolved]);
 
   useEffect(() => {
     handleGetExistingAnswerIfAny();
@@ -221,9 +179,7 @@ export function CourseLayoutMain({
           [id]: answerKey,
         };
 
-        console.log("Mount: ", id);
         if (solved !== 0) setSolved(0);
-        setProblemCount((prev) => prev + 1);
         acceptRef.current = {
           ...acceptRef.current,
           ...answerKeys,
@@ -240,13 +196,11 @@ export function CourseLayoutMain({
           }}
           onChange={(e) => {
             const { value } = e.target as HTMLInputElement;
-
             const newAnswer = {
               ...answerRef.current,
               [id]: value === "" ? undefined : value,
             };
             answerRef.current = newAnswer;
-            // setLastUpdate(new Date().getTime());
             onAnswerUpdate && onAnswerUpdate(newAnswer);
           }}
           defaultValue={answer[id]}
@@ -275,7 +229,6 @@ export function CourseLayoutMain({
       inputIsDisabled,
       mountedRef,
       onAnswerUpdate,
-      setProblemCount,
       setSolved,
       setSubmmited,
       solved,
@@ -290,8 +243,6 @@ export function CourseLayoutMain({
       const prev = answerRef.current;
       const array = prev[questionId] ?? "";
       const newArray = array.split("");
-
-      // setLastUpdate(new Date().getTime());
 
       const newAnswer = {
         ...prev,
@@ -314,10 +265,6 @@ export function CourseLayoutMain({
     [answerRef, onAnswerUpdate, solved]
   );
 
-  useEffect(() => {
-    console.log("Debounced Last Update: ", debouncedLastUpdate);
-  }, [debouncedLastUpdate]);
-
   const handleRenderOptionNew = useCallback(
     ({ id, options }: { id: string; options: [number, string][] }) => {
       const accept = acceptRef.current;
@@ -325,7 +272,6 @@ export function CourseLayoutMain({
 
       if (!mountedRef.current[id]) {
         mountedRef.current[id] = true;
-        setProblemCount((prev) => prev + 1);
 
         const acceptedString = options.map(([truth]) => truth).join("");
         const templateString = options.map(() => 0).join("");
@@ -382,7 +328,6 @@ export function CourseLayoutMain({
       inputIsDisabled,
       mountedRef,
       onOptionsMount,
-      setProblemCount,
       solved,
     ]
   );
@@ -413,7 +358,6 @@ export function CourseLayoutMain({
   );
 
   const renderContent = useMemo(() => {
-    console.log("Render Content");
     return (
       <Content
         components={{

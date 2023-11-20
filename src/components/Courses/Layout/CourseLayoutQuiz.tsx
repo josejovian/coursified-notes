@@ -43,7 +43,6 @@ export function CourseLayoutQuiz({
   stateSubmitted,
   stateSwapChapters,
   statePage,
-  stateProblemCount,
   stateLastUpdate,
   courseDetail,
   courseDetailWithProgress,
@@ -96,26 +95,19 @@ export function CourseLayoutQuiz({
   const quizAnswerSheet = quizAnswerSheetRef.current;
   const stateQuizPhase = useState<QuizPhaseType>();
   const [quizPhase, setQuizPhase] = stateQuizPhase;
-  const { endAt } = quizAnswerSheet;
   const [loading, setLoading] = stateLoading;
-  const [lastUpdate, setLastUpdate] = useState(0);
   const setPage = statePage[1];
 
   const { addToast } = useToast();
-  const router = useRouter();
 
   const handleUpdateSummary = useCallback(
     (ans: Partial<AnswerType>) => {
-      console.log("Quiz Questions ");
-      console.log(Object.entries(quizQuestionsRef.current));
       const individualQuestions = Object.entries(
         quizAnswerSheetRef.current.questions
       )
         .map(([key, value]) => {
           let answered = true;
           let correct = true;
-
-          console.log(value);
 
           let relatedInputs = value.inputIds.reduce((prev, curr) => {
             if (!ans[curr]) answered = false;
@@ -166,19 +158,15 @@ export function CourseLayoutQuiz({
       (prev, { points = 0 }) => prev + points,
       0
     );
-    console.log("Store Answers: ");
-    console.log(answerRef.current);
-    // setSubmitted(true);
     setQuizPhase("submitted");
+
     const finalAnswerSheet: QuizAnswerSheetType = {
       ...quizAnswerSheetRef.current,
       submittedAt: now,
       points,
       answers: answerRef.current as any,
     };
-
     storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
-
     quizAnswerSheetRef.current = finalAnswerSheet;
   }, [answerRef, chapterAddress, quizAnswerSheetRef, setQuizPhase]);
 
@@ -195,9 +183,6 @@ export function CourseLayoutQuiz({
         summary,
       };
 
-      console.log("Updating Answers: ");
-      console.log(finalAnswerSheet);
-
       quizAnswerSheetRef.current = finalAnswerSheet;
 
       if (quizAnswerSheet.submittedAt) return;
@@ -211,9 +196,6 @@ export function CourseLayoutQuiz({
   const handleSetupQuiz = useCallback(() => {
     if (quizDetails && !quizPhase) {
       const existing = getQuizAnswerSheet(chapterAddress);
-      console.log(existing?.submittedAt);
-      console.log(acceptRef.current);
-
       const exists = existing && Object.keys(existing).length;
 
       if (exists && existing.submittedAt) {
@@ -233,7 +215,6 @@ export function CourseLayoutQuiz({
       setSwapChapters(false);
     }
   }, [
-    acceptRef,
     addToast,
     answerRef,
     chapterAddress,
@@ -245,10 +226,6 @@ export function CourseLayoutQuiz({
     setSubmitted,
     setSwapChapters,
   ]);
-
-  useEffect(() => {
-    console.log("Rerender: ", submitted);
-  }, [submitted]);
 
   useEffect(() => {
     handleSetupQuiz();
@@ -274,8 +251,6 @@ export function CourseLayoutQuiz({
           stateSubmitted={stateSubmitted}
           stateChecking={stateChecking}
           statePage={statePage}
-          stateProblemCount={stateProblemCount}
-          stateLastUpdate={stateLastUpdate}
           handleCheckAnswer={handleCheckAnswer}
           onChapterChange={() => setPage(0)}
           onAnswerUpdate={handleUpdateAnswer}
@@ -302,8 +277,6 @@ export function CourseLayoutQuiz({
       stateSubmitted,
       stateChecking,
       statePage,
-      stateProblemCount,
-      stateLastUpdate,
       handleCheckAnswer,
       handleUpdateAnswer,
       setPage,
@@ -323,7 +296,6 @@ export function CourseLayoutQuiz({
                 !quizAnswerSheet.submittedAt
               ) {
                 setQuizPhase("working");
-                // setLoading(true);
                 return;
               }
 
@@ -334,13 +306,10 @@ export function CourseLayoutQuiz({
 
               if (!submitted) {
                 setQuizPhase("working");
-                // setLoading(true);
                 quizAnswerSheetRef.current.startAt = now.getTime();
                 quizAnswerSheetRef.current.endAt = end.getTime();
               } else {
-                console.log("Viewing Finished Quiz");
                 setQuizPhase("submitted");
-                // setLoading(true);
               }
             }}
             disabled={trueLoading}

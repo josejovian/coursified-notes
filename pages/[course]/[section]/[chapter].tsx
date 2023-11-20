@@ -111,10 +111,6 @@ const CourseMaterial = ({
     [courseDetail, sectionData]
   );
 
-  useEffect(() => {
-    console.log(courseDetailWithProgress);
-  }, [courseDetailWithProgress]);
-
   const chapterContent = useMemo(() => markdown[page].code, [markdown, page]);
 
   const trueLoading = useMemo(
@@ -178,7 +174,6 @@ const CourseMaterial = ({
   );
 
   const handleSetMaxPage = useCallback(() => {
-    console.log("Set Max Page: ", markdown.length);
     setMaxPage(markdown.length);
     setLoading(false);
     updateData();
@@ -190,7 +185,6 @@ const CourseMaterial = ({
 
   const handleCleanUpStates = useCallback(
     (reason?: string) => {
-      console.log("CleanUpState: ", reason);
       answerRef.current = {};
       acceptRef.current = {};
       mountedRef.current = {};
