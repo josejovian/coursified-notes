@@ -7,7 +7,7 @@ import { Badge, IconText, Paragraph } from "../../Basic";
 import { CourseLayoutContentTemplate } from "../Layout";
 import { BsClock, BsQuestionCircle } from "react-icons/bs";
 import { MutableRefObject, useCallback, useEffect, useState } from "react";
-import { getPercentGroup, getQuizAnswerSheet } from "@/src/utils";
+import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/src/utils";
 
 interface CourseQuizOnboardingProps {
   chapterAddress: ChapterAddressType;
@@ -25,19 +25,10 @@ export function CourseQuizOnboarding({
 
   const handleGetPercent = useCallback(() => {
     const answerSheet = getQuizAnswerSheet(chapterAddress);
-
     if (!answerSheet) return;
 
-    const maxAchievable = Object.values(answerSheet.questions).reduce(
-      (prev, curr) => {
-        return prev + curr.weight;
-      },
-      0
-    );
-
-    const achieved = answerSheet.points ?? 0;
-
-    setPercent(Math.ceil((achieved * 100) / maxAchievable));
+    const calculated = getPercent(answerSheet);
+    setPercent(calculated);
   }, [chapterAddress]);
 
   useEffect(() => {

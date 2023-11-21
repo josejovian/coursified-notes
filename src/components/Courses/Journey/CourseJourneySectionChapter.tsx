@@ -3,7 +3,7 @@ import { MdOutlineDescription, MdOutlineExpandMore } from "react-icons/md";
 import { Icon } from "../../Basic/Icon";
 import { checkChaptersAreComplete, getLastFinishedChapter } from "@/src/utils";
 import clsx from "clsx";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, ReactNode } from "react";
 import { useRouter } from "next/router";
 import { Paragraph } from "../../Basic";
 
@@ -13,6 +13,7 @@ interface CourseJourneySectionChapterProps {
   onClick?: () => void;
   className?: string;
   active?: boolean;
+  rightElement?: ReactNode;
 }
 
 export function CourseJourneySectionChapter({
@@ -21,6 +22,7 @@ export function CourseJourneySectionChapter({
   onClick,
   className,
   active,
+  rightElement,
 }: CourseJourneySectionChapterProps) {
   return (
     <div
@@ -35,22 +37,23 @@ export function CourseJourneySectionChapter({
           active && "bg-orange-50",
         ],
         status !== "locked" && "cursor-pointer",
-				status === "completed" && "text-success-6",
-				status === "locked" && "text-secondary-4",
-				status === "unlocked" && "text-orange-600",
+        status === "completed" && "text-success-6",
+        status === "locked" && "text-secondary-4",
+        status === "unlocked" && "text-orange-600",
         className
       )}
       key={chapter.title}
       onClick={onClick}
     >
-      <Icon IconComponent={MdOutlineDescription} className="mr-4 text-inherit" size="m" />
-      <Paragraph
-				as="p"
-        className="truncate"
-				color="inherit"
-      >
+      <Icon
+        IconComponent={MdOutlineDescription}
+        className="mr-4 text-inherit"
+        size="m"
+      />
+      <Paragraph as="p" className="truncate" color="inherit">
         {chapter.title}
       </Paragraph>
+      {rightElement}
     </div>
   );
 }

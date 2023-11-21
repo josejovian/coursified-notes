@@ -23,7 +23,7 @@ import { CourseQuizTimer } from "../Quiz/CourseQuizTimer";
 import { useToast } from "@/src/hooks";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";
 import { CourseLayoutSide } from "./CourseLayoutSide";
-import { getPercentGroup, getQuizAnswerSheet } from "@/src/utils";
+import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/src/utils";
 
 export function CourseLayoutQuizSide({
   sideHeaderImage,
@@ -52,19 +52,10 @@ export function CourseLayoutQuizSide({
 
   const handleGetPercent = useCallback(() => {
     const answerSheet = getQuizAnswerSheet(chapterAddress);
-
     if (!answerSheet) return;
 
-    const maxAchievable = Object.values(answerSheet.questions).reduce(
-      (prev, curr) => {
-        return prev + curr.weight;
-      },
-      0
-    );
-
-    const achieved = answerSheet.points ?? 0;
-
-    setPercent(Math.ceil((achieved * 100) / maxAchievable));
+    const calculated = getPercent(answerSheet);
+    setPercent(calculated);
   }, [chapterAddress]);
 
   useEffect(() => {

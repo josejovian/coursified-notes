@@ -1,12 +1,18 @@
 import { ChapterAddressType, SectionType } from "@/src/type";
 import { MdOutlineExpandMore } from "react-icons/md";
 import { Icon } from "../../Basic/Icon";
-import { checkChaptersAreComplete, getLastFinishedChapter } from "@/src/utils";
+import {
+  checkChaptersAreComplete,
+  getLastFinishedChapter,
+  getPercent,
+  getPercentGroup,
+  getQuizAnswerSheet,
+} from "@/src/utils";
 import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
 import { CourseJourneySectionChapter } from "./CourseJourneySectionChapter";
 import { useRouter } from "next/router";
-import { Paragraph } from "../../Basic";
+import { Badge, Paragraph } from "../../Basic";
 import { CourseLayoutSideSection } from "../Layout/CourseLayoutSideSection";
 
 interface CourseJourneySectionProps {
@@ -55,6 +61,22 @@ export function CourseJourneySection({
     >
       {chapters.map((chapter, index) => {
         const status = handleGetStatusForChapter(index);
+        const sheet =
+          chapter.id === "quiz" &&
+          chapterAddress &&
+          getQuizAnswerSheet({
+            ...chapterAddress,
+            chapter: "quiz",
+          });
+
+        console.log(chapterAddress);
+
+        let percent: number | undefined;
+
+        if (sheet) {
+          percent = getPercent(sheet);
+        }
+
         return (
           <CourseJourneySectionChapter
             key={chapter.title}
@@ -69,6 +91,13 @@ export function CourseJourneySection({
             active={
               chapter.id === chapterAddress?.chapter &&
               section.id === chapterAddress?.section
+            }
+            rightElement={
+              !!percent && (
+                <Badge className="ml-4" color={getPercentGroup(percent)}>
+                  {percent}%
+                </Badge>
+              )
             }
           />
         );

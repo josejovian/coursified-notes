@@ -224,3 +224,15 @@ export function getPercentGroup(percent: number): ColorType {
   if (percent < 100) return "success";
   return "information";
 }
+
+export function getPercent(sheet: QuizAnswerSheetType) {
+  const { points, questions } = sheet;
+
+  const maxAchievable = Object.values(questions).reduce((prev, curr) => {
+    return prev + curr.weight;
+  }, 0);
+
+  const achieved = points ?? 0;
+
+  return Math.ceil((achieved * 100) / maxAchievable);
+}
