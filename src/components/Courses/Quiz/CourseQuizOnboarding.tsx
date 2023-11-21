@@ -1,24 +1,61 @@
-import { QuizConfigType } from "@/src/type";
-import { IconText, Paragraph } from "../../Basic";
+import {
+  ChapterAddressType,
+  QuizAnswerSheetType,
+  QuizConfigType,
+} from "@/src/type";
+import { Badge, IconText, Paragraph } from "../../Basic";
 import { CourseLayoutContentTemplate } from "../Layout";
 import { BsClock, BsQuestionCircle } from "react-icons/bs";
+import { MutableRefObject, useCallback, useEffect, useState } from "react";
+import { getPercentGroup, getQuizAnswerSheet } from "@/src/utils";
 
 interface CourseQuizOnboardingProps {
+  chapterAddress: ChapterAddressType;
   quizDetails: QuizConfigType;
   trueLoading: boolean;
 }
 
 export function CourseQuizOnboarding({
+  chapterAddress,
   quizDetails,
   trueLoading,
 }: CourseQuizOnboardingProps) {
-  const { title, questions, duration, description } = quizDetails;
+  const [percent, setPercent] = useState<number>();
+  const { title, duration, questions, description } = quizDetails;
+
+  const handleGetPercent = useCallback(() => {
+    const answerSheet = getQuizAnswerSheet(chapterAddress);
+
+    if (!answerSheet) return;
+
+    const maxAchievable = Object.values(answerSheet.questions).reduce(
+      (prev, curr) => {
+        return prev + curr.weight;
+      },
+      0
+    );
+
+    const achieved = answerSheet.points ?? 0;
+
+    setPercent(Math.ceil((achieved * 100) / maxAchievable));
+  }, [chapterAddress]);
+
+  useEffect(() => {
+    handleGetPercent();
+  }, [handleGetPercent]);
 
   return (
     <CourseLayoutContentTemplate trueLoading={trueLoading}>
-      <Paragraph as="h1" weight="bold">
-        Quiz - {title}
-      </Paragraph>
+      <div className="flex flex-row items-center gap-8">
+        <Paragraph as="h1" weight="bold">
+          Quiz - {title}
+        </Paragraph>
+        {!!percent && (
+          <Badge color={getPercentGroup(percent)} size="l">
+            {percent}%
+          </Badge>
+        )}
+      </div>
       <Paragraph as="p" size="l">
         {description}
       </Paragraph>

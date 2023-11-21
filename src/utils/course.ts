@@ -1,3 +1,4 @@
+import { ColorType } from "../style";
 import {
   ChapterAddressType,
   CourseType,
@@ -215,4 +216,11 @@ export function getQuizAnswerSheet(
   }
 
   return null;
+}
+
+export function getPercentGroup(percent: number): ColorType {
+  if (percent < 50) return "danger";
+  if (percent < 80) return "warning";
+  if (percent < 100) return "success";
+  return "information";
 }

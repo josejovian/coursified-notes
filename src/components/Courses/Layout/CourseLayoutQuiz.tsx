@@ -235,6 +235,7 @@ export function CourseLayoutQuiz({
     () =>
       (!quizPhase || quizPhase === "onboarding") && quizDetails ? (
         <CourseQuizOnboarding
+          chapterAddress={chapterAddress}
           quizDetails={quizDetails}
           trueLoading={trueLoading}
         />
@@ -266,6 +267,7 @@ export function CourseLayoutQuiz({
     [
       quizPhase,
       quizDetails,
+      chapterAddress,
       trueLoading,
       addreses,
       chapterContent,
