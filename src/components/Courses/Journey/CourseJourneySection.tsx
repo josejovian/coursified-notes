@@ -1,4 +1,4 @@
-import { ChapterAddressType, SectionType } from "@/src/type";
+import { ChapterAddressType, SectionType } from "@/type";
 import { MdOutlineExpandMore } from "react-icons/md";
 import { Icon } from "../../Basic/Icon";
 import {
@@ -7,7 +7,7 @@ import {
   getPercent,
   getPercentGroup,
   getQuizAnswerSheet,
-} from "@/src/utils";
+} from "@/utils";
 import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
 import { CourseJourneySectionChapter } from "./CourseJourneySectionChapter";

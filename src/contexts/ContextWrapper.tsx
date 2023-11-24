@@ -1,5 +1,5 @@
 import { Dispatch, ReactNode, SetStateAction, createContext } from "react";
-import { ScreenSizeType, ToastType } from "@/src/type";
+import { ScreenSizeType, ToastType } from "@/type";
 
 const SCREEN_CONTEXT_DEFAULT: ScreenSizeType = {
   width: 0,

@@ -11,7 +11,7 @@ import {
   SizeType,
   INPUT_COLOR_CLASS,
   INPUT_SIZE_CLASS,
-} from "@/src/style";
+} from "@/style";
 
 interface InputProps
   extends Omit<

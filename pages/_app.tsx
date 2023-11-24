@@ -1,15 +1,15 @@
-import { Toast } from "@/src/components";
+import { Toast } from "@/components";
 import {
   ScreenSizeCategory,
   ScreenSizeType,
   ToastActionType,
   ToastType,
-} from "@/src/type";
+} from "@/type";
 import { render } from "katex";
 import type { AppProps } from "next/app";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles/globals.css";
-import { ContextWrapper } from "@/src/contexts";
+import { ContextWrapper } from "@/contexts";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [toasts, setToasts] = useState<ToastActionType[]>([]);

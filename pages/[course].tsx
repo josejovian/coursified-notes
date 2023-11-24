@@ -1,12 +1,12 @@
 import { useMemo } from "react";
-import { CourseJourney, Paragraph } from "@/src/components";
-import { CourseType } from "@/src/type";
-import { useProgress, useScreen } from "@/src/hooks";
-import { readAllCourses, getDetailedCourse } from "@/src/lib/mdx";
+import { CourseJourney, Paragraph } from "@/components";
+import { CourseType } from "@/type";
+import { useProgress, useScreen } from "@/hooks";
+import { readAllCourses, getDetailedCourse } from "@/lib/mdx";
 import Image from "next/image";
 import clsx from "clsx";
 import Link from "next/link";
-import { Icon } from "@/src/components/Basic/Icon";
+import { Icon } from "@/components/Basic/Icon";
 import { BsChevronRight } from "react-icons/bs";
 import { MdChevronRight } from "react-icons/md";
 

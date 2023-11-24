@@ -6,7 +6,7 @@ import {
   BADGE_COLOR_CLASS,
   BADGE_SIZE_CLASS,
   BADGE_COLOR_INVERTED_CLASS,
-} from "@/src/style";
+} from "@/style";
 
 interface BadgeProps {
   className?: string;

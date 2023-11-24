@@ -18,12 +18,12 @@ import {
   QuizPhaseType,
   QuizQuestionType,
   StateType,
-} from "@/src/type";
+} from "@/type";
 import { CourseQuizTimer } from "../Quiz/CourseQuizTimer";
-import { useToast } from "@/src/hooks";
+import { useToast } from "@/hooks";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";
 import { CourseLayoutSide } from "./CourseLayoutSide";
-import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/src/utils";
+import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/utils";
 
 export function CourseLayoutQuizSide({
   sideHeaderImage,

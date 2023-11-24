@@ -6,7 +6,7 @@ import {
   QuizConfigType,
   QuizPhaseType,
   QuizQuestionType,
-} from "@/src/type";
+} from "@/type";
 import clsx from "clsx";
 import { CourseLayoutSideSection } from "../Layout/CourseLayoutSideSection";
 import { CourseQuizListQuestion } from "./CourseQuizListQuestion";

@@ -10,8 +10,8 @@ import {
   ColorType,
   BLOCKQUOTE_COLOR_CLASS,
   BLOCKQUOTE_VARIANT_CLASS,
-} from "@/src/style";
-import { BlockquoteVariantType } from "@/src/style/variants";
+} from "@/style";
+import { BlockquoteVariantType } from "@/style/variants";
 
 export interface BaseQuoteProps {
   className?: string;

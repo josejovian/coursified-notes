@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import clsx from "clsx";
 import { Loader } from "../../Basic";
 

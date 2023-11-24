@@ -1,5 +1,6 @@
-import { GRAPH_FONT_SIZE } from "@/src/consts";
-import { GraphParams } from "@/src/type";
+import React from "react";
+import { GRAPH_FONT_SIZE } from "@/consts";
+import { GraphParams } from "@/type";
 import TeX from "@matejmazur/react-katex";
 
 export interface CourseEntityGraphAxesProps {

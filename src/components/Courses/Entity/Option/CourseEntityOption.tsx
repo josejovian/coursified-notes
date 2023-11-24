@@ -1,4 +1,4 @@
-import { Icon } from "@/src/components/Basic/Icon";
+import { Icon } from "@/components/Basic/Icon";
 import clsx from "clsx";
 import {
   DetailedHTMLProps,
@@ -15,7 +15,7 @@ import { MdCheck } from "react-icons/md";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
-import { AnswerType } from "@/src/type";
+import { AnswerType } from "@/type";
 
 export interface OptionProps {
   content: string;

@@ -1,14 +1,14 @@
-import { ChapterType, SectionType } from "@/src/type";
+import { ChapterType, SectionType } from "@/type";
 import { MdOutlineDescription, MdOutlineExpandMore } from "react-icons/md";
 import { Icon } from "../../Basic/Icon";
-import { checkChaptersAreComplete, getLastFinishedChapter } from "@/src/utils";
+import { checkChaptersAreComplete, getLastFinishedChapter } from "@/utils";
 import clsx from "clsx";
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { Paragraph } from "../../Basic";
 
 interface CourseLayoutSideSectionChapterProps {
-	title: string;
+  title: string;
   status: "locked" | "unlocked" | "completed";
   onClick?: () => void;
   className?: string;
@@ -16,7 +16,7 @@ interface CourseLayoutSideSectionChapterProps {
 }
 
 export function CourseLayoutSideSectionChapter({
-	title,
+  title,
   status,
   onClick,
   className,
@@ -35,20 +35,20 @@ export function CourseLayoutSideSectionChapter({
           active && "bg-orange-50",
         ],
         status !== "locked" && "cursor-pointer",
-				status === "completed" && "text-success-6",
-				status === "locked" && "text-secondary-4",
-				status === "unlocked" && "text-orange-600",
+        status === "completed" && "text-success-6",
+        status === "locked" && "text-secondary-4",
+        status === "unlocked" && "text-orange-600",
         className
       )}
       key={title}
       onClick={onClick}
     >
-      <Icon IconComponent={MdOutlineDescription} className="mr-4 text-inherit" size="m" />
-      <Paragraph
-				as="p"
-        className="truncate"
-				color="inherit"
-      >
+      <Icon
+        IconComponent={MdOutlineDescription}
+        className="mr-4 text-inherit"
+        size="m"
+      />
+      <Paragraph as="p" className="truncate" color="inherit">
         {title}
       </Paragraph>
     </div>

@@ -1,4 +1,4 @@
-import { CourseType } from "@/src/type";
+import { CourseType } from "@/type";
 import Image from "next/image";
 import { Paragraph } from "../../Basic";
 import Link from "next/link";

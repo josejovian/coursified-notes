@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import clsx from "clsx";
 import { MdOutlineDescription } from "react-icons/md";
 import { Paragraph, Icon, Badge } from "../../Basic";
-import { QuizAnswerType, QuizPhaseType, QuizQuestionType } from "@/src/type";
+import { QuizAnswerType, QuizPhaseType, QuizQuestionType } from "@/type";
 
 interface CourseQuizListQuestionProps {
   phase: QuizPhaseType;

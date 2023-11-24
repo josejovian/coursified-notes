@@ -1,10 +1,10 @@
-import { TOAST_COLOR_CLASS, TOAST_VARIANT_CLASS } from "@/src/style";
-import { ToastActionType, ToastType } from "@/src/type";
+import { TOAST_COLOR_CLASS, TOAST_VARIANT_CLASS } from "@/style";
+import { ToastActionType, ToastType } from "@/type";
 import clsx from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BsX } from "react-icons/bs";
 import { Icon } from "./Icon";
-import { TOAST_PHRASE } from "@/src/consts";
+import { TOAST_PHRASE } from "@/consts";
 
 interface ToastProps {
   toast: ToastActionType;

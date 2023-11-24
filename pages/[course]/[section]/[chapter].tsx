@@ -5,49 +5,30 @@ import React, {
   useCallback,
   useRef,
 } from "react";
-import clsx from "clsx";
 import "katex/dist/katex.min.css";
 import { useRouter } from "next/router";
 import {
   AnswerType,
   ChapterAddressType,
   CourseType,
-  QuizAnswerSheetType,
-  QuizAnswerType,
-  QuizConfigType,
   QuizPhaseType,
-  QuizQuestionType,
-} from "@/src/type";
+} from "@/type";
 import {
   checkChapterProgress,
-  getQuizAnswerSheet,
   getSpecificChapterAddress,
   storeChapterProgress,
-  storeQuizAnswerSheet,
-} from "@/src/utils";
-import {
-  Button,
-  CourseLayoutMain,
-  CourseQuizOnboarding,
-  CourseLayoutSide,
-  Paragraph,
-  TemplateGeneric,
-  IconText,
-} from "@/src/components";
-import { SwapPageContext } from "@/src/contexts";
+} from "@/utils";
+import { SwapPageContext } from "@/contexts";
 import {
   readAllChapters,
   readAllSections,
   readAllCourses,
   getDetailedCourse,
   readChapterMd,
-} from "@/src/lib/mdx";
-import { useProgress, useQuiz, useToast } from "@/src/hooks";
-import { CourseQuizTimer } from "@/src/components/Courses/Quiz/CourseQuizTimer";
-import { BsFillClockFill } from "react-icons/bs";
-import Link from "next/link";
-import { CourseLayoutQuiz } from "@/src/components/Courses/Layout/CourseLayoutQuiz";
-import { CourseLayoutMaterial } from "@/src/components/Courses/Layout/CourseLayoutMaterial";
+} from "@/lib/mdx";
+import { useProgress } from "@/hooks";
+import { CourseLayoutQuiz } from "@/components/Courses/Layout/CourseLayoutQuiz";
+import { CourseLayoutMaterial } from "@/components/Courses/Layout/CourseLayoutMaterial";
 
 interface CourseMaterialProps {
   markdown: any;
@@ -64,10 +45,10 @@ const CourseMaterial = ({
 
   const statePage = useState(0);
   const stateMaxPage = useState(0);
-  const [page, setPage] = statePage;
+  const page = statePage[0];
   const stateSolved = useState(-1);
-  const [solved, setSolved] = stateSolved;
-  const [maxPage, setMaxPage] = stateMaxPage;
+  const setSolved = stateSolved[1];
+  const setMaxPage = stateMaxPage[1];
   const stateLoading = useState(true);
   const stateSwapChapters = useState(false);
   const stateSwapPages = useState(false);
@@ -79,30 +60,19 @@ const CourseMaterial = ({
   const answerRef = useRef<Partial<AnswerType>>({});
   const acceptRef = useRef<AnswerType>({});
   const mountedRef = useRef<Record<string, boolean>>({});
-  const answer = answerRef.current;
   const accept = acceptRef.current;
   const stateSubmitted = useState(false);
   const stateChecking = useState(false);
-  const [checking, setChecking] = stateChecking;
-  const [submitted, setSubmitted] = stateSubmitted;
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  const { addToast } = useToast();
+  const setChecking = stateChecking[1];
+  const setSubmitted = stateSubmitted[1];
+  const stateQuizPhase = useState<QuizPhaseType>();
 
   const courseDetail: CourseType = useMemo(
     () => JSON.parse(rawCourseDetail) as CourseType,
     [rawCourseDetail]
   );
-
-  const stateQuizPhase = useState<QuizPhaseType>();
-  const [quizPhase, setQuizPhase] = stateQuizPhase;
-
-  const { title, description } = courseDetail;
-
   const { id, sections } = courseDetail;
-
   const { sectionData, updateData } = useProgress({ id, sections });
-
   const courseDetailWithProgress: CourseType = useMemo(
     () => ({
       ...courseDetail,
@@ -110,14 +80,11 @@ const CourseMaterial = ({
     }),
     [courseDetail, sectionData]
   );
-
   const chapterContent = useMemo(() => markdown[page].code, [markdown, page]);
-
   const trueLoading = useMemo(
     () => swapPages || swapChapters || loading,
     [loading, swapChapters, swapPages]
   );
-
   const chapterBaseAddress = useMemo(
     () => ({
       ...chapterAddress,
@@ -125,7 +92,6 @@ const CourseMaterial = ({
     }),
     [page, chapterAddress]
   );
-
   const addresses = useMemo(
     () => ({
       read: getSpecificChapterAddress(chapterBaseAddress, "read"),
@@ -134,7 +100,7 @@ const CourseMaterial = ({
     [chapterBaseAddress]
   );
 
-  const { read, practice } = addresses;
+  const { practice } = addresses;
 
   const handleCheckAnswer = useCallback(
     (
@@ -185,6 +151,7 @@ const CourseMaterial = ({
 
   const handleCleanUpStates = useCallback(
     (reason?: string) => {
+      console.log("Clean Up: ", reason);
       answerRef.current = {};
       acceptRef.current = {};
       mountedRef.current = {};
@@ -322,7 +289,6 @@ const CourseMaterial = ({
 };
 
 export const getStaticPaths = async () => {
-  const {} = require("../../../src/lib/mdx.tsx");
   const courses: string[] = await readAllCourses();
 
   const strings = await Promise.all(

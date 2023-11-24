@@ -15,18 +15,18 @@ import {
   QuizPhaseType,
   QuizQuestionType,
   StateType,
-} from "@/src/type";
+} from "@/type";
 import { TemplateGeneric } from "../../Template";
 import { Button, IconText, Paragraph } from "../../Basic";
 import { useRouter } from "next/router";
 import { BsFillClockFill } from "react-icons/bs";
 import { CourseQuizTimer } from "../Quiz/CourseQuizTimer";
-import { useQuiz, useToast } from "@/src/hooks";
+import { useQuiz, useToast } from "@/hooks";
 import { CourseLayoutSide } from "./CourseLayoutSide";
 import clsx from "clsx";
 import { CourseQuizOnboarding } from "../Quiz";
 import { CourseLayoutMain } from "./CourseLayoutMain";
-import { storeChapterProgress } from "@/src/utils";
+import { storeChapterProgress } from "@/utils";
 import Link from "next/link";
 import { CourseJourney } from "../Journey";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";

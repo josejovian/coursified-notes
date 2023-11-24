@@ -14,7 +14,7 @@ import {
   BUTTON_COLOR_CLASS,
   BUTTON_SIZE_CLASS,
   BUTTON_ICON_SIZE_CLASS,
-} from "@/src/style";
+} from "@/style";
 
 interface ButtonProps
   extends Omit<

@@ -1,8 +1,8 @@
-import { AnswerType } from "@/src/type";
+import { AnswerType } from "@/type";
 import clsx from "clsx";
 import * as ReactDOM from "react-dom";
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
-import { MatchCard, MatchDrop } from "@/src/components";
+import { MatchCard, MatchDrop } from "@/components";
 import TeX from "@matejmazur/react-katex";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkMath from "remark-math";

@@ -15,14 +15,14 @@ import {
   QuizPhaseType,
   QuizQuestionType,
   StateType,
-} from "@/src/type";
-import { checkChapterProgress } from "@/src/utils";
-import { Blockquote, Graph, Input, Loader, Paragraph } from "@/src/components";
+} from "@/type";
+import { checkChapterProgress } from "@/utils";
+import { Blockquote, Graph, Input, Loader, Paragraph } from "@/components";
 import { useRouter } from "next/router";
-import { useCustom } from "@/src/hooks";
+import { useCustom } from "@/hooks";
 import { CourseLayoutContentTemplate } from "./CourseLayoutContentTemplate";
 import { Option } from "../Entity/Option/CourseEntityOption";
-import { useDebounce } from "@/src/hooks/useDebounce";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface CourseMaterialContentProps {
   markdown: any;

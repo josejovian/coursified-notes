@@ -8,7 +8,7 @@ import {
   QuizPhaseType,
   QuizQuestionType,
   StateType,
-} from "@/src/type";
+} from "@/type";
 import clsx from "clsx";
 import Link from "next/link";
 import {
@@ -18,11 +18,11 @@ import {
   Icon,
   CourseQuizList,
   IconText,
-} from "@/src/components";
-import { useScreen } from "@/src/hooks";
+} from "@/components";
+import { useScreen } from "@/hooks";
 import Image from "next/image";
 import { MdChevronLeft } from "react-icons/md";
-import { getHMS } from "@/src/utils/date";
+import { getHMS } from "@/utils/date";
 import { CourseQuizTimer } from "../Quiz/CourseQuizTimer";
 import { BsFillClockFill } from "react-icons/bs";
 

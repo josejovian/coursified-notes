@@ -5,8 +5,8 @@ import {
   MathPoint,
   GraphColors,
   PointVariants,
-} from "@/src/type";
-import { GRAPH_COLORS, POINT_VARIANTS } from "@/src/consts";
+} from "@/type";
+import { GRAPH_COLORS, POINT_VARIANTS } from "@/consts";
 import { evaluateMath } from "../evaluateMath";
 
 export function drawGraphAxes(

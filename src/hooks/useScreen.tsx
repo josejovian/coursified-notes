@@ -1,4 +1,4 @@
-import { ScreenContext } from "@/src/contexts";
+import { ScreenContext } from "@/contexts";
 import { useContext, useMemo } from "react";
 
 export function useScreen() {

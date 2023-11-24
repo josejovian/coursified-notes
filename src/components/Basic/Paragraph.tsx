@@ -5,10 +5,16 @@ import {
   FontColor,
   FontSize,
   FontWeight,
-} from "@/src/consts/style";
-import { Common } from "@/src/type";
+} from "@/consts/style";
+import { Common } from "@/type";
 import clsx from "clsx";
-import { CSSProperties, HTMLProps, ReactNode, useEffect, useMemo } from "react";
+import React, {
+  CSSProperties,
+  HTMLProps,
+  ReactNode,
+  useEffect,
+  useMemo,
+} from "react";
 
 export interface ParagraphProps {
   as?: "span" | "p" | "h1" | "h2" | "h3" | "a";

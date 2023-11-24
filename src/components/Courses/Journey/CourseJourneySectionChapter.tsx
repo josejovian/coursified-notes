@@ -1,7 +1,7 @@
-import { ChapterType, SectionType } from "@/src/type";
+import { ChapterType, SectionType } from "@/type";
 import { MdOutlineDescription, MdOutlineExpandMore } from "react-icons/md";
 import { Icon } from "../../Basic/Icon";
-import { checkChaptersAreComplete, getLastFinishedChapter } from "@/src/utils";
+import { checkChaptersAreComplete, getLastFinishedChapter } from "@/utils";
 import clsx from "clsx";
 import { useCallback, useMemo, ReactNode } from "react";
 import { useRouter } from "next/router";

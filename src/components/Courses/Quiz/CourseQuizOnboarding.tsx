@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ChapterAddressType, QuizConfigType } from "@/src/type";
+import { BsClock, BsQuestionCircle } from "react-icons/bs";
+import { ChapterAddressType, QuizConfigType } from "@/type";
 import { Badge, IconText, Paragraph } from "../../Basic";
 import { CourseLayoutContentTemplate } from "../Layout";
-import { BsClock, BsQuestionCircle } from "react-icons/bs";
-import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/src/utils";
+import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/utils";
 
 interface CourseQuizOnboardingProps {
   chapterAddress: ChapterAddressType;

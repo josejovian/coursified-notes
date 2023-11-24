@@ -1,7 +1,7 @@
 import { ReactNode, useMemo, useRef, useState, useEffect } from "react";
 import clsx from "clsx";
 import { Button, Icon, Loader } from "../Basic";
-import { useScreen } from "@/src/hooks";
+import { useScreen } from "@/hooks";
 import { MdChevronLeft } from "react-icons/md";
 import Image, { ImageProps } from "next/image";
 

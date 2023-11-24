@@ -18,14 +18,14 @@ import {
   parseSourceFunctions,
   parseSourcePoints,
   parseSourceAsymptotes,
-} from "@/src/utils";
+} from "@/utils";
 import {
   GRAPH_ARROW_SIZE,
   GRAPH_GRID_SIZE,
   GRAPH_OUTER_BORDER,
   GRAPH_RANGES,
-} from "@/src/consts";
-import { GraphGridSize, GraphParams } from "@/src/type";
+} from "@/consts";
+import { GraphGridSize, GraphParams } from "@/type";
 
 interface GraphProps {
   id: string;

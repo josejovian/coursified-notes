@@ -3,7 +3,7 @@ import { IconType } from "react-icons";
 import { Icon } from "../Basic/Icon";
 import { Paragraph, ParagraphProps } from "./Paragraph";
 import clsx from "clsx";
-import { FONT_COLOR } from "@/src/consts";
+import { FONT_COLOR } from "@/consts";
 
 interface IconTextProps extends ParagraphProps {
   icon: IconType;
