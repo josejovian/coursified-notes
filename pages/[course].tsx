@@ -1,14 +1,12 @@
 import { useMemo } from "react";
-import { CourseJourney, Paragraph } from "@/components";
-import { CourseType } from "@/type";
-import { useProgress, useScreen } from "@/hooks";
-import { readAllCourses, getDetailedCourse } from "@/lib/mdx";
 import Image from "next/image";
 import clsx from "clsx";
-import Link from "next/link";
-import { Icon } from "@/components/Basic/Icon";
-import { BsChevronRight } from "react-icons/bs";
 import { MdChevronRight } from "react-icons/md";
+import Link from "next/link";
+import { CourseJourney, Icon, Paragraph } from "@/components";
+import { readAllCourses, getDetailedCourse } from "@/lib/mdx";
+import { useProgress, useScreen } from "@/hooks";
+import { CourseType } from "@/type";
 
 interface CourseProps {
   details: string;
@@ -117,6 +115,7 @@ export const getStaticPaths = async () => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getStaticProps = async (req: any) => {
   const { course } = req.params;
 

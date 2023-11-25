@@ -1,12 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-  useMemo,
-} from "react";
-import clsx from "clsx";
-import { CourseEntityGraphAxes } from "./CourseEntityGraphAxes";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import {
   drawGraphAxes,
   drawGraphAxesArrows,
@@ -26,11 +18,11 @@ import {
   GRAPH_RANGES,
 } from "@/consts";
 import { GraphGridSize, GraphParams } from "@/type";
+import { CourseEntityGraphAxes } from "./CourseEntityGraphAxes";
 
 interface GraphProps {
   id: string;
   functions?: string;
-  funcs?: any;
   points?: string;
   ranges?: string;
   increments?: string;
@@ -98,15 +90,8 @@ export const Graph = ({
       increments: parsedIncrements,
     };
   }, [down, left, ovverrideGridSize, parsedIncrements, right, up]);
-  const {
-    arrowSize,
-    borderSize,
-    gridSize,
-    height,
-    horizontal,
-    vertical,
-    width,
-  } = graphParams;
+
+  const { height, width } = graphParams;
 
   const [loading, setLoading] = useState(true);
   const initializeRef = useRef(false);

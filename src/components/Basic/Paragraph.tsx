@@ -1,3 +1,4 @@
+import { CSSProperties, ReactNode, useMemo } from "react";
 import {
   FONT_COLOR,
   FONT_SIZE,
@@ -6,15 +7,7 @@ import {
   FontSize,
   FontWeight,
 } from "@/consts/style";
-import { Common } from "@/type";
 import clsx from "clsx";
-import React, {
-  CSSProperties,
-  HTMLProps,
-  ReactNode,
-  useEffect,
-  useMemo,
-} from "react";
 
 export interface ParagraphProps {
   as?: "span" | "p" | "h1" | "h2" | "h3" | "a";

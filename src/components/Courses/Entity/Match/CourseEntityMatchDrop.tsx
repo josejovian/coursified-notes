@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 interface MatchDropProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   active: any;
   practiceId: string;
   handleClickDrop: () => void;

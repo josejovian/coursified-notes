@@ -1,7 +1,7 @@
-import { CourseType } from "@/type";
 import Image from "next/image";
-import { Paragraph } from "../../Basic";
 import Link from "next/link";
+import { CourseType } from "@/type";
+import { Paragraph } from "../../Basic";
 
 interface CourseCardProps {
   course: CourseType;

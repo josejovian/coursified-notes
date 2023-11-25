@@ -1,31 +1,22 @@
-import clsx from "clsx";
 import React, {
   useCallback,
-  useState,
   useRef,
   useMemo,
   useEffect,
   MutableRefObject,
 } from "react";
+import clsx from "clsx";
 import { getMDXComponent } from "mdx-bundler/client";
 import TeX from "@matejmazur/react-katex";
-import {
-  AddressesType,
-  AnswerType,
-  QuizPhaseType,
-  QuizQuestionType,
-  StateType,
-} from "@/type";
+import { AddressesType, AnswerType, QuizQuestionType, StateType } from "@/type";
 import { checkChapterProgress } from "@/utils";
-import { Blockquote, Graph, Input, Loader, Paragraph } from "@/components";
+import { Blockquote, Graph, Input, Paragraph } from "@/components";
 import { useRouter } from "next/router";
-import { useCustom } from "@/hooks";
 import { CourseLayoutContentTemplate } from "./CourseLayoutContentTemplate";
 import { Option } from "../Entity/Option/CourseEntityOption";
-import { useDebounce } from "@/hooks/useDebounce";
 
 interface CourseMaterialContentProps {
-  markdown: any;
+  markdown: string;
   addreses: AddressesType;
   stateSolved: StateType<number>;
   answerRef: MutableRefObject<Partial<AnswerType>>;
@@ -50,7 +41,6 @@ export function CourseLayoutMain({
   acceptRef,
   answerRef,
   mountedRef,
-  stateChecking,
   stateSolved,
   stateLoading,
   stateSubmitted,
@@ -64,11 +54,9 @@ export function CourseLayoutMain({
   inputIsDisabled,
 }: CourseMaterialContentProps) {
   const router = useRouter();
-  const checking = stateChecking[0];
   const [loading, setLoading] = stateLoading;
   const [solved, setSolved] = stateSolved;
   const [submitted, setSubmmited] = stateSubmitted;
-  const stateActive = useState<any>(null);
   const inputRef = useRef<Record<string, boolean>>({});
   const graphRef = useRef<Record<string, string>>({});
   const page = statePage[0];
@@ -165,6 +153,7 @@ export function CourseLayoutMain({
   ]);
 
   const handleConvertPractice = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ({ id, answer: answerKey, placeholder, indent }: any) => {
       const accept = acceptRef.current;
       const answer = answerRef.current;
@@ -291,7 +280,7 @@ export function CourseLayoutMain({
 
       return (
         <>
-          {options.map(([truth, option], idx) => {
+          {options.map(([_, option], idx) => {
             const identifier = `Option-${id}-${idx}`;
             const parsed = option.replaceAll("\\{", "{").replaceAll("\\}", "}");
             const disabled = Boolean(solved || inputIsDisabled);
@@ -333,6 +322,7 @@ export function CourseLayoutMain({
   );
 
   const handleRenderQuizQuestionHeading = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ({ id, ids, weight = "10" }: any) => {
       onQuestionMount &&
         onQuestionMount(id, {
@@ -442,7 +432,7 @@ export function CourseLayoutMain({
   );
 }
 
-function getId(props: any) {
+function getId(props: string) {
   // return encodeURIComponent(Object.values(props).join(""));
   return Buffer.from(Object.values(props).join(""), "utf8")
     .toString("base64")

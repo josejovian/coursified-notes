@@ -1,15 +1,9 @@
-import { Toast } from "@/components";
-import {
-  ScreenSizeCategory,
-  ScreenSizeType,
-  ToastActionType,
-  ToastType,
-} from "@/type";
-import { render } from "katex";
-import type { AppProps } from "next/app";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles/globals.css";
+import type { AppProps } from "next/app";
+import { Toast } from "@/components";
 import { ContextWrapper } from "@/contexts";
+import { ScreenSizeCategory, ScreenSizeType, ToastActionType } from "@/type";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [toasts, setToasts] = useState<ToastActionType[]>([]);
@@ -62,7 +56,7 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         {toasts
           // .filter((toast) => !toast.dead)
-          .map((toast, idx) => (
+          .map((toast) => (
             <Toast
               key={toast.id}
               toast={toast}

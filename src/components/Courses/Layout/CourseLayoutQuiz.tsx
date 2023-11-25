@@ -6,6 +6,8 @@ import {
   useState,
   useRef,
 } from "react";
+import clsx from "clsx";
+import { useQuiz, useToast } from "@/hooks";
 import {
   AddressesType,
   AnswerType,
@@ -13,22 +15,15 @@ import {
   CourseType,
   QuizAnswerSheetType,
   QuizAnswerType,
-  QuizConfigType,
   QuizPhaseType,
   QuizQuestionType,
   StateType,
 } from "@/type";
+import { getQuizAnswerSheet, storeQuizAnswerSheet } from "@/utils";
 import { TemplateGeneric } from "../../Template";
-import { Button, IconText, Paragraph } from "../../Basic";
-import { useRouter } from "next/router";
-import { BsFillClockFill } from "react-icons/bs";
-import { CourseQuizTimer } from "../Quiz/CourseQuizTimer";
-import { useQuiz, useToast } from "@/hooks";
-import { CourseLayoutSide } from "./CourseLayoutSide";
-import clsx from "clsx";
+import { Button } from "../../Basic";
 import { CourseQuizOnboarding } from "../Quiz";
 import { CourseLayoutMain } from "./CourseLayoutMain";
-import { getQuizAnswerSheet, storeQuizAnswerSheet } from "@/utils";
 import { CourseLayoutQuizSide } from "./CourseLayoutQuizSide";
 
 export function CourseLayoutQuiz({
@@ -43,19 +38,14 @@ export function CourseLayoutQuiz({
   stateSubmitted,
   stateSwapChapters,
   statePage,
-  stateLastUpdate,
   courseDetail,
   courseDetailWithProgress,
   chapterAddress,
   trueLoading,
-  // quizDetails,
-  // quizQuestions,
-  // stateQuizAnswerSheet,
-  // stateQuizPhase,
   handleCheckAnswer,
 }: {
   addreses: AddressesType;
-  chapterContent: any;
+  chapterContent: string;
   stateSolved: StateType<number>;
   answerRef: MutableRefObject<Partial<AnswerType>>;
   acceptRef: MutableRefObject<AnswerType>;
@@ -68,9 +58,6 @@ export function CourseLayoutQuiz({
   statePage: StateType<number>;
   stateProblemCount: StateType<number>;
   stateLastUpdate: StateType<number>;
-  // stateQuizAnswerSheet: StateType<QuizAnswerSheetType>;
-  // quizQuestions: MutableRefObject<Record<string, QuizQuestionType>>;
-  // quizDetails: QuizConfigType;
   courseDetail: CourseType;
   courseDetailWithProgress: CourseType;
   chapterAddress: ChapterAddressType;
@@ -95,7 +82,7 @@ export function CourseLayoutQuiz({
   const quizAnswerSheet = quizAnswerSheetRef.current;
   const stateQuizPhase = useState<QuizPhaseType>();
   const [quizPhase, setQuizPhase] = stateQuizPhase;
-  const [loading, setLoading] = stateLoading;
+  const setLoading = stateLoading[1];
   const setPage = statePage[1];
 
   const { addToast } = useToast();
@@ -109,7 +96,7 @@ export function CourseLayoutQuiz({
           let answered = true;
           let correct = true;
 
-          let relatedInputs = value.inputIds.reduce((prev, curr) => {
+          const relatedInputs = value.inputIds.reduce((prev, curr) => {
             if (!ans[curr]) answered = false;
             if (!ans[curr] || ans[curr] !== acceptRef.current[curr])
               correct = false;
@@ -119,7 +106,7 @@ export function CourseLayoutQuiz({
               [curr]: ans[curr],
             };
           }, {});
-          let relatedKeys = value.inputIds.reduce((prev, curr) => {
+          const relatedKeys = value.inputIds.reduce((prev, curr) => {
             return {
               ...prev,
               [curr]: acceptRef.current[curr],
@@ -139,6 +126,7 @@ export function CourseLayoutQuiz({
           ];
         })
         .reduce(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (prev, [key, value]: any) => ({
             ...prev,
             [key]: value,
@@ -164,7 +152,7 @@ export function CourseLayoutQuiz({
       ...quizAnswerSheetRef.current,
       submittedAt: now,
       points,
-      answers: answerRef.current as any,
+      answers: answerRef.current,
     };
     storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
     quizAnswerSheetRef.current = finalAnswerSheet;
@@ -201,10 +189,10 @@ export function CourseLayoutQuiz({
       if (exists && existing.submittedAt) {
         quizAnswerSheetRef.current = existing;
         setSubmitted(true);
-        answerRef.current = existing.answers as any;
+        answerRef.current = existing.answers;
       } else if (exists && !existing.submittedAt) {
         quizAnswerSheetRef.current = existing;
-        answerRef.current = existing.answers as any;
+        answerRef.current = existing.answers;
         addToast({
           phrase: "courseQuizContinueFromBackUp",
         });

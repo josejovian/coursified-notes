@@ -1,15 +1,8 @@
-/* eslint-disable react/jsx-no-undef */
-import Image, { ImageProps } from "next/image";
-import {
-  useRef,
-  useMemo,
-  useState,
-  useEffect,
-  MutableRefObject,
-  useCallback,
-} from "react";
-import { Badge, IconText, Paragraph } from "../../Basic";
+import { useState, useEffect, MutableRefObject, useCallback } from "react";
 import { BsFillClockFill } from "react-icons/bs";
+import { ImageProps } from "next/image";
+import { Badge, IconText, Paragraph } from "../../Basic";
+import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/utils";
 import {
   ChapterAddressType,
   CourseType,
@@ -20,10 +13,8 @@ import {
   StateType,
 } from "@/type";
 import { CourseQuizTimer } from "../Quiz/CourseQuizTimer";
-import { useToast } from "@/hooks";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";
 import { CourseLayoutSide } from "./CourseLayoutSide";
-import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/utils";
 
 export function CourseLayoutQuizSide({
   sideHeaderImage,

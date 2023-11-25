@@ -1,21 +1,10 @@
-import { Icon } from "@/components/Basic/Icon";
+import { useCallback, useRef, useState } from "react";
 import clsx from "clsx";
-import {
-  DetailedHTMLProps,
-  HTMLAttributes,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { BsFillSquareFill } from "react-icons/bs";
-import * as ReactDOM from "react-dom";
 import { MdCheck } from "react-icons/md";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
-import { AnswerType } from "@/type";
+import { Icon } from "@/components/Basic/Icon";
 
 export interface OptionProps {
   content: string;
@@ -29,7 +18,6 @@ export function Option({
   content,
   selected: isSelected,
   disabled,
-  id,
   correct,
   onSelect,
 }: OptionProps) {
@@ -55,12 +43,6 @@ export function Option({
     },
     [handleReplaceHashtag]
   );
-
-  const handleRenderMarkdown = useCallback(() => {
-    if (!contentRef.current || !content) return;
-
-    ReactDOM.render(renderWrapper(content), contentRef.current);
-  }, [content, renderWrapper]);
 
   return (
     <label

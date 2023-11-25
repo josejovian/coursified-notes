@@ -19,9 +19,9 @@ export function getHMS(t: number) {
 
   seconds = Math.ceil(time);
 
-  let hourPhrase = `${padZero(hours)}`;
-  let minutePhrase = `${padZero(minutes)}`;
-  let secondPhrase = `${padZero(seconds)}`;
+  const hourPhrase = `${padZero(hours)}`;
+  const minutePhrase = `${padZero(minutes)}`;
+  const secondPhrase = `${padZero(seconds)}`;
 
   if (hours === 0) return [minutePhrase, secondPhrase].join(":");
 

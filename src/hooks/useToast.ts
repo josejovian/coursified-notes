@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo } from "react";
+import { ToastContext } from "../contexts";
 import { ToastType } from "../type";
-import { ToastContext } from "../contexts/ContextWrapper";
 
 export function useToast() {
   const setToasts = useContext(ToastContext);

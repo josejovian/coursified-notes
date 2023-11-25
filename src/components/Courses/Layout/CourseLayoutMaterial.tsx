@@ -1,33 +1,19 @@
-import {
-  MutableRefObject,
-  useMemo,
-  useEffect,
-  useCallback,
-  useState,
-} from "react";
+import { MutableRefObject, useMemo, useCallback } from "react";
+import clsx from "clsx";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useToast } from "@/hooks";
+import { storeChapterProgress } from "@/utils";
 import {
   AddressesType,
   AnswerType,
   ChapterAddressType,
   CourseType,
-  QuizAnswerSheetType,
-  QuizConfigType,
-  QuizPhaseType,
-  QuizQuestionType,
   StateType,
 } from "@/type";
 import { TemplateGeneric } from "../../Template";
-import { Button, IconText, Paragraph } from "../../Basic";
-import { useRouter } from "next/router";
-import { BsFillClockFill } from "react-icons/bs";
-import { CourseQuizTimer } from "../Quiz/CourseQuizTimer";
-import { useQuiz, useToast } from "@/hooks";
-import { CourseLayoutSide } from "./CourseLayoutSide";
-import clsx from "clsx";
-import { CourseQuizOnboarding } from "../Quiz";
+import { Button, Paragraph } from "../../Basic";
 import { CourseLayoutMain } from "./CourseLayoutMain";
-import { storeChapterProgress } from "@/utils";
-import Link from "next/link";
 import { CourseJourney } from "../Journey";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";
 
@@ -44,8 +30,6 @@ export function CourseLayoutMaterial({
   stateSubmitted,
   statePage,
   stateMaxPage,
-  stateProblemCount,
-  stateLastUpdate,
   courseDetailWithProgress,
   chapterAddress,
   trueLoading,
@@ -53,8 +37,8 @@ export function CourseLayoutMaterial({
   handleCleanUpStates,
 }: {
   addreses: AddressesType;
-  chapterBaseAddress: any;
-  chapterContent: any;
+  chapterBaseAddress: ChapterAddressType;
+  chapterContent: string;
   stateSolved: StateType<number>;
   answerRef: MutableRefObject<Partial<AnswerType>>;
   acceptRef: MutableRefObject<AnswerType>;
@@ -83,8 +67,7 @@ export function CourseLayoutMaterial({
   const solved = stateSolved[0];
   const [checking, setChecking] = stateChecking;
   const [page, setPage] = statePage;
-  const [maxPage, setMaxPage] = stateMaxPage;
-  const answer = answerRef.current;
+  const maxPage = stateMaxPage[0];
   const accept = acceptRef.current;
 
   const { addToast } = useToast();
@@ -135,8 +118,7 @@ export function CourseLayoutMaterial({
     return `/${chapterAddress.course}/${section}/${chapter}`;
   }, [chapterAddress, courseDetailWithProgress]);
 
-  const { id, sections } = courseDetailWithProgress;
-  const { title, description } = courseDetailWithProgress;
+  const { id, title, description } = courseDetailWithProgress;
 
   const handlePreviousPage = useCallback(() => {
     setLoading(true);

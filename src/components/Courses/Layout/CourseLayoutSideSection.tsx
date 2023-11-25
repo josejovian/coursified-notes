@@ -1,11 +1,7 @@
-import { ChapterAddressType, SectionType } from "@/type";
-import { MdOutlineExpandMore } from "react-icons/md";
-import { Icon } from "../../Basic/Icon";
-import { checkChaptersAreComplete, getLastFinishedChapter } from "@/utils";
+import { useState, ReactNode } from "react";
 import clsx from "clsx";
-import { useCallback, useMemo, useState, ReactNode } from "react";
-import { useRouter } from "next/router";
-import { Paragraph } from "../../Basic";
+import { MdOutlineExpandMore } from "react-icons/md";
+import { Icon, Paragraph } from "../../Basic";
 
 interface CourseLayoutSideSectionProps {
   title?: string;
@@ -25,7 +21,6 @@ export function CourseLayoutSideSection({
   noPadding,
 }: CourseLayoutSideSectionProps) {
   const [open, setOpen] = useState(true);
-  const router = useRouter();
 
   return (
     <>

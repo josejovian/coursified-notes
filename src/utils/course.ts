@@ -1,15 +1,14 @@
 import { ColorType } from "../style";
 import {
   ChapterAddressType,
-  CourseType,
   QuizAnswerSheetType,
   RequirementMap,
   SectionType,
 } from "../type/Course";
 import { uncapitalize } from "./capitalize";
 
-export const regexPracticeInput = /\[input\;([^\\])*\]/g;
-export const regexPracticeInputWithAnswer = /\[input\;([^\`])*/g;
+export const regexPracticeInput = /\[input;([^\\])*\]/g;
+export const regexPracticeInputWithAnswer = /\[input;([^`])*/g;
 
 export function getPracticeId(string: string) {
   if (!string) return null;
@@ -54,6 +53,7 @@ export function getCourseKey(course: string) {
 
 export function storeChapterProgress(
   chapterAddress: ChapterAddressType,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   answer: any
 ): void {
   const { course, section, chapter, page } = chapterAddress;
@@ -79,10 +79,10 @@ export function storeChapterProgress(
 export function checkChapterProgress(
   chapterAddress: ChapterAddressType
 ): { [key: string]: string } | null {
-  const { course, section, chapter, page } = chapterAddress;
+  const { course, section, chapter } = chapterAddress;
   const localAddress = getLocalChapterAddress(section, chapter);
 
-  let existingAnswer = localStorage.getItem(getCourseKey(course));
+  const existingAnswer = localStorage.getItem(getCourseKey(course));
 
   if (existingAnswer) {
     const parsed = JSON.parse(existingAnswer)[localAddress] ?? {};
@@ -94,15 +94,8 @@ export function checkChapterProgress(
 
 export function checkCourseProgress(id: string, sections: SectionType[]) {
   const rawSectionChapterProgresses = sections.map((section: SectionType) => {
-    let completedChapters = 0;
-
     return section.chapters.map((chapter) => {
-      let totalSteps = 0;
-      let steps = 0;
-      const { requirements, pages } = chapter;
-
-      if (pages) {
-      }
+      const { requirements } = chapter;
 
       const localAddress = {
         course: id,
@@ -176,7 +169,7 @@ export function checkCourseProgress(id: string, sections: SectionType[]) {
       }
 
       return {
-        percentage: Math.floor((steps * 100) / totalSteps),
+        percentage: 0,
         requirements: requirementsProgresses,
       };
     });
@@ -189,7 +182,7 @@ export function storeQuizAnswerSheet(
   chapterAddress: ChapterAddressType,
   answer: QuizAnswerSheetType
 ): void {
-  const { course, section, chapter, page } = chapterAddress;
+  const { course, section, chapter } = chapterAddress;
   const localAddress = getLocalChapterAddress(section, chapter);
   const existingAnswer = JSON.parse(
     localStorage.getItem(getCourseKey(course)) ?? "{}"
@@ -206,9 +199,9 @@ export function storeQuizAnswerSheet(
 export function getQuizAnswerSheet(
   chapterAddress: ChapterAddressType
 ): QuizAnswerSheetType | null {
-  const { course, section, chapter, page } = chapterAddress;
+  const { course, section, chapter } = chapterAddress;
   const localAddress = getLocalChapterAddress(section, chapter);
-  let existingAnswer = localStorage.getItem(getCourseKey(course));
+  const existingAnswer = localStorage.getItem(getCourseKey(course));
 
   if (existingAnswer) {
     const parsed = JSON.parse(existingAnswer)[localAddress] ?? {};

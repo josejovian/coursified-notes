@@ -1,7 +1,5 @@
-import clsx from "clsx";
-import { CSSProperties, HTMLProps, useMemo } from "react";
+import { CSSProperties, useMemo } from "react";
 import { IconType, IconBaseProps as IconLibProps } from "react-icons";
-import { MdExpandMore } from "react-icons/md";
 
 interface IconBaseProps {
   IconComponent: IconType;
@@ -27,9 +25,9 @@ export function Icon({ IconComponent, size, ...rest }: IconProps) {
       case "s":
         sizePx = "16px";
         break;
-				case "s-alt":
-					sizePx = "8px";
-					break;
+      case "s-alt":
+        sizePx = "8px";
+        break;
     }
 
     return {

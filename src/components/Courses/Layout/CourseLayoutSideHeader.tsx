@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-no-undef */
-import Image, { ImageProps } from "next/image";
 import { useRef, useEffect, ReactNode } from "react";
+import Image, { ImageProps } from "next/image";
 
 export function CourseLayoutSideHeader({
   children,

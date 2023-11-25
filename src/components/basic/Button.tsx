@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import {
   Fragment,
   ReactNode,
@@ -6,6 +5,7 @@ import {
   DetailedHTMLProps,
   ButtonHTMLAttributes,
 } from "react";
+import clsx from "clsx";
 import { BiLoaderAlt } from "react-icons/bi";
 import {
   ButtonVariantType,

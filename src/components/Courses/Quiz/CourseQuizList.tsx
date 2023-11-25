@@ -1,9 +1,7 @@
-import { MutableRefObject, useMemo } from "react";
+import { MutableRefObject } from "react";
 import {
   ChapterAddressType,
   QuizAnswerSheetType,
-  QuizAnswerType,
-  QuizConfigType,
   QuizPhaseType,
   QuizQuestionType,
 } from "@/type";
@@ -25,10 +23,8 @@ interface CourseQuizListProps {
 
 export function CourseQuizList({
   className,
-  questions: refQuestions,
   quizPhase,
   quizAnswerSheetRef,
-  disabled,
   onClickQuestion,
   noBorder,
   noPadding,

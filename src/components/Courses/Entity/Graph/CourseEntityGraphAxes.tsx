@@ -1,7 +1,7 @@
 import React from "react";
+import TeX from "@matejmazur/react-katex";
 import { GRAPH_FONT_SIZE } from "@/consts";
 import { GraphParams } from "@/type";
-import TeX from "@matejmazur/react-katex";
 
 export interface CourseEntityGraphAxesProps {
   params: GraphParams;

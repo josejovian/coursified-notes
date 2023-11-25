@@ -2,7 +2,6 @@ export type ButtonVariantType = "solid" | "outline";
 
 import { StylePropsType, ToastType } from "../type";
 import {
-  BsCheck,
   BsCheckCircleFill,
   BsFillExclamationCircleFill,
   BsFillExclamationTriangleFill,

@@ -1,30 +1,13 @@
-import { useState, useEffect, useMemo, useRef, MutableRefObject } from "react";
+import { MutableRefObject } from "react";
+import { CourseJourney, CourseQuizList } from "@/components";
 import {
   ChapterAddressType,
   CourseType,
   QuizAnswerSheetType,
-  QuizAnswerType,
   QuizConfigType,
   QuizPhaseType,
   QuizQuestionType,
-  StateType,
 } from "@/type";
-import clsx from "clsx";
-import Link from "next/link";
-import {
-  Button,
-  CourseJourney,
-  Paragraph,
-  Icon,
-  CourseQuizList,
-  IconText,
-} from "@/components";
-import { useScreen } from "@/hooks";
-import Image from "next/image";
-import { MdChevronLeft } from "react-icons/md";
-import { getHMS } from "@/utils/date";
-import { CourseQuizTimer } from "../Quiz/CourseQuizTimer";
-import { BsFillClockFill } from "react-icons/bs";
 
 interface SideProps {
   courseDetail: CourseType;

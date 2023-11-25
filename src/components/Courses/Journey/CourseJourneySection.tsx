@@ -1,18 +1,15 @@
-import { ChapterAddressType, SectionType } from "@/type";
-import { MdOutlineExpandMore } from "react-icons/md";
-import { Icon } from "../../Basic/Icon";
+import { useCallback, useMemo } from "react";
 import {
-  checkChaptersAreComplete,
   getLastFinishedChapter,
   getPercent,
   getPercentGroup,
   getQuizAnswerSheet,
 } from "@/utils";
 import clsx from "clsx";
-import { useCallback, useMemo, useState } from "react";
-import { CourseJourneySectionChapter } from "./CourseJourneySectionChapter";
 import { useRouter } from "next/router";
-import { Badge, Paragraph } from "../../Basic";
+import { ChapterAddressType, SectionType } from "@/type";
+import { Badge } from "../../Basic";
+import { CourseJourneySectionChapter } from "./CourseJourneySectionChapter";
 import { CourseLayoutSideSection } from "../Layout/CourseLayoutSideSection";
 
 interface CourseJourneySectionProps {

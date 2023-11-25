@@ -1,11 +1,9 @@
-import { ChapterType, SectionType } from "@/type";
-import { MdOutlineDescription, MdOutlineExpandMore } from "react-icons/md";
-import { Icon } from "../../Basic/Icon";
-import { checkChaptersAreComplete, getLastFinishedChapter } from "@/utils";
+import { ReactNode } from "react";
 import clsx from "clsx";
-import { useCallback, useMemo, ReactNode } from "react";
-import { useRouter } from "next/router";
+import { MdOutlineDescription } from "react-icons/md";
+import { Icon } from "../../Basic/Icon";
 import { Paragraph } from "../../Basic";
+import { ChapterType } from "@/type";
 
 interface CourseJourneySectionChapterProps {
   chapter: ChapterType;

@@ -1,3 +1,5 @@
+/* eslint-disable no-case-declarations */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const VALID_OPERATORS = [
   "+",
   "-",
@@ -24,7 +26,6 @@ const VALID_FUNCTIONS = [
 ] as const;
 
 type OperatorType = (typeof VALID_OPERATORS | typeof VALID_FUNCTIONS)[number];
-type FunctionType = typeof VALID_FUNCTIONS;
 
 function isNumber(character: string) {
   return !isNaN(Number(character));
@@ -122,6 +123,7 @@ export function evaluateMath(expression: string) {
       //console.log(`Absorb: ${finalNumber}`);
       operands.push(finalNumber);
     } else if (character === ")" || character === "]") {
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         const head = operators.pop();
 
@@ -173,6 +175,7 @@ export function evaluateMath(expression: string) {
         }
       }
 
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         const head = operators.pop();
 
@@ -195,6 +198,7 @@ export function evaluateMath(expression: string) {
     }
   }
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const head = operators.pop();
 

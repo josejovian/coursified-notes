@@ -1,5 +1,5 @@
-import { ScreenContext } from "@/contexts";
 import { useContext, useMemo } from "react";
+import { ScreenContext } from "@/contexts";
 
 export function useScreen() {
   const params = useContext(ScreenContext);

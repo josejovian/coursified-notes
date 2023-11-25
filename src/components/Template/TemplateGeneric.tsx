@@ -1,9 +1,9 @@
 import { ReactNode, useMemo, useRef, useState, useEffect } from "react";
 import clsx from "clsx";
-import { Button, Icon, Loader } from "../Basic";
-import { useScreen } from "@/hooks";
 import { MdChevronLeft } from "react-icons/md";
-import Image, { ImageProps } from "next/image";
+import { ImageProps } from "next/image";
+import { useScreen } from "@/hooks";
+import { Button, Icon, Loader } from "../Basic";
 
 interface GenericProps {
   children: ReactNode;

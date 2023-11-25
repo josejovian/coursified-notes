@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { ChapterAddressType, CourseType, SectionType } from "@/type";
 import clsx from "clsx";
+import { ChapterAddressType, CourseType } from "@/type";
 import { CourseJourneySection } from "./CourseJourneySection";
 
 interface CourseJourneyProps {

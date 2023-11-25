@@ -1,11 +1,6 @@
-import { ChapterType, SectionType } from "@/type";
-import { MdOutlineDescription, MdOutlineExpandMore } from "react-icons/md";
-import { Icon } from "../../Basic/Icon";
-import { checkChaptersAreComplete, getLastFinishedChapter } from "@/utils";
 import clsx from "clsx";
-import { useCallback, useMemo } from "react";
-import { useRouter } from "next/router";
-import { Paragraph } from "../../Basic";
+import { MdOutlineDescription } from "react-icons/md";
+import { Icon, Paragraph } from "../../Basic";
 
 interface CourseLayoutSideSectionChapterProps {
   title: string;

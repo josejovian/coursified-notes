@@ -8,32 +8,33 @@ import React, {
 import "katex/dist/katex.min.css";
 import { useRouter } from "next/router";
 import {
-  AnswerType,
-  ChapterAddressType,
-  CourseType,
-  QuizPhaseType,
-} from "@/type";
-import {
-  checkChapterProgress,
-  getSpecificChapterAddress,
-  storeChapterProgress,
-} from "@/utils";
-import { SwapPageContext } from "@/contexts";
-import {
   readAllChapters,
   readAllSections,
   readAllCourses,
   getDetailedCourse,
   readChapterMd,
 } from "@/lib/mdx";
+import { SwapPageContext } from "@/contexts";
+import {
+  checkChapterProgress,
+  getSpecificChapterAddress,
+  storeChapterProgress,
+} from "@/utils";
+import {
+  AnswerType,
+  ChapterAddressType,
+  CourseType,
+  QuizPhaseType,
+} from "@/type";
 import { useProgress } from "@/hooks";
 import { CourseLayoutQuiz } from "@/components/Courses/Layout/CourseLayoutQuiz";
 import { CourseLayoutMaterial } from "@/components/Courses/Layout/CourseLayoutMaterial";
 
 interface CourseMaterialProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   markdown: any;
   chapterAddress: ChapterAddressType;
-  rawCourseDetail: any;
+  rawCourseDetail: string;
 }
 
 const CourseMaterial = ({
@@ -85,7 +86,7 @@ const CourseMaterial = ({
     () => swapPages || swapChapters || loading,
     [loading, swapChapters, swapPages]
   );
-  const chapterBaseAddress = useMemo(
+  const chapterBaseAddress = useMemo<ChapterAddressType>(
     () => ({
       ...chapterAddress,
       page,
@@ -319,6 +320,7 @@ export const getStaticPaths = async () => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getStaticProps = async (req: any) => {
   const { course, section, chapter } = req.params;
 

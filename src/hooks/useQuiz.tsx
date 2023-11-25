@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import {
   AnswerType,
   ChapterAddressType,
@@ -6,9 +6,7 @@ import {
   QuizAnswerSheetType,
   QuizAnswerType,
   QuizConfigType,
-  QuizPhaseType,
   QuizQuestionType,
-  StateType,
 } from "../type";
 
 interface useQuizProps {
@@ -30,14 +28,14 @@ export function useQuiz({
     questions: {},
   });
 
-  const quizDetails = useMemo<QuizConfigType | undefined>(() => {
+  const quizDetails = useMemo(() => {
     const currentSection = courseDetail.sections[chapterAddress.sectionIndex!];
 
     return chapterAddress.chapter === "quiz"
       ? ({
           ...currentSection.quiz,
           title: currentSection.title,
-        } as any)
+        } as QuizConfigType)
       : undefined;
   }, [chapterAddress, courseDetail.sections]);
 
@@ -51,7 +49,7 @@ export function useQuiz({
         let answered = true;
         let correct = true;
 
-        let relatedInputs = value.inputIds.reduce((prev, curr) => {
+        const relatedInputs = value.inputIds.reduce((prev, curr) => {
           if (!answer[curr]) answered = false;
           if (!answer[curr] || answer[curr] !== accept[curr]) correct = false;
 
@@ -60,7 +58,7 @@ export function useQuiz({
             [curr]: answer[curr],
           };
         }, {});
-        let relatedKeys = value.inputIds.reduce((prev, curr) => {
+        const relatedKeys = value.inputIds.reduce((prev, curr) => {
           return {
             ...prev,
             [curr]: accept[curr],
@@ -79,6 +77,7 @@ export function useQuiz({
         ];
       })
       .reduce(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (prev, [key, value]: any) => ({
           ...prev,
           [key]: value,
@@ -88,14 +87,6 @@ export function useQuiz({
 
     return individualQuestions as Record<string, QuizAnswerType>;
   }, [accept, answer, quizDetails]);
-
-  // useEffect(() => {
-  //   if (quizAnswerSheetRef.current && quizAnswers)
-  //     quizAnswerSheetRef.current = {
-  //       ...quizAnswerSheetRef.current,
-  //       answers: quizAnswers,
-  //     };
-  // });
 
   return useMemo(
     () => ({

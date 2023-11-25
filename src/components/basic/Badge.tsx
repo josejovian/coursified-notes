@@ -1,5 +1,5 @@
+import { ReactNode } from "react";
 import clsx from "clsx";
-import { ReactNode, DetailedHTMLProps, ButtonHTMLAttributes } from "react";
 import {
   ColorType,
   SizeType,
@@ -12,8 +12,6 @@ interface BadgeProps {
   className?: string;
   color?: ColorType;
   size?: SizeType;
-  left?: ReactNode;
-  right?: ReactNode;
   children?: ReactNode;
   inverted?: boolean;
 }
@@ -23,8 +21,6 @@ export function Badge({
   color = "primary",
   size = "m",
   inverted,
-  left,
-  right,
   children,
 }: BadgeProps) {
   return (

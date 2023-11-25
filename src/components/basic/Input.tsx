@@ -4,7 +4,6 @@ import {
   DetailedHTMLProps,
   ButtonHTMLAttributes,
   useEffect,
-  useRef,
 } from "react";
 import {
   ColorType,
@@ -40,8 +39,6 @@ export function Input({
   type,
   state,
   disabled,
-  left,
-  right,
   size = "m",
   mounted,
   onMount,

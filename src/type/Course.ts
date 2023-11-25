@@ -8,6 +8,7 @@ export interface RequirementType {
   category?: RequirementCategoryType;
   description?: string;
   completed?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: any;
 }
 
@@ -15,13 +16,9 @@ export type RequirementMap =
   | {
       [key in RequirementCategoryType]: RequirementType | undefined;
     };
-
-// export interface RequirementMap {
-// 	[key in RequirementCategoryType]: RequirementType;
-// }
-
 export interface PracticeType {
   id: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   answer: any;
 }
 
