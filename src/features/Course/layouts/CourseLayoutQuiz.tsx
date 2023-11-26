@@ -20,9 +20,9 @@ import {
   StateType,
 } from "@/type";
 import { getQuizAnswerSheet, storeQuizAnswerSheet } from "@/utils";
-import { TemplateGeneric } from "../../Template";
-import { Button } from "../../Basic";
-import { CourseQuizOnboarding } from "../Quiz";
+import { TemplateGeneric } from "../../../components/Template";
+import { Button } from "../../../components/Basic";
+import { CourseQuizOnboarding } from "../../../components/Courses/Quiz";
 import { CourseLayoutMain } from "./CourseLayoutMain";
 import { CourseLayoutQuizSide } from "./CourseLayoutQuizSide";
 

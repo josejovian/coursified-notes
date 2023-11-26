@@ -11,10 +11,10 @@ import {
   CourseType,
   StateType,
 } from "@/type";
-import { TemplateGeneric } from "../../Template";
-import { Button, Paragraph } from "../../Basic";
+import { TemplateGeneric } from "../../../components/Template";
+import { Button, Paragraph } from "../../../components/Basic";
 import { CourseLayoutMain } from "./CourseLayoutMain";
-import { CourseJourney } from "../Journey";
+import { CourseJourney } from "../../../components/Courses/Journey";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";
 
 export function CourseLayoutMaterial({

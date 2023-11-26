@@ -1,7 +1,7 @@
 import { useState, useEffect, MutableRefObject, useCallback } from "react";
 import { BsFillClockFill } from "react-icons/bs";
 import { ImageProps } from "next/image";
-import { Badge, IconText, Paragraph } from "../../Basic";
+import { Badge, IconText, Paragraph } from "../../../components/Basic";
 import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/utils";
 import {
   ChapterAddressType,
@@ -12,7 +12,7 @@ import {
   QuizQuestionType,
   StateType,
 } from "@/type";
-import { CourseQuizTimer } from "../Quiz/CourseQuizTimer";
+import { CourseQuizTimer } from "../../../components/Courses/Quiz/CourseQuizTimer";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";
 import { CourseLayoutSide } from "./CourseLayoutSide";
 

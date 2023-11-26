@@ -8,9 +8,9 @@ import {
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { ChapterAddressType, SectionType } from "@/type";
-import { Badge } from "../../Basic";
+import { Badge } from "@/components";
 import { CourseJourneySectionChapter } from "./CourseJourneySectionChapter";
-import { CourseLayoutSideSection } from "../../../features/Course/layouts/CourseLayoutSideSection";
+import { CourseLayoutSideSection } from "../../layouts/CourseLayoutSideSection";
 
 interface CourseJourneySectionProps {
   courseId: string;

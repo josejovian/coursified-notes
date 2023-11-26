@@ -13,7 +13,7 @@ import { checkChapterProgress } from "@/utils";
 import { Blockquote, Graph, Input, Paragraph } from "@/components";
 import { useRouter } from "next/router";
 import { CourseLayoutContentTemplate } from "./CourseLayoutContentTemplate";
-import { Option } from "../Entity/Option/CourseEntityOption";
+import { Option } from "../../../components/Courses/Entity/Option/CourseEntityOption";
 
 interface CourseMaterialContentProps {
   markdown: string;

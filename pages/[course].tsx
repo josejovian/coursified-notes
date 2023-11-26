@@ -1,106 +1,10 @@
-import { useMemo } from "react";
-import Image from "next/image";
-import clsx from "clsx";
-import { MdChevronRight } from "react-icons/md";
-import Link from "next/link";
-import { CourseJourney, Icon, Paragraph } from "@/components";
 import { readAllCourses, getDetailedCourse } from "@/lib/mdx";
-import { useProgress, useScreen } from "@/hooks";
-import { CourseType } from "@/type";
+import { CourseDetailPage } from "@/features/Course/pages/CourseDetailPage";
 
 interface CourseProps {
   details: string;
 }
-
-const Course = ({ details }: CourseProps) => {
-  const course = useMemo<CourseType>(() => JSON.parse(details), [details]);
-
-  const { id, title, description, sections = [] } = course;
-
-  const { width } = useScreen();
-
-  const mainContentWidth = useMemo(() => {
-    if (width >= 1280) return "1024px";
-    if (width >= 800) return "720px";
-    return "calc(100% - 4rem)";
-  }, [width]);
-
-  const { sectionData } = useProgress({ id, sections });
-
-  const renderCourseJourney = useMemo(
-    () => (
-      <CourseJourney
-        course={{
-          ...course,
-          sections: sectionData,
-        }}
-      />
-    ),
-    [course, sectionData]
-  );
-
-  const renderCourseBanner = useMemo(
-    () => (
-      <header className="relative mx-auto w-full h-60 bg-black overflow-hidden">
-        <div
-          className={clsx(
-            "absolute top-0 h-60",
-            "flex flex-col justify-center gap-5",
-            "mx-auto z-10"
-          )}
-          style={{
-            width: mainContentWidth,
-            left: "50%",
-            transform: `translate(-50%, 0%)`,
-          }}
-        >
-          <span className="flex gap-2">
-            <Link href="/" legacyBehavior>
-              <a>
-                <Paragraph weight="bold" color="primary-2">
-                  Courses
-                </Paragraph>
-              </a>
-            </Link>
-            <Icon className="text-secondary-1" IconComponent={MdChevronRight} />
-            <Paragraph color="secondary-1" as="span">
-              {title}
-            </Paragraph>
-          </span>
-          <Paragraph as="h1" size="xl" weight="bold" color="secondary-1">
-            {title}
-          </Paragraph>
-          <Paragraph size="l-alt" color="secondary-1">
-            {description}
-          </Paragraph>
-          <Paragraph size="m-alt" color="secondary-1">
-            Jose Jovian
-          </Paragraph>
-        </div>
-        <Image
-          src="/calculus.jpg"
-          width={width}
-          height="320"
-          className="absolute top-0 left-0 object-none object-center opacity-20"
-          alt="Course Banner"
-        />
-      </header>
-    ),
-    [description, mainContentWidth, title, width]
-  );
-
-  return (
-    <main>
-      {renderCourseBanner}
-      <article className="mx-auto py-16" style={{ width: mainContentWidth }}>
-        <Paragraph as="h2" size="l-alt" weight="bold" className="mb-8">
-          Contents
-        </Paragraph>
-        {renderCourseJourney}
-      </article>
-    </main>
-  );
-};
+const CourseDetail = (props: CourseProps) => <CourseDetailPage {...props} />;
 
 export const getStaticPaths = async () => {
   const courses: string[] = await readAllCourses();
@@ -126,4 +30,4 @@ export const getStaticProps = async (req: any) => {
   };
 };
 
-export default Course;
+export default CourseDetail;

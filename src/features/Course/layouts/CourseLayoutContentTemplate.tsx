@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import clsx from "clsx";
-import { Loader } from "../../Basic";
+import { Loader } from "../../../components/Basic";
 
 interface CourseLayoutContentTemplateProps {
   children: ReactNode;

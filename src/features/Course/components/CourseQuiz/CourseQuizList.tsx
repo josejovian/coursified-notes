@@ -6,7 +6,7 @@ import {
   QuizQuestionType,
 } from "@/type";
 import clsx from "clsx";
-import { CourseLayoutSideSection } from "../../../features/Course/layouts/CourseLayoutSideSection";
+import { CourseLayoutSideSection } from "../../layouts/CourseLayoutSideSection";
 import { CourseQuizListQuestion } from "./CourseQuizListQuestion";
 
 interface CourseQuizListProps {

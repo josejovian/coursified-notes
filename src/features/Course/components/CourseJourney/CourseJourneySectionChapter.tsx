@@ -1,22 +1,26 @@
+import { ReactNode } from "react";
 import clsx from "clsx";
 import { MdOutlineDescription } from "react-icons/md";
-import { Icon, Paragraph } from "../../Basic";
+import { Icon, Paragraph } from "@/components";
+import { ChapterType } from "@/type";
 
-interface CourseLayoutSideSectionChapterProps {
-  title: string;
+interface CourseJourneySectionChapterProps {
+  chapter: ChapterType;
   status: "locked" | "unlocked" | "completed";
   onClick?: () => void;
   className?: string;
   active?: boolean;
+  rightElement?: ReactNode;
 }
 
-export function CourseLayoutSideSectionChapter({
-  title,
+export function CourseJourneySectionChapter({
+  chapter,
   status,
   onClick,
   className,
   active,
-}: CourseLayoutSideSectionChapterProps) {
+  rightElement,
+}: CourseJourneySectionChapterProps) {
   return (
     <div
       className={clsx(
@@ -35,7 +39,7 @@ export function CourseLayoutSideSectionChapter({
         status === "unlocked" && "text-orange-600",
         className
       )}
-      key={title}
+      key={chapter.title}
       onClick={onClick}
     >
       <Icon
@@ -44,8 +48,9 @@ export function CourseLayoutSideSectionChapter({
         size="m"
       />
       <Paragraph as="p" className="truncate" color="inherit">
-        {title}
+        {chapter.title}
       </Paragraph>
+      {rightElement}
     </div>
   );
 }
