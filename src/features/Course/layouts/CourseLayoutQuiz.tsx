@@ -7,7 +7,9 @@ import {
   useRef,
 } from "react";
 import clsx from "clsx";
+import { Button } from "@/components/Basic";
 import { useQuiz, useToast } from "@/hooks";
+import { getQuizAnswerSheet, storeQuizAnswerSheet } from "@/utils";
 import {
   AddressesType,
   AnswerType,
@@ -19,12 +21,10 @@ import {
   QuizQuestionType,
   StateType,
 } from "@/type";
-import { getQuizAnswerSheet, storeQuizAnswerSheet } from "@/utils";
-import { TemplateGeneric } from "../../../components/Template";
-import { Button } from "../../../components/Basic";
-import { CourseQuizOnboarding } from "../../../components/Courses/Quiz";
+import { CourseQuizOnboarding } from "../components/CourseQuiz/CourseQuizOnboarding";
 import { CourseLayoutMain } from "./CourseLayoutMain";
 import { CourseLayoutQuizSide } from "./CourseLayoutQuizSide";
+import { CourseLayoutTemplate } from "./CourseLayoutTemplate";
 
 export function CourseLayoutQuiz({
   addreses,
@@ -346,7 +346,7 @@ export function CourseLayoutQuiz({
   );
 
   return (
-    <TemplateGeneric
+    <CourseLayoutTemplate
       trueLoading={trueLoading}
       sideElement={
         <CourseLayoutQuizSide
@@ -379,6 +379,6 @@ export function CourseLayoutQuiz({
       >
         {renderQuizControls}
       </div>
-    </TemplateGeneric>
+    </CourseLayoutTemplate>
   );
 }

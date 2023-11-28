@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CourseType } from "@/type";
-import { Paragraph } from "@/components";
+import { Paragraph } from "@/components/Basic";
 
 interface CourseCardProps {
   course: CourseType;

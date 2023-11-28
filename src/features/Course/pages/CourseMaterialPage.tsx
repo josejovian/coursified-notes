@@ -20,8 +20,7 @@ import {
   QuizPhaseType,
 } from "@/type";
 import { useProgress } from "@/hooks";
-import { CourseLayoutQuiz } from "@/features/Course/layouts/CourseLayoutQuiz";
-import { CourseLayoutMaterial } from "@/features/Course/layouts/CourseLayoutMaterial";
+import { CourseLayoutQuiz, CourseLayoutMaterial } from "../layouts";
 
 interface CourseMaterialProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -6,14 +6,14 @@ import React, {
   MutableRefObject,
 } from "react";
 import clsx from "clsx";
+import { useRouter } from "next/router";
 import { getMDXComponent } from "mdx-bundler/client";
 import TeX from "@matejmazur/react-katex";
-import { AddressesType, AnswerType, QuizQuestionType, StateType } from "@/type";
+import { Blockquote, Input, Paragraph } from "@/components/Basic";
 import { checkChapterProgress } from "@/utils";
-import { Blockquote, Graph, Input, Paragraph } from "@/components";
-import { useRouter } from "next/router";
+import { AddressesType, AnswerType, QuizQuestionType, StateType } from "@/type";
 import { CourseLayoutContentTemplate } from "./CourseLayoutContentTemplate";
-import { Option } from "../../../components/Courses/Entity/Option/CourseEntityOption";
+import { Option, Graph } from "../components/CourseEntity";
 
 interface CourseMaterialContentProps {
   markdown: string;

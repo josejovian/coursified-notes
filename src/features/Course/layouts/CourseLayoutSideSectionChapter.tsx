@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { MdOutlineDescription } from "react-icons/md";
-import { Icon, Paragraph } from "../../../components/Basic";
+import { Icon, Paragraph } from "@/components/Basic";
 
 interface CourseLayoutSideSectionChapterProps {
   title: string;

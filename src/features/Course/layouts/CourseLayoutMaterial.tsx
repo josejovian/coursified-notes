@@ -11,11 +11,11 @@ import {
   CourseType,
   StateType,
 } from "@/type";
-import { TemplateGeneric } from "../../../components/Template";
-import { Button, Paragraph } from "../../../components/Basic";
+import { Button, Paragraph } from "@/components/Basic";
+import { CourseJourney } from "../components/CourseJourney";
 import { CourseLayoutMain } from "./CourseLayoutMain";
-import { CourseJourney } from "../../../components/Courses/Journey";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";
+import { CourseLayoutTemplate } from "./CourseLayoutTemplate";
 
 export function CourseLayoutMaterial({
   addreses,
@@ -276,7 +276,7 @@ export function CourseLayoutMaterial({
   );
 
   return (
-    <TemplateGeneric
+    <CourseLayoutTemplate
       sideElement={
         <>
           <CourseLayoutSideHeader
@@ -321,6 +321,6 @@ export function CourseLayoutMaterial({
       >
         {renderPageControls}
       </div>
-    </TemplateGeneric>
+    </CourseLayoutTemplate>
   );
 }

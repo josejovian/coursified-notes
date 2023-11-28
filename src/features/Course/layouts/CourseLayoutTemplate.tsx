@@ -2,8 +2,8 @@ import { ReactNode, useMemo, useRef, useState, useEffect } from "react";
 import clsx from "clsx";
 import { MdChevronLeft } from "react-icons/md";
 import { ImageProps } from "next/image";
+import { Button, Icon, Loader } from "@/components/Basic";
 import { useScreen } from "@/hooks";
-import { Button, Icon, Loader } from "../Basic";
 
 interface GenericProps {
   children: ReactNode;
@@ -13,7 +13,7 @@ interface GenericProps {
   trueLoading?: boolean;
 }
 
-export function TemplateGeneric({
+export function CourseLayoutTemplate({
   children,
   bottomElement,
   sideElement,

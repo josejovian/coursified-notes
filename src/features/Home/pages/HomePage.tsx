@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 import clsx from "clsx";
-import { CourseCard } from "@/components";
 import { CourseType } from "@/type";
 import { useScreen } from "@/hooks";
+import { CourseCard } from "../components/HomeCourseCard";
 
 export function HomePage() {
   const { width } = useScreen();

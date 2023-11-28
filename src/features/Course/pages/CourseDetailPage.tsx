@@ -3,9 +3,10 @@ import Image from "next/image";
 import clsx from "clsx";
 import { MdChevronRight } from "react-icons/md";
 import Link from "next/link";
-import { CourseJourney, Icon, Paragraph } from "@/components";
+import { Icon, Paragraph } from "@/components/Basic";
 import { useProgress, useScreen } from "@/hooks";
 import { CourseType } from "@/type";
+import { CourseJourney } from "../components/CourseJourney";
 
 interface CourseProps {
   details: string;

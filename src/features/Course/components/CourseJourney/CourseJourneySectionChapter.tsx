@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import clsx from "clsx";
 import { MdOutlineDescription } from "react-icons/md";
-import { Icon, Paragraph } from "@/components";
+import { Icon, Paragraph } from "@/components/Basic";
 import { ChapterType } from "@/type";
 
 interface CourseJourneySectionChapterProps {

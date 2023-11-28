@@ -1,5 +1,4 @@
 import { MutableRefObject } from "react";
-import { CourseJourney, CourseQuizList } from "@/components";
 import {
   ChapterAddressType,
   CourseType,
@@ -8,6 +7,8 @@ import {
   QuizPhaseType,
   QuizQuestionType,
 } from "@/type";
+import { CourseJourney } from "../components/CourseJourney";
+import { CourseQuizList } from "../components/CourseQuiz";
 
 interface SideProps {
   courseDetail: CourseType;

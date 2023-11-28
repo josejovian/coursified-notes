@@ -4,7 +4,8 @@ import clsx from "clsx";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import { MatchCard, MatchDrop } from "@/components";
+import { MatchCard } from "./CourseEntityMatchCard";
+import { MatchDrop } from "./CourseEntityMatchDrop";
 import { AnswerType } from "@/type";
 
 export interface MatchBoxProps {

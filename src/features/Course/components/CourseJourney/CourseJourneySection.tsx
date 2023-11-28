@@ -8,7 +8,7 @@ import {
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { ChapterAddressType, SectionType } from "@/type";
-import { Badge } from "@/components";
+import { Badge } from "@/components/Basic";
 import { CourseJourneySectionChapter } from "./CourseJourneySectionChapter";
 import { CourseLayoutSideSection } from "../../layouts/CourseLayoutSideSection";
 

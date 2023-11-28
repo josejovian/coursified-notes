@@ -9,7 +9,7 @@ import {
 import { ChapterAddressType, CourseType } from "@/type";
 import { CoursePage } from "@/features/Course";
 
-interface CourseMaterialProps {
+interface _CourseMaterialProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   markdown: any;
   chapterAddress: ChapterAddressType;
