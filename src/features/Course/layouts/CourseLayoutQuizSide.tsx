@@ -12,7 +12,7 @@ import {
   QuizQuestionType,
   StateType,
 } from "@/type";
-import { CourseQuizTimer } from "../../../components/Courses/Quiz/CourseQuizTimer";
+import { CourseQuizTimer } from "../components/CourseQuiz";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";
 import { CourseLayoutSide } from "./CourseLayoutSide";
 

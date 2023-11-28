@@ -66,8 +66,6 @@ export function CourseJourneySection({
             chapter: "quiz",
           });
 
-        console.log(chapterAddress);
-
         let percent: number | undefined;
 
         if (sheet) {
