@@ -1,7 +1,7 @@
 import { useState, ReactNode } from "react";
 import clsx from "clsx";
 import { MdOutlineExpandMore } from "react-icons/md";
-import { Icon, Paragraph } from "@/components/Basic";
+import { Icon, Paragraph } from "@/components";
 
 interface CourseLayoutSideSectionProps {
   title?: string;

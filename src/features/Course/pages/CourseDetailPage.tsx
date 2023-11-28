@@ -3,7 +3,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import { MdChevronRight } from "react-icons/md";
 import Link from "next/link";
-import { Icon, Paragraph } from "@/components/Basic";
+import { Icon, Paragraph } from "@/components";
 import { useProgress, useScreen } from "@/hooks";
 import { CourseType } from "@/type";
 import { CourseJourney } from "../components/CourseJourney";

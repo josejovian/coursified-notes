@@ -9,7 +9,7 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import { getMDXComponent } from "mdx-bundler/client";
 import TeX from "@matejmazur/react-katex";
-import { Blockquote, Input, Paragraph } from "@/components/Basic";
+import { Blockquote, Input, Paragraph } from "@/components";
 import { checkChapterProgress } from "@/utils";
 import { AddressesType, AnswerType, QuizQuestionType, StateType } from "@/type";
 import { CourseLayoutContentTemplate } from "./CourseLayoutContentTemplate";

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import clsx from "clsx";
 import { QuizAnswerType, QuizPhaseType, QuizQuestionType } from "@/type";
-import { Paragraph, Badge } from "@/components/Basic";
+import { Paragraph, Badge } from "@/components";
 
 interface CourseQuizListQuestionProps {
   phase: QuizPhaseType;

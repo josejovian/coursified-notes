@@ -11,7 +11,7 @@ import {
   CourseType,
   StateType,
 } from "@/type";
-import { Button, Paragraph } from "@/components/Basic";
+import { Button, Paragraph } from "@/components";
 import { CourseJourney } from "../components/CourseJourney";
 import { CourseLayoutMain } from "./CourseLayoutMain";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";

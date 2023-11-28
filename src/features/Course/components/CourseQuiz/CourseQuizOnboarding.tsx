@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BsClock, BsQuestionCircle } from "react-icons/bs";
 import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/utils";
 import { ChapterAddressType, QuizConfigType } from "@/type";
-import { Badge, IconText, Paragraph } from "@/components/Basic";
+import { Badge, IconText, Paragraph } from "@/components";
 import { CourseLayoutContentTemplate } from "../../layouts";
 
 interface CourseQuizOnboardingProps {

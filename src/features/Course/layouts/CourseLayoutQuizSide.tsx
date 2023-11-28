@@ -1,7 +1,7 @@
 import { useState, useEffect, MutableRefObject, useCallback } from "react";
 import { BsFillClockFill } from "react-icons/bs";
 import { ImageProps } from "next/image";
-import { Badge, IconText, Paragraph } from "@/components/Basic";
+import { Badge, IconText, Paragraph } from "@/components";
 import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/utils";
 import {
   ChapterAddressType,

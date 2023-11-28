@@ -2,7 +2,7 @@ import { ReactNode, useMemo, useRef, useState, useEffect } from "react";
 import clsx from "clsx";
 import { MdChevronLeft } from "react-icons/md";
 import { ImageProps } from "next/image";
-import { Button, Icon, Loader } from "@/components/Basic";
+import { Button, Icon, Loader } from "@/components";
 import { useScreen } from "@/hooks";
 
 interface GenericProps {

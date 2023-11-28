@@ -7,7 +7,7 @@ import {
   useRef,
 } from "react";
 import clsx from "clsx";
-import { Button } from "@/components/Basic";
+import { Button } from "@/components";
 import { useQuiz, useToast } from "@/hooks";
 import { getQuizAnswerSheet, storeQuizAnswerSheet } from "@/utils";
 import {

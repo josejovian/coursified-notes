@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { Toast } from "@/components/Basic";
+import { Toast } from "@/components";
 import { ContextWrapper } from "@/contexts";
 import { ScreenSizeCategory, ScreenSizeType, ToastActionType } from "@/type";
 
