@@ -1,5 +1,3 @@
-import { AnswerType } from "./Material";
-
 const REQUIREMENT_TYPES = ["read", "practice"] as const;
 
 export type RequirementCategoryType = (typeof REQUIREMENT_TYPES)[number];
@@ -37,6 +35,8 @@ export interface ChapterType {
   percentage?: number;
   completed?: boolean;
 }
+
+export type AnswerType = { [key: string]: string };
 
 export interface QuizConfigType {
   title?: string;

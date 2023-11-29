@@ -7,7 +7,7 @@ import {
   RequirementCategoryType,
   RequirementMap,
   SectionType,
-} from "../type/Course";
+} from "../type/course";
 import { bundleMDX } from "mdx-bundler";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";

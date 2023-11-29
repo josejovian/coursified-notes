@@ -1,3 +1,3 @@
-import { HomePage } from "@/features/Home";
+import { HomePage } from "@/features/home";
 
 export default HomePage;

@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import clsx from "clsx";
 import { CourseType } from "@/type";
 import { useScreen } from "@/hooks";
-import { CourseCard } from "../components/HomeCourseCard";
+import { CourseCard } from "../components";
 
 export function HomePage() {
   const { width } = useScreen();

@@ -1,5 +1,5 @@
-import { ToastPhraseType } from "../consts";
-import { ColorType, ToastVariantType } from "../style";
+import { ToastPhraseType } from "../../consts";
+import { ColorType, ToastVariantType } from "../../style";
 import { IconType } from "react-icons";
 
 export interface ToastBaseType {

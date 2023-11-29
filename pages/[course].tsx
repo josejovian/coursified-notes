@@ -1,5 +1,5 @@
 import { readAllCourses, getDetailedCourse } from "@/lib/mdx";
-import { CourseDetailPage } from "@/features/Course/pages/CourseDetailPage";
+import { CourseDetailPage } from "@/features/course";
 
 interface CourseProps {
   details: string;
