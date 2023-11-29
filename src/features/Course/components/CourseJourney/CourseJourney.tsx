@@ -44,12 +44,11 @@ export function CourseJourney({
 
   return (
     <div
-      className={clsx(
-        "border-zinc-400",
+      className={clsx("border-zinc-400", [
         className,
         scrollable && "overflow-y-scroll",
-        !noBorder && "border-t border-x"
-      )}
+        !noBorder && "border-t border-x",
+      ])}
     >
       {renderSection}
     </div>

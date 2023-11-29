@@ -291,8 +291,10 @@ export function CourseLayoutQuiz({
 
               const now = new Date();
               const end = new Date();
-              if (quizDetails)
+              if (quizDetails) {
                 end.setMinutes(end.getMinutes() + quizDetails.duration);
+                end.setSeconds(end.getSeconds() + 1);
+              }
 
               if (!submitted) {
                 setQuizPhase("working");
@@ -347,7 +349,6 @@ export function CourseLayoutQuiz({
 
   return (
     <CourseLayoutTemplate
-      trueLoading={trueLoading}
       sideElement={
         <CourseLayoutQuizSide
           chapterAddress={chapterAddress}

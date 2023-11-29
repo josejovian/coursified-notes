@@ -17,7 +17,7 @@ export function getHMS(t: number) {
   minutes = Math.floor(time / 60);
   time -= minutes * 60;
 
-  seconds = Math.ceil(time);
+  seconds = Math.floor(time);
 
   const hourPhrase = `${padZero(hours)}`;
   const minutePhrase = `${padZero(minutes)}`;

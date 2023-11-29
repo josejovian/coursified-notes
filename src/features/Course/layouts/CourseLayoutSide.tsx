@@ -55,6 +55,7 @@ export function CourseLayoutSide({
       ) : (
         <CourseJourney
           course={courseDetail}
+          className="h-full"
           chapterAddress={chapterAddress}
           disabled={trueLoading}
           noBorder
