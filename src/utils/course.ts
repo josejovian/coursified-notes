@@ -204,7 +204,7 @@ export function getQuizAnswerSheet(
   const existingAnswer = localStorage.getItem(getCourseKey(course));
 
   if (existingAnswer) {
-    const parsed = JSON.parse(existingAnswer)[localAddress] ?? {};
+    const parsed = JSON.parse(existingAnswer)[localAddress];
     return parsed;
   }
 
