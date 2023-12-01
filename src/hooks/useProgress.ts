@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { checkCourseProgress } from "../utils";
-import { SectionType } from "../type";
+import { SectionType } from "../types";
 
 interface UseProgressProps {
   id: string;

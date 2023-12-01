@@ -1,4 +1,4 @@
-import { ToastType } from "../type";
+import { ToastType } from "../types";
 
 export const TOAST_PHRASE: Record<ToastPhraseType, Partial<ToastType>> = {
   courseMaterialPracticeAnsweredCorrect: {

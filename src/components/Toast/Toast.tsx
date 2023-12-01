@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { BsX } from "react-icons/bs";
 import { TOAST_COLOR_CLASS, TOAST_VARIANT_CLASS } from "@/style";
 import { TOAST_PHRASE } from "@/consts";
-import { ToastActionType } from "@/type";
+import { ToastActionType } from "@/types";
 import { Icon } from "../Icon";
 
 interface ToastProps {

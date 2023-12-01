@@ -4,7 +4,7 @@ import {
   QuizAnswerSheetType,
   RequirementMap,
   SectionType,
-} from "../type/course/CourseType";
+} from "../types/course/CourseType";
 import { uncapitalize } from "./capitalize";
 
 export const regexPracticeInput = /\[input;([^\\])*\]/g;

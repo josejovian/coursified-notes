@@ -11,7 +11,7 @@ import {
   QuizPhaseType,
   QuizQuestionType,
   StateType,
-} from "@/type";
+} from "@/types";
 import { CourseQuizTimer } from "../components/CourseQuiz";
 import { CourseLayoutSideHeader } from "./CourseLayoutSideHeader";
 import { CourseLayoutSide } from "./CourseLayoutSide";

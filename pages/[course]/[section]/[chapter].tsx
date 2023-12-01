@@ -6,7 +6,7 @@ import {
   getDetailedCourse,
   readChapterMd,
 } from "@/lib/mdx";
-import { ChapterAddressType, CourseType } from "@/type";
+import { ChapterAddressType, CourseType } from "@/types";
 import { CoursePage } from "@/features/course";
 
 interface _CourseMaterialProps {

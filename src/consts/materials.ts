@@ -1,4 +1,4 @@
-import { GraphColors, GraphGridSize, PointVariants } from "../type";
+import { GraphColors, GraphGridSize, PointVariants } from "../types";
 
 export const GRAPH_COLORS: Record<GraphColors, string> = {
   red: "#ef4444",

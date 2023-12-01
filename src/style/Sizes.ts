@@ -1,4 +1,4 @@
-import { StyleClassType } from "../type";
+import { StyleClassType } from "../types";
 
 export type SizeType = "s" | "m" | "l";
 

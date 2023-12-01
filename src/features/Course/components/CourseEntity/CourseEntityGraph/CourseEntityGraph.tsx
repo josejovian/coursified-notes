@@ -17,7 +17,7 @@ import {
   GRAPH_OUTER_BORDER,
   GRAPH_RANGES,
 } from "@/consts";
-import { GraphGridSize, GraphParams } from "@/type";
+import { GraphGridSize, GraphParams } from "@/types";
 import { CourseEntityGraphAxes } from "./CourseEntityGraphAxes";
 
 interface GraphProps {

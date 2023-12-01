@@ -7,7 +7,7 @@ import {
 } from "@/utils";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import { ChapterAddressType, SectionType } from "@/type";
+import { ChapterAddressType, SectionType } from "@/types";
 import { Badge } from "@/components";
 import { CourseJourneySectionChapter } from "./CourseJourneySectionChapter";
 import { CourseLayoutSideSection } from "../../layouts/CourseLayoutSideSection";

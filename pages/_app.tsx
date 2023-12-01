@@ -3,7 +3,7 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { Toast } from "@/components";
 import { ContextWrapper } from "@/contexts";
-import { ScreenSizeCategory, ScreenSizeType, ToastActionType } from "@/type";
+import { ScreenSizeCategory, ScreenSizeType, ToastActionType } from "@/types";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [toasts, setToasts] = useState<ToastActionType[]>([]);

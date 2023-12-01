@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { BsClock, BsQuestionCircle } from "react-icons/bs";
 import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/utils";
-import { ChapterAddressType, QuizConfigType } from "@/type";
+import { ChapterAddressType, QuizConfigType } from "@/types";
 import { Badge, IconText, Paragraph } from "@/components";
 import { CourseLayoutContentTemplate } from "../../layouts";
 

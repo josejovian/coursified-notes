@@ -11,7 +11,12 @@ import { getMDXComponent } from "mdx-bundler/client";
 import TeX from "@matejmazur/react-katex";
 import { Blockquote, Input, Paragraph } from "@/components";
 import { checkChapterProgress } from "@/utils";
-import { AddressesType, AnswerType, QuizQuestionType, StateType } from "@/type";
+import {
+  AddressesType,
+  AnswerType,
+  QuizQuestionType,
+  StateType,
+} from "@/types";
 import { CourseLayoutContentTemplate } from "./CourseLayoutContentTemplate";
 import { Option, Graph } from "../components/CourseEntity";
 

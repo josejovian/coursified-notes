@@ -6,7 +6,7 @@ import {
   QuizConfigType,
   QuizPhaseType,
   QuizQuestionType,
-} from "@/type";
+} from "@/types";
 import { CourseJourney } from "../components/CourseJourney";
 import { CourseQuizList } from "../components/CourseQuiz";
 

@@ -5,7 +5,7 @@ import {
   MathPoint,
   GraphColors,
   PointVariants,
-} from "@/type";
+} from "@/types";
 import { GRAPH_COLORS, POINT_VARIANTS } from "@/consts";
 import { evaluateMath } from "../evaluateMath";
 

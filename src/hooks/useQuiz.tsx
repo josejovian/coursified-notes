@@ -7,7 +7,7 @@ import {
   QuizAnswerType,
   QuizConfigType,
   QuizQuestionType,
-} from "../type";
+} from "../types";
 
 interface useQuizProps {
   courseDetail: CourseType;

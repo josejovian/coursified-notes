@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import clsx from "clsx";
-import { CourseType } from "@/type";
+import { CourseType } from "@/types";
 import { useScreen } from "@/hooks";
 import { CourseCard } from "../components";
 

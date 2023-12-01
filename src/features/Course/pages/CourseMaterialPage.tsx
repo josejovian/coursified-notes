@@ -18,7 +18,7 @@ import {
   ChapterAddressType,
   CourseType,
   QuizPhaseType,
-} from "@/type";
+} from "@/types";
 import { useProgress } from "@/hooks";
 import { CourseLayoutQuiz, CourseLayoutMaterial } from "../layouts";
 

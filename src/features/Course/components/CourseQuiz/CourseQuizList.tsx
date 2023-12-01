@@ -4,7 +4,7 @@ import {
   QuizAnswerSheetType,
   QuizPhaseType,
   QuizQuestionType,
-} from "@/type";
+} from "@/types";
 import clsx from "clsx";
 import { CourseLayoutSideSection } from "../../layouts/CourseLayoutSideSection";
 import { CourseQuizListQuestion } from "./CourseQuizListQuestion";

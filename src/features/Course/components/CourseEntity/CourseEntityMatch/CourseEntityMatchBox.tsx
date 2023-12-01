@@ -6,7 +6,7 @@ import rehypeKatex from "rehype-katex";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { MatchCard } from "./CourseEntityMatchCard";
 import { MatchDrop } from "./CourseEntityMatchDrop";
-import { AnswerType } from "@/type";
+import { AnswerType } from "@/types";
 
 export interface MatchBoxProps {
   id: string;

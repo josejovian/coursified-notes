@@ -20,7 +20,7 @@ import {
   QuizPhaseType,
   QuizQuestionType,
   StateType,
-} from "@/type";
+} from "@/types";
 import { CourseQuizOnboarding } from "../components/CourseQuiz/CourseQuizOnboarding";
 import { CourseLayoutMain } from "./CourseLayoutMain";
 import { CourseLayoutQuizSide } from "./CourseLayoutQuizSide";

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { getHMS } from "@/utils/date";
-import { StateType } from "@/type";
+import { StateType } from "@/types";
 
 export function CourseQuizTimer({
   stateLeft,

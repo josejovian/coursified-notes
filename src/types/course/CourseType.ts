@@ -99,3 +99,9 @@ export interface QuizAnswerSheetType {
   submittedAt?: number;
   points?: number;
 }
+
+export interface CoursePageStatusType {
+  submitted?: boolean;
+  checking?: boolean;
+  solved?: boolean;
+}

@@ -5,7 +5,7 @@ import { MdChevronRight } from "react-icons/md";
 import Link from "next/link";
 import { Icon, Paragraph } from "@/components";
 import { useProgress, useScreen } from "@/hooks";
-import { CourseType } from "@/type";
+import { CourseType } from "@/types";
 import { CourseJourney } from "../components/CourseJourney";
 
 interface CourseProps {

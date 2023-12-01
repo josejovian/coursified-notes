@@ -10,7 +10,7 @@ import {
   ChapterAddressType,
   CourseType,
   StateType,
-} from "@/type";
+} from "@/types";
 import { Button, Paragraph } from "@/components";
 import { CourseJourney } from "../components/CourseJourney";
 import { CourseLayoutMain } from "./CourseLayoutMain";
