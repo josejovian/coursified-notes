@@ -101,6 +101,7 @@ export interface QuizAnswerSheetType {
 }
 
 export interface CoursePageStatusType {
+  quizPhase?: QuizPhaseType;
   submitted?: boolean;
   checking?: boolean;
   solved?: boolean;

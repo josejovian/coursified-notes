@@ -16,6 +16,7 @@ import {
 import {
   AnswerType,
   ChapterAddressType,
+  CoursePageStatusType,
   CourseType,
   QuizPhaseType,
 } from "@/types";
@@ -39,8 +40,6 @@ export function CoursePage({
   const statePage = useState(0);
   const stateMaxPage = useState(0);
   const page = statePage[0];
-  const stateSolved = useState(-1);
-  const setSolved = stateSolved[1];
   const setMaxPage = stateMaxPage[1];
   const stateLoading = useState(true);
   const stateSwapChapters = useState(false);
@@ -54,10 +53,13 @@ export function CoursePage({
   const acceptRef = useRef<AnswerType>({});
   const mountedRef = useRef<Record<string, boolean>>({});
   const accept = acceptRef.current;
-  const stateSubmitted = useState(false);
-  const stateChecking = useState(false);
-  const setChecking = stateChecking[1];
-  const setSubmitted = stateSubmitted[1];
+  // const setChecking = stateChecking[1];
+  // const setSubmitted = stateSubmitted[1];
+  const statePageStatus = useState<CoursePageStatusType>({
+    checking: false,
+    submitted: false,
+  });
+  const [_, setPageStatus] = statePageStatus;
   const stateQuizPhase = useState<QuizPhaseType>();
 
   const courseDetail: CourseType = useMemo(
@@ -102,9 +104,15 @@ export function CoursePage({
       updateCheckingState: boolean = true
     ) => {
       if (updateCheckingState) {
-        setChecking(true);
+        setPageStatus((prev) => ({
+          ...prev,
+          checking: true,
+        }));
         setTimeout(() => {
-          setChecking(false);
+          setPageStatus((prev) => ({
+            ...prev,
+            checking: false,
+          }));
         }, 1000);
       }
 
@@ -129,7 +137,7 @@ export function CoursePage({
 
       return result;
     },
-    [accept, practice, setChecking]
+    [accept, practice, setPageStatus]
   );
 
   const handleSetMaxPage = useCallback(() => {
@@ -148,11 +156,15 @@ export function CoursePage({
       answerRef.current = {};
       acceptRef.current = {};
       mountedRef.current = {};
-      setSolved(-1);
-      setSubmitted(false);
-      setChecking(false);
+      // setSolved(-1);
+      // setSubmitted(false);
+      // setChecking(false);
+      setPageStatus({
+        checking: false,
+        submitted: false,
+      });
     },
-    [setChecking, setSolved, setSubmitted]
+    [setPageStatus]
   );
 
   const handleRouteChangeStart = useCallback(
@@ -191,13 +203,11 @@ export function CoursePage({
         acceptRef={acceptRef}
         answerRef={answerRef}
         mountedRef={mountedRef}
-        stateChecking={stateChecking}
         stateLoading={stateLoading}
         statePage={statePage}
+        statePageStatus={statePageStatus}
         stateProblemCount={stateProblemCount}
         stateLastUpdate={stateLastUpdate}
-        stateSolved={stateSolved}
-        stateSubmitted={stateSubmitted}
         stateSwapChapters={stateSwapChapters}
         stateQuizPhase={stateQuizPhase}
         trueLoading={trueLoading}
@@ -210,14 +220,12 @@ export function CoursePage({
       courseDetail,
       courseDetailWithProgress,
       handleCheckAnswer,
-      stateChecking,
       stateLastUpdate,
       stateLoading,
       statePage,
+      statePageStatus,
       stateProblemCount,
       stateQuizPhase,
-      stateSolved,
-      stateSubmitted,
       stateSwapChapters,
       trueLoading,
     ]
@@ -236,14 +244,12 @@ export function CoursePage({
         acceptRef={acceptRef}
         answerRef={answerRef}
         mountedRef={mountedRef}
-        stateChecking={stateChecking}
         stateLoading={stateLoading}
         statePage={statePage}
+        statePageStatus={statePageStatus}
         stateMaxPage={stateMaxPage}
         stateProblemCount={stateProblemCount}
         stateLastUpdate={stateLastUpdate}
-        stateSolved={stateSolved}
-        stateSubmitted={stateSubmitted}
         trueLoading={trueLoading}
       />
     ),
@@ -255,14 +261,12 @@ export function CoursePage({
       courseDetailWithProgress,
       handleCheckAnswer,
       handleCleanUpStates,
-      stateChecking,
       stateLastUpdate,
       stateLoading,
       stateMaxPage,
       statePage,
+      statePageStatus,
       stateProblemCount,
-      stateSolved,
-      stateSubmitted,
       trueLoading,
     ]
   );

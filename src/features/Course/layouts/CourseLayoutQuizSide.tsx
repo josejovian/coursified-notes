@@ -5,10 +5,10 @@ import { Badge, IconText, Paragraph } from "@/components";
 import { getPercent, getPercentGroup, getQuizAnswerSheet } from "@/utils";
 import {
   ChapterAddressType,
+  CoursePageStatusType,
   CourseType,
   QuizAnswerSheetType,
   QuizConfigType,
-  QuizPhaseType,
   QuizQuestionType,
   StateType,
 } from "@/types";
@@ -18,7 +18,7 @@ import { CourseLayoutSide } from "./CourseLayoutSide";
 
 export function CourseLayoutQuizSide({
   sideHeaderImage,
-  stateQuizPhase,
+  statePageStatus,
   quizDetails,
   quizAnswerSheetRef,
   chapterAddress,
@@ -28,7 +28,7 @@ export function CourseLayoutQuizSide({
   onQuizNoTimeLeft,
 }: {
   sideHeaderImage: ImageProps;
-  stateQuizPhase: StateType<QuizPhaseType>;
+  statePageStatus: StateType<CoursePageStatusType>;
   quizAnswerSheetRef: MutableRefObject<QuizAnswerSheetType>;
   quizDetails?: QuizConfigType;
   courseDetail: CourseType;
@@ -38,7 +38,8 @@ export function CourseLayoutQuizSide({
   onQuizNoTimeLeft: () => void;
 }) {
   const [percent, setPercent] = useState<number>();
-  const [quizPhase, setQuizPhase] = stateQuizPhase;
+  const [pageStatus, setPageStatus] = statePageStatus;
+  const { quizPhase } = pageStatus;
   const stateLeft = useState(0);
 
   const handleGetPercent = useCallback(() => {
@@ -61,7 +62,11 @@ export function CourseLayoutQuizSide({
             {quizPhase === "submitted" && (
               <Paragraph
                 onClick={() => {
-                  setQuizPhase("onboarding");
+                  // setQuizPhase("onboarding");
+                  setPageStatus((prev) => ({
+                    ...prev,
+                    quizPhase: "onboarding",
+                  }));
                 }}
                 color="secondary-1"
                 className="cursor-pointer"

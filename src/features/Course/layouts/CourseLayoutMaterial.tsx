@@ -8,6 +8,7 @@ import {
   AddressesType,
   AnswerType,
   ChapterAddressType,
+  CoursePageStatusType,
   CourseType,
   StateType,
 } from "@/types";
@@ -24,11 +25,9 @@ export function CourseLayoutMaterial({
   acceptRef,
   answerRef,
   mountedRef,
-  stateChecking,
   stateLoading,
-  stateSolved,
-  stateSubmitted,
   statePage,
+  statePageStatus,
   stateMaxPage,
   courseDetailWithProgress,
   chapterAddress,
@@ -39,14 +38,12 @@ export function CourseLayoutMaterial({
   addreses: AddressesType;
   chapterBaseAddress: ChapterAddressType;
   chapterContent: string;
-  stateSolved: StateType<number>;
   answerRef: MutableRefObject<Partial<AnswerType>>;
   acceptRef: MutableRefObject<AnswerType>;
   mountedRef: MutableRefObject<Record<string, boolean>>;
   stateLoading: StateType<boolean>;
-  stateChecking: StateType<boolean>;
-  stateSubmitted: StateType<boolean>;
   statePage: StateType<number>;
+  statePageStatus: StateType<CoursePageStatusType>;
   stateMaxPage: StateType<number>;
   stateProblemCount: StateType<number>;
   stateLastUpdate: StateType<number>;
@@ -61,12 +58,10 @@ export function CourseLayoutMaterial({
   handleCleanUpStates: () => void;
 }) {
   const { read } = addreses;
-  const setSubmitted = stateSubmitted[1];
-  const setSolved = stateSolved[1];
   const setLoading = stateLoading[1];
-  const solved = stateSolved[0];
-  const [checking, setChecking] = stateChecking;
   const [page, setPage] = statePage;
+  const [pageStatus, setPageStatus] = statePageStatus;
+  const { checking, solved, submitted } = pageStatus;
   const maxPage = stateMaxPage[0];
   const accept = acceptRef.current;
 
@@ -129,7 +124,7 @@ export function CourseLayoutMaterial({
   const handleNextPage = useCallback(() => {
     setLoading(true);
     handleCleanUpStates();
-    if (solved !== 0) storeChapterProgress(read, true);
+    if (solved !== false) storeChapterProgress(read, true);
     if (page < maxPage - 1) {
       setPage((prev) => prev + 1);
     } else {
@@ -167,12 +162,17 @@ export function CourseLayoutMaterial({
         mountedRef={mountedRef}
         stateLoading={stateLoading}
         trueLoading={trueLoading}
-        stateSolved={stateSolved}
-        stateSubmitted={stateSubmitted}
-        stateChecking={stateChecking}
+        statePageStatus={statePageStatus}
         statePage={statePage}
         handleCheckAnswer={handleCheckAnswer}
         onChapterChange={() => setPage(0)}
+        onInputBlur={() => {
+          if (submitted)
+            setPageStatus((prev) => ({
+              ...prev,
+              submitted: false,
+            }));
+        }}
       />
     ),
     [
@@ -183,12 +183,12 @@ export function CourseLayoutMaterial({
       mountedRef,
       stateLoading,
       trueLoading,
-      stateSolved,
-      stateSubmitted,
-      stateChecking,
+      statePageStatus,
       statePage,
       handleCheckAnswer,
       setPage,
+      submitted,
+      setPageStatus,
     ]
   );
 
@@ -206,7 +206,7 @@ export function CourseLayoutMaterial({
         <Paragraph as="span" size="l">
           {page + 1} / {maxPage}
         </Paragraph>
-        {solved !== 0 ? (
+        {solved || solved === undefined ? (
           <Button size="l" onClick={handleNextPage} disabled={trueLoading}>
             Next
           </Button>
@@ -214,8 +214,11 @@ export function CourseLayoutMaterial({
           <Button
             size="l"
             onClick={() => {
-              setChecking(true);
-              setSubmitted(true);
+              setPageStatus((prev) => ({
+                ...prev,
+                checking: true,
+                submitted: true,
+              }));
 
               if (
                 Object.values(answerRef.current).length ===
@@ -228,7 +231,10 @@ export function CourseLayoutMaterial({
                 );
 
                 if (correct) {
-                  setSolved(1);
+                  setPageStatus((prev) => ({
+                    ...prev,
+                    solved: true,
+                  }));
                   addToast({
                     phrase: "courseMaterialPracticeAnsweredCorrect",
                   });
@@ -239,7 +245,10 @@ export function CourseLayoutMaterial({
                 }
               } else {
                 setTimeout(() => {
-                  setChecking(false);
+                  setPageStatus((prev) => ({
+                    ...prev,
+                    checking: false,
+                  }));
                 }, 1000);
                 addToast({
                   phrase: "courseMaterialPracticeAnsweredIncorrect",
@@ -267,9 +276,7 @@ export function CourseLayoutMaterial({
       handlePreviousPage,
       maxPage,
       page,
-      setChecking,
-      setSolved,
-      setSubmitted,
+      setPageStatus,
       solved,
       trueLoading,
     ]

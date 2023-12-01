@@ -14,6 +14,7 @@ import { checkChapterProgress } from "@/utils";
 import {
   AddressesType,
   AnswerType,
+  CoursePageStatusType,
   QuizQuestionType,
   StateType,
 } from "@/types";
@@ -23,20 +24,19 @@ import { Option, Graph } from "../components/CourseEntity";
 interface CourseMaterialContentProps {
   markdown: string;
   addreses: AddressesType;
-  stateSolved: StateType<number>;
   answerRef: MutableRefObject<Partial<AnswerType>>;
   acceptRef: MutableRefObject<AnswerType>;
   mountedRef: MutableRefObject<Record<string, boolean>>;
   stateLoading: StateType<boolean>;
-  stateChecking: StateType<boolean>;
-  stateSubmitted: StateType<boolean>;
   statePage: StateType<number>;
+  statePageStatus: StateType<CoursePageStatusType>;
   trueLoading: boolean;
   handleCheckAnswer: (ans: string, id: string, flag?: boolean) => boolean;
   onChapterChange?: () => void;
   onAnswerUpdate?: (answer: Partial<AnswerType>) => void;
   onQuestionMount?: (id: string, question: QuizQuestionType) => void;
   onOptionsMount?: (id: string, answer: string) => void;
+  onInputBlur?: () => void;
   inputIsDisabled?: boolean;
 }
 
@@ -46,22 +46,22 @@ export function CourseLayoutMain({
   acceptRef,
   answerRef,
   mountedRef,
-  stateSolved,
   stateLoading,
-  stateSubmitted,
   statePage,
+  statePageStatus,
   trueLoading,
   handleCheckAnswer,
   onChapterChange,
   onAnswerUpdate,
   onQuestionMount,
   onOptionsMount,
+  onInputBlur,
   inputIsDisabled,
 }: CourseMaterialContentProps) {
   const router = useRouter();
   const [loading, setLoading] = stateLoading;
-  const [solved, setSolved] = stateSolved;
-  const [submitted, setSubmmited] = stateSubmitted;
+  const [pageStatus, setPageStatus] = statePageStatus;
+  const { submitted, solved } = pageStatus;
   const inputRef = useRef<Record<string, boolean>>({});
   const graphRef = useRef<Record<string, string>>({});
   const page = statePage[0];
@@ -117,10 +117,13 @@ export function CourseLayoutMain({
       practiceIds.length > 0
     ) {
       answerRef.current = accept;
-      setSubmmited(true);
-      setSolved(1);
+
+      setPageStatus((prev) => ({
+        ...prev,
+        solved: true,
+      }));
     }
-  }, [practice, accept, handleCheckAnswer, answerRef, setSubmmited, setSolved]);
+  }, [practice, accept, handleCheckAnswer, answerRef, setPageStatus]);
 
   useEffect(() => {
     handleGetExistingAnswerIfAny();
@@ -173,7 +176,12 @@ export function CourseLayoutMain({
           [id]: answerKey,
         };
 
-        if (solved !== 0) setSolved(0);
+        if (solved !== false) {
+          setPageStatus((prev) => ({
+            ...prev,
+            solved: false,
+          }));
+        }
         acceptRef.current = {
           ...acceptRef.current,
           ...answerKeys,
@@ -185,9 +193,7 @@ export function CourseLayoutMain({
           className={clsx(indent && "ml-14")}
           key={`InputBox-${id}`}
           id={`InputBox-${id}`}
-          onBlur={() => {
-            setSubmmited(false);
-          }}
+          onBlur={onInputBlur}
           onChange={(e) => {
             const { value } = e.target as HTMLInputElement;
             const newAnswer = {
@@ -198,7 +204,7 @@ export function CourseLayoutMain({
             onAnswerUpdate && onAnswerUpdate(newAnswer);
           }}
           defaultValue={answer[id]}
-          disabled={solved === 1 || inputIsDisabled}
+          disabled={solved || inputIsDisabled}
           state={
             (submitted && solved) || inputIsDisabled
               ? userAnswerStatus(id)
@@ -223,8 +229,8 @@ export function CourseLayoutMain({
       inputIsDisabled,
       mountedRef,
       onAnswerUpdate,
-      setSolved,
-      setSubmmited,
+      onInputBlur,
+      setPageStatus,
       solved,
       submitted,
       userAnswerStatus,
@@ -386,7 +392,7 @@ export function CourseLayoutMain({
           Input: handleConvertPractice,
           Explanation: ({ children }) => (
             <>
-              {solved === 1 && (
+              {solved && (
                 <Blockquote variant="explanation">{children}</Blockquote>
               )}
             </>

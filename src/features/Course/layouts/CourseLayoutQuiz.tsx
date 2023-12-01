@@ -3,7 +3,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useState,
   useRef,
 } from "react";
 import clsx from "clsx";
@@ -14,6 +13,7 @@ import {
   AddressesType,
   AnswerType,
   ChapterAddressType,
+  CoursePageStatusType,
   CourseType,
   QuizAnswerSheetType,
   QuizAnswerType,
@@ -32,12 +32,10 @@ export function CourseLayoutQuiz({
   acceptRef,
   mountedRef,
   chapterContent,
-  stateChecking,
   stateLoading,
-  stateSolved,
-  stateSubmitted,
   stateSwapChapters,
   statePage,
+  statePageStatus,
   courseDetail,
   courseDetailWithProgress,
   chapterAddress,
@@ -46,13 +44,11 @@ export function CourseLayoutQuiz({
 }: {
   addreses: AddressesType;
   chapterContent: string;
-  stateSolved: StateType<number>;
   answerRef: MutableRefObject<Partial<AnswerType>>;
   acceptRef: MutableRefObject<AnswerType>;
   mountedRef: MutableRefObject<Record<string, boolean>>;
   stateLoading: StateType<boolean>;
-  stateChecking: StateType<boolean>;
-  stateSubmitted: StateType<boolean>;
+  statePageStatus: StateType<CoursePageStatusType>;
   stateSwapChapters: StateType<boolean>;
   stateQuizPhase: StateType<QuizPhaseType>;
   statePage: StateType<number>;
@@ -70,7 +66,8 @@ export function CourseLayoutQuiz({
 }) {
   const answer = answerRef.current;
   const accept = acceptRef.current;
-  const [submitted, setSubmitted] = stateSubmitted;
+  const [pageStatus, setPageStatus] = statePageStatus;
+  const { submitted, quizPhase } = pageStatus;
   const setSwapChapters = stateSwapChapters[1];
   const { quizAnswerSheetRef, quizDetails } = useQuiz({
     chapterAddress,
@@ -80,8 +77,6 @@ export function CourseLayoutQuiz({
   });
   const quizQuestionsRef = useRef<Record<string, QuizQuestionType>>({});
   const quizAnswerSheet = quizAnswerSheetRef.current;
-  const stateQuizPhase = useState<QuizPhaseType>();
-  const [quizPhase, setQuizPhase] = stateQuizPhase;
   const setLoading = stateLoading[1];
   const setPage = statePage[1];
 
@@ -146,7 +141,11 @@ export function CourseLayoutQuiz({
       (prev, { points = 0 }) => prev + points,
       0
     );
-    setQuizPhase("submitted");
+    // setQuizPhase("submitted");
+    setPageStatus((prev) => ({
+      ...prev,
+      quizPhase: "submitted",
+    }));
 
     const finalAnswerSheet: QuizAnswerSheetType = {
       ...quizAnswerSheetRef.current,
@@ -156,7 +155,7 @@ export function CourseLayoutQuiz({
     };
     storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
     quizAnswerSheetRef.current = finalAnswerSheet;
-  }, [answerRef, chapterAddress, quizAnswerSheetRef, setQuizPhase]);
+  }, [answerRef, chapterAddress, quizAnswerSheetRef, setPageStatus]);
 
   const handleUpdateAnswer = useCallback(
     (ans: Partial<AnswerType>) => {
@@ -188,7 +187,11 @@ export function CourseLayoutQuiz({
 
       if (exists && existing.submittedAt) {
         quizAnswerSheetRef.current = existing;
-        setSubmitted(true);
+        setPageStatus((prev) => ({
+          ...prev,
+          submitted: true,
+          quizPhase: "onboarding",
+        }));
         answerRef.current = existing.answers;
       } else if (exists && !existing.submittedAt) {
         quizAnswerSheetRef.current = existing;
@@ -196,9 +199,12 @@ export function CourseLayoutQuiz({
         addToast({
           phrase: "courseQuizContinueFromBackUp",
         });
+        setPageStatus((prev) => ({
+          ...prev,
+          quizPhase: "onboarding",
+        }));
       }
 
-      setQuizPhase("onboarding");
       setLoading(false);
       setSwapChapters(false);
     }
@@ -210,8 +216,7 @@ export function CourseLayoutQuiz({
     quizDetails,
     quizPhase,
     setLoading,
-    setQuizPhase,
-    setSubmitted,
+    setPageStatus,
     setSwapChapters,
   ]);
 
@@ -236,10 +241,8 @@ export function CourseLayoutQuiz({
           mountedRef={mountedRef}
           stateLoading={stateLoading}
           trueLoading={trueLoading}
-          stateSolved={stateSolved}
-          stateSubmitted={stateSubmitted}
-          stateChecking={stateChecking}
           statePage={statePage}
+          statePageStatus={statePageStatus}
           handleCheckAnswer={handleCheckAnswer}
           onChapterChange={() => setPage(0)}
           onAnswerUpdate={handleUpdateAnswer}
@@ -263,10 +266,8 @@ export function CourseLayoutQuiz({
       answerRef,
       mountedRef,
       stateLoading,
-      stateSolved,
-      stateSubmitted,
-      stateChecking,
       statePage,
+      statePageStatus,
       handleCheckAnswer,
       handleUpdateAnswer,
       setPage,
@@ -285,7 +286,11 @@ export function CourseLayoutQuiz({
                 quizAnswerSheet.startAt &&
                 !quizAnswerSheet.submittedAt
               ) {
-                setQuizPhase("working");
+                // setQuizPhase("working");
+                setPageStatus((prev) => ({
+                  ...prev,
+                  quizPhase: "working",
+                }));
                 return;
               }
 
@@ -297,11 +302,19 @@ export function CourseLayoutQuiz({
               }
 
               if (!submitted) {
-                setQuizPhase("working");
+                // setQuizPhase("working");
+                setPageStatus((prev) => ({
+                  ...prev,
+                  quizPhase: "working",
+                }));
                 quizAnswerSheetRef.current.startAt = now.getTime();
                 quizAnswerSheetRef.current.endAt = end.getTime();
               } else {
-                setQuizPhase("submitted");
+                // setQuizPhase("submitted");
+                setPageStatus((prev) => ({
+                  ...prev,
+                  quizPhase: "submitted",
+                }));
               }
             }}
             disabled={trueLoading}
@@ -341,7 +354,7 @@ export function CourseLayoutQuiz({
       quizAnswerSheetRef,
       quizDetails,
       quizPhase,
-      setQuizPhase,
+      setPageStatus,
       submitted,
       trueLoading,
     ]
@@ -363,7 +376,7 @@ export function CourseLayoutQuiz({
           sideHeaderImage={{
             src: "/calculus.jpg",
           }}
-          stateQuizPhase={stateQuizPhase}
+          statePageStatus={statePageStatus}
           quizDetails={quizDetails}
           quizQuestions={quizQuestionsRef}
           trueLoading={trueLoading}
