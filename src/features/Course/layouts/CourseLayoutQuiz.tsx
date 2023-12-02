@@ -36,6 +36,7 @@ export function CourseLayoutQuiz({
   stateSwapChapters,
   statePage,
   statePageStatus,
+  stateSwapPages,
   courseDetail,
   courseDetailWithProgress,
   chapterAddress,
@@ -46,10 +47,11 @@ export function CourseLayoutQuiz({
   chapterContent: string;
   answerRef: MutableRefObject<Partial<AnswerType>>;
   acceptRef: MutableRefObject<AnswerType>;
-  mountedRef: MutableRefObject<Record<string, boolean>>;
+  mountedRef: MutableRefObject<Record<string, string | boolean>>;
   stateLoading: StateType<boolean>;
   statePageStatus: StateType<CoursePageStatusType>;
   stateSwapChapters: StateType<boolean>;
+  stateSwapPages: StateType<boolean>;
   stateQuizPhase: StateType<QuizPhaseType>;
   statePage: StateType<number>;
   stateProblemCount: StateType<number>;
@@ -243,6 +245,7 @@ export function CourseLayoutQuiz({
           trueLoading={trueLoading}
           statePage={statePage}
           statePageStatus={statePageStatus}
+          stateSwapPages={stateSwapPages}
           handleCheckAnswer={handleCheckAnswer}
           onChapterChange={() => setPage(0)}
           onAnswerUpdate={handleUpdateAnswer}
@@ -268,6 +271,7 @@ export function CourseLayoutQuiz({
       stateLoading,
       statePage,
       statePageStatus,
+      stateSwapPages,
       handleCheckAnswer,
       handleUpdateAnswer,
       setPage,

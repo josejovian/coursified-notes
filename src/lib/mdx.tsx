@@ -238,7 +238,6 @@ export async function getDetailedCourse(course: string) {
       );
 
       sectionData.quiz = quiz;
-      console.log(quiz);
 
       return sectionData;
     })

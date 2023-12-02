@@ -1,8 +1,8 @@
-import { MutableRefObject, useMemo, useCallback } from "react";
+import { MutableRefObject, useMemo, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useToast } from "@/hooks";
+import { useDebounce, useToast } from "@/hooks";
 import { storeChapterProgress } from "@/utils";
 import {
   AddressesType,
@@ -29,6 +29,7 @@ export function CourseLayoutMaterial({
   statePage,
   statePageStatus,
   stateMaxPage,
+  stateSwapPages,
   courseDetailWithProgress,
   chapterAddress,
   trueLoading,
@@ -40,11 +41,12 @@ export function CourseLayoutMaterial({
   chapterContent: string;
   answerRef: MutableRefObject<Partial<AnswerType>>;
   acceptRef: MutableRefObject<AnswerType>;
-  mountedRef: MutableRefObject<Record<string, boolean>>;
+  mountedRef: MutableRefObject<Record<string, string | boolean>>;
   stateLoading: StateType<boolean>;
   statePage: StateType<number>;
   statePageStatus: StateType<CoursePageStatusType>;
   stateMaxPage: StateType<number>;
+  stateSwapPages: StateType<boolean>;
   stateProblemCount: StateType<number>;
   stateLastUpdate: StateType<number>;
   courseDetailWithProgress: CourseType;
@@ -61,6 +63,8 @@ export function CourseLayoutMaterial({
   const setLoading = stateLoading[1];
   const [page, setPage] = statePage;
   const [pageStatus, setPageStatus] = statePageStatus;
+  const setSwapPages = stateSwapPages[1];
+  const debounce = useDebounce();
   const { checking, solved, submitted } = pageStatus;
   const maxPage = stateMaxPage[0];
   const accept = acceptRef.current;
@@ -116,13 +120,11 @@ export function CourseLayoutMaterial({
   const { id, title, description } = courseDetailWithProgress;
 
   const handlePreviousPage = useCallback(() => {
-    setLoading(true);
     handleCleanUpStates();
     if (page > 0) setPage((prev) => prev - 1);
-  }, [handleCleanUpStates, page, setLoading, setPage]);
+  }, [handleCleanUpStates, page, setPage]);
 
   const handleNextPage = useCallback(() => {
-    setLoading(true);
     handleCleanUpStates();
     if (solved !== false) storeChapterProgress(read, true);
     if (page < maxPage - 1) {
@@ -135,12 +137,11 @@ export function CourseLayoutMaterial({
         },
         true
       );
-      setTimeout(() => {
+      debounce(() => {
         router.replace(nextDestination);
-      }, 250);
+      });
     }
   }, [
-    setLoading,
     handleCleanUpStates,
     solved,
     read,
@@ -148,6 +149,7 @@ export function CourseLayoutMaterial({
     maxPage,
     setPage,
     chapterBaseAddress,
+    debounce,
     router,
     nextDestination,
   ]);
@@ -164,6 +166,7 @@ export function CourseLayoutMaterial({
         trueLoading={trueLoading}
         statePageStatus={statePageStatus}
         statePage={statePage}
+        stateSwapPages={stateSwapPages}
         handleCheckAnswer={handleCheckAnswer}
         onChapterChange={() => setPage(0)}
         onInputBlur={() => {
@@ -185,6 +188,7 @@ export function CourseLayoutMaterial({
       trueLoading,
       statePageStatus,
       statePage,
+      stateSwapPages,
       handleCheckAnswer,
       setPage,
       submitted,
@@ -192,13 +196,23 @@ export function CourseLayoutMaterial({
     ]
   );
 
+  useEffect(() => {
+    console.log("True Loading: ", trueLoading);
+  }, [trueLoading]);
+
   const renderPageControls = useMemo(
     () => (
       <>
         <Button
           color="secondary"
           size="l"
-          onClick={handlePreviousPage}
+          onClick={() => {
+            // setSwapPages(true);
+            debounce(() => {
+              setLoading(true);
+              handlePreviousPage();
+            });
+          }}
           disabled={page <= 0 || trueLoading}
         >
           Back
@@ -207,7 +221,17 @@ export function CourseLayoutMaterial({
           {page + 1} / {maxPage}
         </Paragraph>
         {solved || solved === undefined ? (
-          <Button size="l" onClick={handleNextPage} disabled={trueLoading}>
+          <Button
+            size="l"
+            onClick={() => {
+              // setSwapPages(true);
+              debounce(() => {
+                setLoading(true);
+                handleNextPage();
+              });
+            }}
+            disabled={trueLoading}
+          >
             Next
           </Button>
         ) : (
@@ -244,7 +268,7 @@ export function CourseLayoutMaterial({
                   });
                 }
               } else {
-                setTimeout(() => {
+                debounce(() => {
                   setPageStatus((prev) => ({
                     ...prev,
                     checking: false,
@@ -271,11 +295,13 @@ export function CourseLayoutMaterial({
       addToast,
       answerRef,
       checking,
+      debounce,
       handleCheckAnswer,
       handleNextPage,
       handlePreviousPage,
       maxPage,
       page,
+      setLoading,
       setPageStatus,
       solved,
       trueLoading,

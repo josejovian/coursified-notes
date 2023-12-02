@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useRef,
   useMemo,
   useEffect,
   MutableRefObject,
@@ -20,16 +19,18 @@ import {
 } from "@/types";
 import { CourseLayoutContentTemplate } from "./CourseLayoutContentTemplate";
 import { Option, Graph } from "../components/CourseEntity";
+import { useDebounce } from "@/hooks";
 
 interface CourseMaterialContentProps {
   markdown: string;
   addreses: AddressesType;
   answerRef: MutableRefObject<Partial<AnswerType>>;
   acceptRef: MutableRefObject<AnswerType>;
-  mountedRef: MutableRefObject<Record<string, boolean>>;
+  mountedRef: MutableRefObject<Record<string, string | boolean>>;
   stateLoading: StateType<boolean>;
   statePage: StateType<number>;
   statePageStatus: StateType<CoursePageStatusType>;
+  stateSwapPages: StateType<boolean>;
   trueLoading: boolean;
   handleCheckAnswer: (ans: string, id: string, flag?: boolean) => boolean;
   onChapterChange?: () => void;
@@ -49,6 +50,7 @@ export function CourseLayoutMain({
   stateLoading,
   statePage,
   statePageStatus,
+  stateSwapPages,
   trueLoading,
   handleCheckAnswer,
   onChapterChange,
@@ -62,10 +64,10 @@ export function CourseLayoutMain({
   const [loading, setLoading] = stateLoading;
   const [pageStatus, setPageStatus] = statePageStatus;
   const { submitted, solved } = pageStatus;
-  const inputRef = useRef<Record<string, boolean>>({});
-  const graphRef = useRef<Record<string, string>>({});
   const page = statePage[0];
+  const [swapPages, setSwapPages] = stateSwapPages;
   const accept = acceptRef.current;
+  const debounce = useDebounce();
 
   const { practice } = addreses;
 
@@ -121,27 +123,37 @@ export function CourseLayoutMain({
       setPageStatus((prev) => ({
         ...prev,
         solved: true,
+        submitted: true,
       }));
     }
   }, [practice, accept, handleCheckAnswer, answerRef, setPageStatus]);
 
-  useEffect(() => {
-    handleGetExistingAnswerIfAny();
-  }, [loading, handleGetExistingAnswerIfAny]);
-
   const handlePrepareNewPage = useCallback(() => {
     if (loading) {
-      graphRef.current = {};
-      inputRef.current = {};
       mountedRef.current = {};
-
       setLoading(false);
+      setSwapPages(false);
+      handleGetExistingAnswerIfAny();
     }
-  }, [loading, mountedRef, setLoading]);
+  }, [
+    handleGetExistingAnswerIfAny,
+    loading,
+    mountedRef,
+    setLoading,
+    setSwapPages,
+  ]);
 
   useEffect(() => {
-    handlePrepareNewPage();
-  }, [page, handlePrepareNewPage]);
+    console.log("Page Rerender");
+    debounce(() => handlePrepareNewPage());
+  }, [
+    page,
+    handlePrepareNewPage,
+    debounce,
+    mountedRef,
+    setLoading,
+    setSwapPages,
+  ]);
 
   const handleRouteChangeStart = useCallback(() => {
     setLoading(true);
@@ -153,12 +165,7 @@ export function CourseLayoutMain({
     return () => {
       router.events.off("routeChangeStart", handleRouteChangeStart);
     };
-  }, [
-    onChapterChange,
-    handlePrepareNewPage,
-    router.events,
-    handleRouteChangeStart,
-  ]);
+  }, [onChapterChange, router.events, handleRouteChangeStart]);
 
   const handleConvertPractice = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -210,8 +217,6 @@ export function CourseLayoutMain({
               ? userAnswerStatus(id)
               : undefined
           }
-          mounted={inputRef.current[id]}
-          onMount={() => {}}
           placeholder={placeholder}
           helperText={
             inputIsDisabled && userAnswerStatus(id) === "error" ? (
@@ -380,9 +385,9 @@ export function CourseLayoutMain({
                 {...props}
                 key={identifier}
                 id={identifier}
-                cache={graphRef.current[identifier]}
+                cache={mountedRef.current[identifier]}
                 onReady={(cache) => {
-                  graphRef.current[identifier] = cache;
+                  mountedRef.current[identifier] = cache;
                 }}
               />
             );
@@ -433,6 +438,7 @@ export function CourseLayoutMain({
     handleConvertPractice,
     handleRenderOptionNew,
     handleRenderQuizQuestionHeading,
+    mountedRef,
     solved,
   ]);
 

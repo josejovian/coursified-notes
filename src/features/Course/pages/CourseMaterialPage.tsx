@@ -20,7 +20,7 @@ import {
   CourseType,
   QuizPhaseType,
 } from "@/types";
-import { useProgress } from "@/hooks";
+import { useDebounce, useProgress } from "@/hooks";
 import { CourseLayoutQuiz, CourseLayoutMaterial } from "../layouts";
 
 interface CourseMaterialProps {
@@ -53,14 +53,13 @@ export function CoursePage({
   const acceptRef = useRef<AnswerType>({});
   const mountedRef = useRef<Record<string, boolean>>({});
   const accept = acceptRef.current;
-  // const setChecking = stateChecking[1];
-  // const setSubmitted = stateSubmitted[1];
   const statePageStatus = useState<CoursePageStatusType>({
     checking: false,
     submitted: false,
   });
   const [_, setPageStatus] = statePageStatus;
   const stateQuizPhase = useState<QuizPhaseType>();
+  const debounce = useDebounce();
 
   const courseDetail: CourseType = useMemo(
     () => JSON.parse(rawCourseDetail) as CourseType,
@@ -108,12 +107,6 @@ export function CoursePage({
           ...prev,
           checking: true,
         }));
-        setTimeout(() => {
-          setPageStatus((prev) => ({
-            ...prev,
-            checking: false,
-          }));
-        }, 1000);
       }
 
       const result = (() => {
@@ -135,9 +128,17 @@ export function CoursePage({
         });
       }
 
+      if (updateCheckingState) {
+        debounce(() => {
+          setPageStatus((prev) => ({
+            ...prev,
+            checking: false,
+          }));
+        }, 1000);
+      }
       return result;
     },
-    [accept, practice, setPageStatus]
+    [accept, debounce, practice, setPageStatus]
   );
 
   const handleSetMaxPage = useCallback(() => {
@@ -162,6 +163,8 @@ export function CoursePage({
       setPageStatus({
         checking: false,
         submitted: false,
+        solved: undefined,
+        quizPhase: undefined,
       });
     },
     [setPageStatus]
@@ -209,6 +212,7 @@ export function CoursePage({
         stateProblemCount={stateProblemCount}
         stateLastUpdate={stateLastUpdate}
         stateSwapChapters={stateSwapChapters}
+        stateSwapPages={stateSwapPages}
         stateQuizPhase={stateQuizPhase}
         trueLoading={trueLoading}
       />
@@ -227,6 +231,7 @@ export function CoursePage({
       stateProblemCount,
       stateQuizPhase,
       stateSwapChapters,
+      stateSwapPages,
       trueLoading,
     ]
   );
@@ -250,6 +255,7 @@ export function CoursePage({
         stateMaxPage={stateMaxPage}
         stateProblemCount={stateProblemCount}
         stateLastUpdate={stateLastUpdate}
+        stateSwapPages={stateSwapPages}
         trueLoading={trueLoading}
       />
     ),
@@ -267,6 +273,7 @@ export function CoursePage({
       statePage,
       statePageStatus,
       stateProblemCount,
+      stateSwapPages,
       trueLoading,
     ]
   );
