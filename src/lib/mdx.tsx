@@ -50,6 +50,8 @@ export async function readAllSections(course: string) {
     join(process.cwd(), `${BASE_MATERIALS_DIRECTORY}/${course}`),
     "utf8"
   );
+  console.log("Read ALl Sections");
+  console.log(result);
   return result;
 }
 
@@ -136,7 +138,7 @@ export async function getDetailedCourse(course: string) {
 
   const sectionsData = (await Promise.all(
     sections.map(async (section: string) => {
-      if (section.includes(".")) {
+      if (section.includes(".") || section.includes("index.json")) {
         return null;
       }
 

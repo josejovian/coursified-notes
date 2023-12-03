@@ -22,19 +22,25 @@ export const getStaticPaths = async () => {
   const strings = await Promise.all(
     courses.map(async (course) => {
       const sections: string[] = await readAllSections(course);
+      console.log("GetStaticPaths");
+      console.log(sections.filter((x) => !x.includes(".json")));
       return await Promise.all(
         sections
           .filter((x) => !x.includes(".json"))
           .map(async (section) => {
             const chapters: string[] = await readAllChapters(course, section);
+            console.log("Chapters: ");
+            console.log(chapters);
             return await Promise.all(
-              chapters.map((chapter) => ({
-                params: {
-                  course: course,
-                  section: section,
-                  chapter: chapter.replace(".mdx", ""),
-                },
-              }))
+              chapters
+                .filter((c) => !c.includes(".json"))
+                .map((chapter) => ({
+                  params: {
+                    course: course,
+                    section: section,
+                    chapter: chapter.replace(".mdx", ""),
+                  },
+                }))
             );
           })
       );
