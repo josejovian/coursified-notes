@@ -33,6 +33,7 @@ interface CourseMaterialContentProps {
   stateSwapPages: StateType<boolean>;
   trueLoading: boolean;
   handleCheckAnswer: (ans: string, id: string, flag?: boolean) => boolean;
+  handleCleanUpStates: () => void;
   onChapterChange?: () => void;
   onAnswerUpdate?: (answer: Partial<AnswerType>) => void;
   onQuestionMount?: (id: string, question: QuizQuestionType) => void;
@@ -53,6 +54,7 @@ export function CourseLayoutMain({
   stateSwapPages,
   trueLoading,
   handleCheckAnswer,
+  handleCleanUpStates,
   onChapterChange,
   onAnswerUpdate,
   onQuestionMount,
@@ -130,12 +132,15 @@ export function CourseLayoutMain({
 
   const handlePrepareNewPage = useCallback(() => {
     if (loading) {
+      console.log("Page Rerender");
       mountedRef.current = {};
       setLoading(false);
       setSwapPages(false);
+      handleCleanUpStates && handleCleanUpStates();
       handleGetExistingAnswerIfAny();
     }
   }, [
+    handleCleanUpStates,
     handleGetExistingAnswerIfAny,
     loading,
     mountedRef,
@@ -144,7 +149,6 @@ export function CourseLayoutMain({
   ]);
 
   useEffect(() => {
-    console.log("Page Rerender");
     debounce(() => handlePrepareNewPage());
   }, [
     page,

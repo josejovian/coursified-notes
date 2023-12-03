@@ -7,7 +7,7 @@ import {
 } from "react";
 import clsx from "clsx";
 import { Button } from "@/components";
-import { useQuiz, useToast } from "@/hooks";
+import { useDebounce, useQuiz, useToast } from "@/hooks";
 import { getQuizAnswerSheet, storeQuizAnswerSheet } from "@/utils";
 import {
   AddressesType,
@@ -42,6 +42,7 @@ export function CourseLayoutQuiz({
   chapterAddress,
   trueLoading,
   handleCheckAnswer,
+  handleCleanUpStates,
 }: {
   addreses: AddressesType;
   chapterContent: string;
@@ -65,6 +66,7 @@ export function CourseLayoutQuiz({
     practiceId: string,
     updateCheckingState?: boolean
   ) => boolean;
+  handleCleanUpStates: () => void;
 }) {
   const answer = answerRef.current;
   const accept = acceptRef.current;
@@ -82,6 +84,7 @@ export function CourseLayoutQuiz({
   const setLoading = stateLoading[1];
   const setPage = statePage[1];
 
+  const debounce = useDebounce();
   const { addToast } = useToast();
 
   const handleUpdateSummary = useCallback(
@@ -138,26 +141,29 @@ export function CourseLayoutQuiz({
   );
 
   const handleSubmitQuiz = useCallback(() => {
-    const now = new Date().getTime();
-    const points = Object.values(quizAnswerSheetRef.current.summary).reduce(
-      (prev, { points = 0 }) => prev + points,
-      0
-    );
-    // setQuizPhase("submitted");
-    setPageStatus((prev) => ({
-      ...prev,
-      quizPhase: "submitted",
-    }));
+    debounce(() => {
+      const now = new Date().getTime();
+      const points = Object.values(quizAnswerSheetRef.current.summary).reduce(
+        (prev, { points = 0 }) => prev + points,
+        0
+      );
+      // setQuizPhase("submitted");
+      setPageStatus((prev) => ({
+        ...prev,
+        submitted: true,
+        quizPhase: "submitted",
+      }));
 
-    const finalAnswerSheet: QuizAnswerSheetType = {
-      ...quizAnswerSheetRef.current,
-      submittedAt: now,
-      points,
-      answers: answerRef.current,
-    };
-    storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
-    quizAnswerSheetRef.current = finalAnswerSheet;
-  }, [answerRef, chapterAddress, quizAnswerSheetRef, setPageStatus]);
+      const finalAnswerSheet: QuizAnswerSheetType = {
+        ...quizAnswerSheetRef.current,
+        submittedAt: now,
+        points,
+        answers: answerRef.current,
+      };
+      storeQuizAnswerSheet(chapterAddress, finalAnswerSheet);
+      quizAnswerSheetRef.current = finalAnswerSheet;
+    });
+  }, [answerRef, chapterAddress, debounce, quizAnswerSheetRef, setPageStatus]);
 
   const handleUpdateAnswer = useCallback(
     (ans: Partial<AnswerType>) => {
@@ -222,6 +228,53 @@ export function CourseLayoutQuiz({
     setSwapChapters,
   ]);
 
+  const handleOnboardingButton = useCallback(() => {
+    debounce(() => {
+      if (
+        quizAnswerSheet &&
+        quizAnswerSheet.startAt &&
+        !quizAnswerSheet.submittedAt
+      ) {
+        // setQuizPhase("working");
+        setPageStatus((prev) => ({
+          ...prev,
+          quizPhase: "working",
+        }));
+        return;
+      }
+
+      const now = new Date();
+      const end = new Date();
+      if (quizDetails) {
+        end.setMinutes(end.getMinutes() + quizDetails.duration);
+        end.setSeconds(end.getSeconds() + 1);
+      }
+
+      if (!submitted) {
+        // setQuizPhase("working");
+        setPageStatus((prev) => ({
+          ...prev,
+          quizPhase: "working",
+        }));
+        quizAnswerSheetRef.current.startAt = now.getTime();
+        quizAnswerSheetRef.current.endAt = end.getTime();
+      } else {
+        // setQuizPhase("submitted");
+        setPageStatus((prev) => ({
+          ...prev,
+          quizPhase: "submitted",
+        }));
+      }
+    });
+  }, [
+    debounce,
+    quizAnswerSheet,
+    quizAnswerSheetRef,
+    quizDetails,
+    setPageStatus,
+    submitted,
+  ]);
+
   useEffect(() => {
     handleSetupQuiz();
   }, [quizDetails, handleSetupQuiz]);
@@ -247,6 +300,7 @@ export function CourseLayoutQuiz({
           statePageStatus={statePageStatus}
           stateSwapPages={stateSwapPages}
           handleCheckAnswer={handleCheckAnswer}
+          handleCleanUpStates={handleCleanUpStates}
           onChapterChange={() => setPage(0)}
           onAnswerUpdate={handleUpdateAnswer}
           onQuestionMount={(id, question) => {
@@ -273,54 +327,20 @@ export function CourseLayoutQuiz({
       statePageStatus,
       stateSwapPages,
       handleCheckAnswer,
+      handleCleanUpStates,
       handleUpdateAnswer,
       setPage,
       quizAnswerSheetRef,
     ]
   );
+
   const renderQuizControls = useMemo(
     () =>
       !quizPhase || quizPhase === "onboarding" ? (
         <>
           <Button
             size="l"
-            onClick={() => {
-              if (
-                quizAnswerSheet &&
-                quizAnswerSheet.startAt &&
-                !quizAnswerSheet.submittedAt
-              ) {
-                // setQuizPhase("working");
-                setPageStatus((prev) => ({
-                  ...prev,
-                  quizPhase: "working",
-                }));
-                return;
-              }
-
-              const now = new Date();
-              const end = new Date();
-              if (quizDetails) {
-                end.setMinutes(end.getMinutes() + quizDetails.duration);
-                end.setSeconds(end.getSeconds() + 1);
-              }
-
-              if (!submitted) {
-                // setQuizPhase("working");
-                setPageStatus((prev) => ({
-                  ...prev,
-                  quizPhase: "working",
-                }));
-                quizAnswerSheetRef.current.startAt = now.getTime();
-                quizAnswerSheetRef.current.endAt = end.getTime();
-              } else {
-                // setQuizPhase("submitted");
-                setPageStatus((prev) => ({
-                  ...prev,
-                  quizPhase: "submitted",
-                }));
-              }
-            }}
+            onClick={handleOnboardingButton}
             disabled={trueLoading}
           >
             {(() => {
@@ -353,12 +373,11 @@ export function CourseLayoutQuiz({
         </>
       ),
     [
+      handleOnboardingButton,
       handleSubmitQuiz,
-      quizAnswerSheet,
-      quizAnswerSheetRef,
-      quizDetails,
+      quizAnswerSheet.startAt,
+      quizAnswerSheet.submittedAt,
       quizPhase,
-      setPageStatus,
       submitted,
       trueLoading,
     ]

@@ -62,7 +62,6 @@ export function CourseLayoutQuizSide({
             {quizPhase === "submitted" && (
               <Paragraph
                 onClick={() => {
-                  // setQuizPhase("onboarding");
                   setPageStatus((prev) => ({
                     ...prev,
                     quizPhase: "onboarding",

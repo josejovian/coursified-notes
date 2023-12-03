@@ -182,8 +182,8 @@ export function CoursePage({
 
   const handleRouteChangeComplete = useCallback(() => {
     setSwapChapters(false);
-    // handleCleanUpStates("Route Change End");
-  }, [setSwapChapters]);
+    handleCleanUpStates("Route Change End");
+  }, [handleCleanUpStates, setSwapChapters]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", handleRouteChangeStart);
@@ -203,6 +203,7 @@ export function CoursePage({
         courseDetail={courseDetail}
         courseDetailWithProgress={courseDetailWithProgress}
         handleCheckAnswer={handleCheckAnswer}
+        handleCleanUpStates={handleCleanUpStates}
         acceptRef={acceptRef}
         answerRef={answerRef}
         mountedRef={mountedRef}
@@ -224,6 +225,7 @@ export function CoursePage({
       courseDetail,
       courseDetailWithProgress,
       handleCheckAnswer,
+      handleCleanUpStates,
       stateLastUpdate,
       stateLoading,
       statePage,

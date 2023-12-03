@@ -168,6 +168,7 @@ export function CourseLayoutMaterial({
         statePage={statePage}
         stateSwapPages={stateSwapPages}
         handleCheckAnswer={handleCheckAnswer}
+        handleCleanUpStates={handleCleanUpStates}
         onChapterChange={() => setPage(0)}
         onInputBlur={() => {
           if (submitted)
@@ -190,6 +191,7 @@ export function CourseLayoutMaterial({
       statePage,
       stateSwapPages,
       handleCheckAnswer,
+      handleCleanUpStates,
       setPage,
       submitted,
       setPageStatus,
@@ -197,8 +199,8 @@ export function CourseLayoutMaterial({
   );
 
   useEffect(() => {
-    console.log("True Loading: ", trueLoading);
-  }, [trueLoading]);
+    console.log("SOLVED: ", solved);
+  }, [solved]);
 
   const renderPageControls = useMemo(
     () => (
