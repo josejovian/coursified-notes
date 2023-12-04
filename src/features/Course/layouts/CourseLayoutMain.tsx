@@ -131,33 +131,29 @@ export function CourseLayoutMain({
   }, [practice, accept, handleCheckAnswer, answerRef, setPageStatus]);
 
   const handlePrepareNewPage = useCallback(() => {
-    if (loading) {
-      console.log("Page Rerender");
-      mountedRef.current = {};
-      setLoading(false);
-      setSwapPages(false);
-      handleCleanUpStates && handleCleanUpStates();
-      handleGetExistingAnswerIfAny();
-    }
+    debounce(() => {
+      if (swapPages) {
+        console.log("Page Rerender");
+        mountedRef.current = {};
+        setLoading(false);
+        setSwapPages(false);
+        handleCleanUpStates && handleCleanUpStates();
+        handleGetExistingAnswerIfAny();
+      }
+    });
   }, [
+    debounce,
     handleCleanUpStates,
     handleGetExistingAnswerIfAny,
-    loading,
     mountedRef,
     setLoading,
     setSwapPages,
+    swapPages,
   ]);
 
   useEffect(() => {
-    debounce(() => handlePrepareNewPage());
-  }, [
-    page,
-    handlePrepareNewPage,
-    debounce,
-    mountedRef,
-    setLoading,
-    setSwapPages,
-  ]);
+    handlePrepareNewPage();
+  }, [page, handlePrepareNewPage, mountedRef, setLoading, setSwapPages]);
 
   const handleRouteChangeStart = useCallback(() => {
     setLoading(true);

@@ -63,7 +63,7 @@ export function CourseLayoutMaterial({
   const setLoading = stateLoading[1];
   const [page, setPage] = statePage;
   const [pageStatus, setPageStatus] = statePageStatus;
-  const setSwapPages = stateSwapPages[1];
+  const [swapPages, setSwapPages] = stateSwapPages;
   const debounce = useDebounce();
   const { checking, solved, submitted } = pageStatus;
   const maxPage = stateMaxPage[0];
@@ -120,36 +120,42 @@ export function CourseLayoutMaterial({
   const { id, title, description } = courseDetailWithProgress;
 
   const handlePreviousPage = useCallback(() => {
-    handleCleanUpStates();
-    if (page > 0) setPage((prev) => prev - 1);
-  }, [handleCleanUpStates, page, setPage]);
+    debounce(() => {
+      if (page > 0) {
+        // setLoading(true);
+        setSwapPages(true);
+        setPage((prev) => prev - 1);
+      }
+    });
+  }, [debounce, page, setPage, setSwapPages]);
 
   const handleNextPage = useCallback(() => {
-    handleCleanUpStates();
-    if (solved !== false) storeChapterProgress(read, true);
-    if (page < maxPage - 1) {
-      setPage((prev) => prev + 1);
-    } else {
-      storeChapterProgress(
-        {
-          ...chapterBaseAddress,
-          page: undefined,
-        },
-        true
-      );
-      debounce(() => {
+    debounce(() => {
+      // setLoading(true);
+      setSwapPages(true);
+      if (solved !== false) storeChapterProgress(read, true);
+      if (page < maxPage - 1) {
+        setPage((prev) => prev + 1);
+      } else {
+        storeChapterProgress(
+          {
+            ...chapterBaseAddress,
+            page: undefined,
+          },
+          true
+        );
         router.replace(nextDestination);
-      });
-    }
+      }
+    });
   }, [
-    handleCleanUpStates,
+    debounce,
+    setSwapPages,
     solved,
     read,
     page,
     maxPage,
     setPage,
     chapterBaseAddress,
-    debounce,
     router,
     nextDestination,
   ]);
@@ -210,12 +216,9 @@ export function CourseLayoutMaterial({
           size="l"
           onClick={() => {
             // setSwapPages(true);
-            debounce(() => {
-              setLoading(true);
-              handlePreviousPage();
-            });
+            handlePreviousPage();
           }}
-          disabled={page <= 0 || trueLoading}
+          disabled={page <= 0 || trueLoading || swapPages}
         >
           Back
         </Button>
@@ -226,13 +229,9 @@ export function CourseLayoutMaterial({
           <Button
             size="l"
             onClick={() => {
-              // setSwapPages(true);
-              debounce(() => {
-                setLoading(true);
-                handleNextPage();
-              });
+              handleNextPage();
             }}
-            disabled={trueLoading}
+            disabled={trueLoading || swapPages}
           >
             Next
           </Button>
@@ -282,7 +281,7 @@ export function CourseLayoutMaterial({
               }
             }}
             disabled={
-              trueLoading || checking
+              trueLoading || checking || swapPages
               // Object.values(answer).length !== Object.values(accept).length ||
               // Object.values(answer).filter((x) => x === "").length > 1
             }
@@ -303,9 +302,9 @@ export function CourseLayoutMaterial({
       handlePreviousPage,
       maxPage,
       page,
-      setLoading,
       setPageStatus,
       solved,
+      swapPages,
       trueLoading,
     ]
   );

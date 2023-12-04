@@ -5,7 +5,7 @@ import { useRef, useCallback } from "react";
 export const useDebounce = () => {
   const timeout = useRef();
 
-  return useCallback((func, wait = 250) => {
+  return useCallback((func, wait = 100) => {
     const later = () => {
       clearTimeout(timeout.current);
       func();

@@ -76,8 +76,8 @@ export function CoursePage({
   );
   const chapterContent = useMemo(() => markdown[page].code, [markdown, page]);
   const trueLoading = useMemo(
-    () => swapPages || swapChapters || loading,
-    [loading, swapChapters, swapPages]
+    () => swapChapters || loading,
+    [loading, swapChapters]
   );
   const chapterBaseAddress = useMemo<ChapterAddressType>(
     () => ({
