@@ -8,8 +8,7 @@
 
 <Theorem title="Mean Value Theorem">
   Let $f$ be a continuous function on $[a,b]$ and differentiable on $(a,b)$.
-  There exists one number $c$ in $(a,b)$ such that $f'(c)=\frac{f(b) - f(a)}
-  {b - a}$, which means that: - if $f'(c) = 0$ for all $x$ in interval $(a,b)$ then
+  There exists one number $c$ in $(a,b)$ such that $f'(c)=\frac{f(b) - f(a)}{b - a}$, which means that: - if $f'(c) = 0$ for all $x$ in interval $(a,b)$ then
   $f$ is constant on $(a,b)$. - if $f'(x) = g'(x)$ for all $x$ in interval $(a,b)$
   then $f$ and $g$ differ by a consant on $(a,b)$. Or in other words, there exists
   a constant $c$ such that $f(x) = g(x) + c$ for all $x$ in $(a,b)$.
@@ -72,25 +71,15 @@ The $c$ values are $\sqrt{\frac{4}{3}}$ and $-\sqrt{\frac{4}{3}}$.
 
 Consider $f(x) = 4\sin^{2}x-\cos^{2}x$. Select all statements below that are TRUE.
 
-<Option id="rolle" content="#f# is continuous on its domain." truth />
-<Option
-  id="rolle"
-  content="#f# is continuous on #\left [ 0, \pi \right ]#."
-  truth
-/>
-<Option
-  id="rolle"
-  content="#f# is NOT differentiable on #\left [ 0, \pi \right ]#."
-/>
-<Option
-  id="rolle"
-  content="Relating to Rolle's Theorem, #f# has exactly one #c# values on #\left [ \tan^{-1}\left ( \frac{1}{2} \right ),  \pi - \tan^{-1}\left ( \frac{1}{2} \right ) \right ]#"
-  truth
-/>
-<Option
-  id="rolle"
-  content="Relating to Rolle's Theorem, #f#'s #c# values on the provided interval are #\tan^{-1}\left ( \frac{1}{2} \right )# and # \pi -\tan^{-1}\left (\frac{1}{2} \right )#."
-/>
+export const rolleOptions = [
+	[1, "#f# is continuous on #\\left [ 0, \\pi \\right ]#."],
+	[0, "#f# is NOT differentiable on #\\left [ 0, \\pi \\right ]#."],
+	[1, "Relating to Rolle's Theorem, #f# has exactly one #c# values on #\\left [ \\tan^{-1}\\left ( \\frac{1}{2} \\right ),  \\pi - \\tan^{-1}\\left ( \\frac{1}{2} \\right ) \\right ]#"],
+	[0, "Relating to Rolle's Theorem, #f#'s #c# values on the provided interval are #\\tan^{-1}\\left ( \\frac{1}{2} \\right )# and # \\pi -\\tan^{-1}\\left (\\frac{1}{2} \\right )#."]
+];
+
+
+<Options id="rolle" options={rolleOptions} />
 
 ===
 
