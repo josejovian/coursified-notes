@@ -133,7 +133,6 @@ export function CourseLayoutMain({
   const handlePrepareNewPage = useCallback(() => {
     debounce(() => {
       if (swapPages) {
-        console.log("Page Rerender");
         mountedRef.current = {};
         setLoading(false);
         setSwapPages(false);
@@ -291,6 +290,13 @@ export function CourseLayoutMain({
           [id]: templateString,
         };
 
+        if (solved !== false) {
+          setPageStatus((prev) => ({
+            ...prev,
+            solved: false,
+          }));
+        }
+
         onOptionsMount && onOptionsMount(id, templateString);
       }
 
@@ -333,6 +339,7 @@ export function CourseLayoutMain({
       inputIsDisabled,
       mountedRef,
       onOptionsMount,
+      setPageStatus,
       solved,
     ]
   );
