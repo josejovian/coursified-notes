@@ -60,9 +60,9 @@ export function CourseJourneySection({
         const status = handleGetStatusForChapter(index);
         const sheet =
           chapter.id === "quiz" &&
-          chapterAddress &&
           getQuizAnswerSheet({
-            ...chapterAddress,
+            course: courseId,
+            section: section.id!,
             chapter: "quiz",
           });
 
