@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import clsx from "clsx";
-import { MdOutlineDescription } from "react-icons/md";
+import { MdOutlineAssignment, MdOutlineDescription } from "react-icons/md";
 import { Icon, Paragraph } from "@/components";
 import { ChapterType } from "@/types";
 
@@ -21,6 +21,13 @@ export function CourseJourneySectionChapter({
   active,
   rightElement,
 }: CourseJourneySectionChapterProps) {
+  const icon = useMemo(() => {
+    if (chapter.id === "quiz") {
+      return MdOutlineAssignment;
+    }
+    return MdOutlineDescription;
+  }, [chapter.id]);
+
   return (
     <div
       className={clsx(
@@ -42,11 +49,7 @@ export function CourseJourneySectionChapter({
       key={chapter.title}
       onClick={onClick}
     >
-      <Icon
-        IconComponent={MdOutlineDescription}
-        className="mr-4 text-inherit"
-        size="m"
-      />
+      <Icon IconComponent={icon} className="mr-4 text-inherit" size="m" />
       <Paragraph as="p" className="truncate" color="inherit">
         {chapter.title}
       </Paragraph>

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import { MdChevronRight } from "react-icons/md";
@@ -27,16 +27,17 @@ export function CourseDetailPage({ details }: CourseProps) {
 
   const { sectionData } = useProgress({ id, sections });
 
-  const renderCourseJourney = useMemo(
-    () => (
-      <CourseJourney
-        course={{
-          ...course,
-          sections: sectionData,
-        }}
-      />
-    ),
+  const courseDetailWithProgress: CourseType = useMemo(
+    () => ({
+      ...course,
+      sections: sectionData,
+    }),
     [course, sectionData]
+  );
+
+  const renderCourseJourney = useMemo(
+    () => <CourseJourney course={courseDetailWithProgress} />,
+    [courseDetailWithProgress]
   );
 
   const renderCourseBanner = useMemo(
