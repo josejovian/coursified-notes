@@ -44,7 +44,7 @@ export function CourseJourney({
 
   return (
     <div
-      className={clsx("border-zinc-400", [
+      className={clsx("border-zinc-400 h-full", [
         className,
         scrollable && "overflow-y-scroll",
         !noBorder && "border-t border-x",
