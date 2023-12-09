@@ -39,15 +39,12 @@ Consider the following example: $\frac{x^3}{4} - 3x$. By observing the graph, yo
 </Theorem>
 
 <Theorem title="Extreme Value Theorem">
-  If $f$ is continuous on a closed interval $[a,b]$, then $f$ attains an
-  absolute maximum value $f(c)$ for some number $c$ in $[a,b]$ and an absolute
-  minimum value $f(d)$ for some number $d$ in $[a,b]$.
+  If $f$ is continuous on a closed interval $[a,b]$, then $f$ attains an absolute maximum value $f(c)$ for some number $c$ in $[a,b]$ and an absolute minimum value $f(d)$ for some number $d$ in $[a,b]$.
 </Theorem>
 
 <Theorem title="Critical Number">
-  A function $f$ has the **critical number** $c$ in its domain, where either
-  $f'(c) = 0$ or $f'(c)$ doesn't exist.
-</Theorem>{" "}
+  A function $f$ has the **critical number** $c$ in its domain, where either $f'(c) = 0$ or $f'(c)$ doesn't exist.
+</Theorem>
 
 This means that we can find the **extrema** of function by deriving the function, then finding the appropriate $c$ values that fulfill the above theorem(s).
 
@@ -116,27 +113,13 @@ Therefore, the absolute maximum and minimum of $f$ in the given interval, respec
 
 Let $f(x)=-x+2\sin{x}$, and $g(x)=\ln\left(x^{2}+4x+5\right)-\frac{x^{2}+10x}{x^{2}+x+8}$. Select all options below that are TRUE.
 
-<Option
-  id="extrema"
-  content="#f# has exactly one critical point in its domain."
-/>
-<Option
-  id="extrema"
-  content="#f# has exactly one critical point in #\left [ 0, \frac{\pi}{2} \right ]#."
-  truth
-/>
-<Option
-  id="extrema"
-  content="#g# has exactly three critical points in its domain."
-  truth
-/>
-<Option
-  id="extrema"
-  content="#g# has exactly three critical points in #\left [ -2, 2 \right ]#."
-  truth
-/>
-<Option
-  id="extrema"
-  content="#f#'s maximum value in #\left [ 0, \frac{\pi}{2} \right ]# is #2 - \frac{\pi}{2}#."
-/>
-<Option id="extrema" content="#g#'s minimum value in #0#." truth />
+export const extremaOptions = [
+	[0, "#f# has exactly one critical point in its domain."],
+	[1, "#f# has exactly one critical point in #\\left [ 0, \\frac{\\pi}{2} \\right ]#."],
+	[1, "#g# has exactly three critical points in its domain."],
+	[1, "#g# has exactly three critical points in #\\left [ -2, 2 \\right ]#."],
+	[0, "#f#'s maximum value in #\\left [ 0, \\frac{\\pi}{2} \\right ]# is #2 - \\frac{\\pi}{2}#."],
+	[1, "#g#'s minimum value in #0#."],
+];
+
+<Options id="extrema" options={extremaOptions} />

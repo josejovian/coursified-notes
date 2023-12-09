@@ -125,6 +125,16 @@ export const BADGE_COLOR_CLASS: { [key in ColorType]: string } = {
   information: "bg-information-2 text-information-9",
 };
 
+export const BADGE_COLOR_INVERTED_CLASS: { [key in ColorType]: string } = {
+  primary: "text-primary-2 bg-primary-9",
+  secondary: "text-secondary-9 bg-secondary-2",
+  tertiary: "text-secondary-2 bg-secondary-9",
+  success: "text-success-2 bg-success-9",
+  warning: "text-warning-2 bg-warning-9",
+  danger: "text-danger-2 bg-danger-9",
+  information: "text-information-2 bg-information-9",
+};
+
 export const TOAST_COLOR_CLASS: { [key in ColorType]: string } = {
   primary: "bg-primary-6",
   secondary: "bg-secondary-9",

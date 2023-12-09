@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import remarkGfm from "remark-gfm";
 import {
   CourseType,
@@ -6,7 +7,7 @@ import {
   RequirementCategoryType,
   RequirementMap,
   SectionType,
-} from "../type/Course";
+} from "../types/course";
 import { bundleMDX } from "mdx-bundler";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -49,6 +50,8 @@ export async function readAllSections(course: string) {
     join(process.cwd(), `${BASE_MATERIALS_DIRECTORY}/${course}`),
     "utf8"
   );
+  console.log("Read ALl Sections");
+  console.log(result);
   return result;
 }
 
@@ -89,7 +92,7 @@ export async function readChapterMd(
       return await bundleMDX({
         source: page,
 
-        mdxOptions(options, frontmatter) {
+        mdxOptions(options, _) {
           options.remarkPlugins = [
             ...(options.remarkPlugins ?? []),
             remarkGfm,
@@ -111,6 +114,7 @@ export async function readChapterMd(
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function sortData(data: any[], index: any[], variable: string = "id") {
   return data.sort((a, b) => {
     if (a[variable] && b[variable]) {
@@ -134,7 +138,7 @@ export async function getDetailedCourse(course: string) {
 
   const sectionsData = (await Promise.all(
     sections.map(async (section: string) => {
-      if (section.includes(".")) {
+      if (section.includes(".") || section.includes("index.json")) {
         return null;
       }
 
@@ -163,14 +167,15 @@ export async function getDetailedCourse(course: string) {
           if (extension === "json") return null;
 
           const chapterContents = await readChapter(course, section, chapter);
-          const pages = chapterContents.split(/\=\=\=/);
+          const pages = chapterContents.split(/===/);
 
           let countQuestions = 0;
 
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const completePages = pages.map((page: any): PageType => {
-            let pageType: RequirementCategoryType = "read";
+            const pageType: RequirementCategoryType = "read";
 
-            const questions = page.match(/\<Practice/g) ?? [];
+            const questions = page.match(/<Practice/g) ?? [];
 
             countQuestions += questions.length;
 
@@ -235,7 +240,6 @@ export async function getDetailedCourse(course: string) {
       );
 
       sectionData.quiz = quiz;
-      console.log(quiz);
 
       return sectionData;
     })

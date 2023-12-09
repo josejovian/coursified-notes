@@ -5,8 +5,8 @@ import {
   MathPoint,
   GraphColors,
   PointVariants,
-} from "@/src/type";
-import { GRAPH_COLORS, POINT_VARIANTS } from "@/src/consts";
+} from "@/types";
+import { GRAPH_COLORS, POINT_VARIANTS } from "@/consts";
 import { evaluateMath } from "../evaluateMath";
 
 export function drawGraphAxes(
@@ -33,17 +33,7 @@ export function drawGraphAxesArrows(
   ctx: CanvasRenderingContext2D,
   params: GraphParams
 ) {
-  const {
-    up,
-    right,
-    down,
-    left,
-    height,
-    width,
-    arrowSize,
-    borderSize,
-    gridSize,
-  } = params;
+  const { up, left, height, width, arrowSize, borderSize, gridSize } = params;
 
   ctx.strokeStyle = "black";
   ctx.lineWidth = 2;
@@ -113,19 +103,7 @@ export function drawGraphAxesMarker(
   ctx: CanvasRenderingContext2D,
   params: GraphParams
 ) {
-  const {
-    up,
-    borderSize,
-    gridSize,
-    width,
-    height,
-    left,
-    vertical,
-    horizontal,
-    increments,
-  } = params;
-
-  const [y, x] = increments;
+  const { up, borderSize, gridSize, left, vertical, horizontal } = params;
 
   ctx.strokeStyle = "black";
   ctx.lineWidth = 2;
@@ -315,7 +293,9 @@ export function parseSourceFunctionParam<T extends FunctionParams>({
         ) {
           return parsed;
         }
-      } catch (e) {}
+      } catch (e) {
+        return null;
+      }
       break;
     case "colors":
       if (Object.keys(GRAPH_COLORS).includes(source)) {
@@ -335,7 +315,7 @@ export function parseSourceFunctions(
 
   return sources
     .map((f: string) => {
-      let resultFunction: MathFunction = {
+      const resultFunction: MathFunction = {
         color: "orange",
         func: () => 0,
       };
@@ -438,7 +418,7 @@ export function parseSourcePoints(source: string) {
         }
       })() || [NaN, NaN];
 
-      let resultPoint: MathPoint = {
+      const resultPoint: MathPoint = {
         points: coords as [number, number],
         color: "orange",
         variant: "solid",

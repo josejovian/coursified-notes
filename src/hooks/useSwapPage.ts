@@ -1,5 +1,5 @@
-import { SwapPageContext } from "@/src/contexts";
 import { useContext, useMemo } from "react";
+import { SwapPageContext } from "@/contexts";
 
 export function useSwapPage() {
   const stateSwapPage = useContext(SwapPageContext);

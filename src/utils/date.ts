@@ -17,11 +17,11 @@ export function getHMS(t: number) {
   minutes = Math.floor(time / 60);
   time -= minutes * 60;
 
-  seconds = Math.ceil(time);
+  seconds = Math.floor(time);
 
-  let hourPhrase = `${padZero(hours)}`;
-  let minutePhrase = `${padZero(minutes)}`;
-  let secondPhrase = `${padZero(seconds)}`;
+  const hourPhrase = `${padZero(hours)}`;
+  const minutePhrase = `${padZero(minutes)}`;
+  const secondPhrase = `${padZero(seconds)}`;
 
   if (hours === 0) return [minutePhrase, secondPhrase].join(":");
 

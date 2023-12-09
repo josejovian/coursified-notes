@@ -1,24 +1,19 @@
-import { Toast } from "@/src/components";
-import {
-  ScreenSizeCategory,
-  ScreenSizeType,
-  ToastActionType,
-  ToastType,
-} from "@/src/type";
-import { render } from "katex";
-import type { AppProps } from "next/app";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles/globals.css";
-import { ContextWrapper } from "@/src/contexts";
+import type { AppProps } from "next/app";
+import { Toast } from "@/components";
+import { ContextWrapper } from "@/contexts";
+import { ScreenSizeCategory, ScreenSizeType, ToastActionType } from "@/types";
+import { useDebounce } from "@/hooks";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [toasts, setToasts] = useState<ToastActionType[]>([]);
-
   const [screen, setScreen] = useState<ScreenSizeType>({
     width: 0,
     size: "xs",
   });
 
+  const debounce = useDebounce();
   const initialize = useRef(false);
 
   const handleProcessNewToast = useCallback(() => {
@@ -37,7 +32,7 @@ export default function App({ Component, pageProps }: AppProps) {
       );
     } else if (toast && !toast.dead) {
       const { id, duration = 10 } = toast;
-      setTimeout(() => {
+      debounce(() => {
         setToasts((prev: ToastActionType[]) =>
           prev.map((x) =>
             x.id === id
@@ -50,7 +45,7 @@ export default function App({ Component, pageProps }: AppProps) {
         );
       }, duration * 1000 + 500);
     }
-  }, [toasts]);
+  }, [debounce, toasts]);
 
   const renderToasts = useMemo(() => {
     return (
@@ -62,7 +57,7 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         {toasts
           // .filter((toast) => !toast.dead)
-          .map((toast, idx) => (
+          .map((toast) => (
             <Toast
               key={toast.id}
               toast={toast}
@@ -87,14 +82,14 @@ export default function App({ Component, pageProps }: AppProps) {
   const handleProcessDeadToast = useCallback(() => {
     toasts.map((toast) => {
       if (toast && toast.dead) {
-        setTimeout(() => {
+        debounce(() => {
           setToasts((prev: ToastActionType[]) =>
             prev.filter((x) => x.id !== toast.id)
           );
         }, 800);
       }
     });
-  }, [toasts]);
+  }, [debounce, toasts]);
 
   useEffect(() => {
     if (toasts.length > 0) {

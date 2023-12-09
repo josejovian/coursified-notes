@@ -1,4 +1,4 @@
-import { ChapterType, RequirementMap, RequirementType } from "@/src/type";
+import { ChapterType, RequirementMap, RequirementType } from "@/types";
 
 export function arraifyRequirements(
   requirements: RequirementMap | undefined
