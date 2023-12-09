@@ -1,11 +1,6 @@
-import { Fragment, useMemo, useState, useEffect, useCallback } from "react";
-import {
-  ChapterType,
-  RequirementMap,
-  RequirementType,
-  SectionType,
-} from "../type";
+import { useState, useEffect, useCallback } from "react";
 import { checkCourseProgress } from "../utils";
+import { SectionType } from "../types";
 
 interface UseProgressProps {
   id: string;

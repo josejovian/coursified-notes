@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import remarkGfm from "remark-gfm";
 import {
   CourseType,
@@ -6,8 +7,10 @@ import {
   RequirementCategoryType,
   RequirementMap,
   SectionType,
-} from "../type/Course";
+} from "../types/course";
 import { bundleMDX } from "mdx-bundler";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 const { readdirSync, readFileSync } = require("fs");
 const { join } = require("path");
@@ -47,6 +50,8 @@ export async function readAllSections(course: string) {
     join(process.cwd(), `${BASE_MATERIALS_DIRECTORY}/${course}`),
     "utf8"
   );
+  console.log("Read ALl Sections");
+  console.log(result);
   return result;
 }
 
@@ -80,30 +85,23 @@ export async function readChapterMd(
 ) {
   const raw = await readChapter(course, section, chapter);
 
-  const split = raw
-    .replace(/\{/g, "\\{")
-    .replace(/\}/g, "\\}")
-    .replace(
-      /\$\$(([^\$])*)\$\$/g,
-      (match: string, p1: string, offset: number, str: string, grp: string) => {
-        const result = p1
-          .replace(/\\\\/g, `\\\\\\\\`)
-          .replace(/(\r\n|\n|\r)/gm, " ");
-
-        return `<TeX block>${result}</TeX>`;
-      }
-    )
-    .replace(/\$(([^\$])*)\$/g, "<TeX>$1</TeX>")
-    .split("===");
+  const split = raw.split("===");
 
   const results = await Promise.all(
     split.map(async (page: string) => {
       return await bundleMDX({
         source: page,
 
-        mdxOptions(options, frontmatter) {
-          options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkGfm];
-          options.rehypePlugins = [...(options.rehypePlugins ?? [])];
+        mdxOptions(options, _) {
+          options.remarkPlugins = [
+            ...(options.remarkPlugins ?? []),
+            remarkGfm,
+            remarkMath,
+          ];
+          options.rehypePlugins = [
+            ...(options.rehypePlugins ?? []),
+            rehypeKatex,
+          ];
 
           return options;
         },
@@ -112,10 +110,11 @@ export async function readChapterMd(
   );
 
   return {
-    pages: results.map((res) => res.code),
+    pages: results,
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function sortData(data: any[], index: any[], variable: string = "id") {
   return data.sort((a, b) => {
     if (a[variable] && b[variable]) {
@@ -139,14 +138,15 @@ export async function getDetailedCourse(course: string) {
 
   const sectionsData = (await Promise.all(
     sections.map(async (section: string) => {
-      if (section.includes(".")) {
+      if (section.includes(".") || section.includes("index.json")) {
         return null;
       }
 
-      const { title = section, overrideChapterTitles } = await readSection(
-        course,
-        section
-      );
+      const {
+        title = section,
+        overrideChapterTitles,
+        quiz,
+      } = await readSection(course, section);
 
       const sectionData: SectionType = {
         id: section,
@@ -156,6 +156,10 @@ export async function getDetailedCourse(course: string) {
 
       const chapters = await readAllChapters(course, section);
 
+      const hasQuiz = chapters.some((chapter: string) => {
+        return chapter === "quiz.mdx";
+      });
+
       const detectedChapters = (await Promise.all(
         chapters.map(async (chapterRaw: string) => {
           const [chapter, extension] = chapterRaw.split(".");
@@ -163,14 +167,15 @@ export async function getDetailedCourse(course: string) {
           if (extension === "json") return null;
 
           const chapterContents = await readChapter(course, section, chapter);
-          const pages = chapterContents.split(/\=\=\=/);
+          const pages = chapterContents.split(/===/);
 
           let countQuestions = 0;
 
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const completePages = pages.map((page: any): PageType => {
-            let pageType: RequirementCategoryType = "read";
+            const pageType: RequirementCategoryType = "read";
 
-            const questions = page.match(/\<Practice/g) ?? [];
+            const questions = page.match(/<Practice/g) ?? [];
 
             countQuestions += questions.length;
 
@@ -209,11 +214,16 @@ export async function getDetailedCourse(course: string) {
             };
           }
 
+          const chapterTitle = (() => {
+            if (chapter === "quiz") return "Quiz";
+            if (overrideChapterTitles)
+              return overrideChapterTitles[chapter] ?? chapter;
+            return chapter;
+          })();
+
           return {
             id: chapter,
-            title: overrideChapterTitles
-              ? overrideChapterTitles[chapter]
-              : chapter ?? chapter,
+            title: chapterTitle,
             requirements,
             pages: completePages,
           } as ChapterType;
@@ -222,9 +232,14 @@ export async function getDetailedCourse(course: string) {
         .then((result) => result.filter((x) => x))
         .catch()) as ChapterType[];
 
-      const topicIndexees = Object.keys(overrideChapterTitles);
+      const topicIndexes = Object.keys(overrideChapterTitles);
 
-      sectionData.chapters = sortData(detectedChapters, topicIndexees);
+      sectionData.chapters = sortData(
+        detectedChapters,
+        hasQuiz ? [...topicIndexes, "quiz"] : topicIndexes
+      );
+
+      sectionData.quiz = quiz;
 
       return sectionData;
     })

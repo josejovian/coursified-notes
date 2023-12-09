@@ -1,5 +1,11 @@
 # Properties of Limits
 
+<Theorem title="Calculating Limits">
+This page discusses the properties of limits. To summarize this entire page, to calculate a limit, you can think of it just simply subtituting $x$ into $f(x)$ to find the limit. However, there will be exceptions that will be discussed later.
+</Theorem>
+
+---
+
 <Formula>
 $\lim\limits_{x\rightarrow a} c = c$
 </Formula>
@@ -50,14 +56,17 @@ Given that $n$ is any real number, including fractions, the limit of **(the func
 
 ===
 
-# Properties of Limits: Easy Examples
+# Calculating Limits: Direct Substitution
 
 <Example>
-Evaluate $\lim\limits_{x\rightarrow 4} \left [ 4x^2 - 4x + 1 \right ] = ...$
+Evaluate the following limits:
+1.  $\lim\limits_{x\rightarrow 4} \left [ 4x^2 - 4x + 1 \right ] = ...$
+2.  $\lim\limits_{x\rightarrow -2} \frac{x^2 - 1} {9x^2 + 6x + 3}  = ...$
+3.  $\lim\limits_{x\rightarrow 0} \left (\frac{x-3}{x^2} \right ) = ...$
+4.  $\lim\limits_{x\rightarrow \infty} \frac{1}{x^2 + 1}  = ...$
 </Example>
 
-To simplify things, we can first think of this function as a combination of three different functions, then find the limit of each function, then apply the addition or subtraction like the following.
-
+**Limit 1**  
 $$
 \begin{align*}
 \lim_{x\rightarrow 4} \left [ 4x^2 - 4x + 1 \right ] &= \lim_{x\rightarrow 4} 4x^2 - \lim_{x\rightarrow 4} 4x + \lim_{x\rightarrow 4} 1\\
@@ -66,16 +75,7 @@ $$
 \end{align*}
 $$
 
-You may have realized that it is faster to think of this as substituting $x$ into $f(x)$. However, be warned that this is not **always the case**.
-
----
-
-<Example>
-Evaluate $\lim\limits_{x\rightarrow -2} \frac{x^2 - 1} {9x^2 + 6x + 3}  = ...$
-</Example>
-
-Again, by thinking of this as doing a simple algebra, substituting $x$ into the function to find the value:
-
+**Limit 2**  
 $$
 \begin{align*}
 \lim_{x\rightarrow -2} \frac{x^2 - 1}{9x^2 + 6x + 3} &= \lim_{x\rightarrow -2} \frac{(-2)^2 - 1}{(9 \times (-2)^2) + (6 \times (-2)) + 3}\\
@@ -84,73 +84,79 @@ $$
 \end{align*}
 $$
 
-===
-
-# Properties of Limits: Tricky Example #1
-
-<Example>
-Evaluate $\lim\limits_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1}  = ...$
-</Example>
-
-When you plug in $x=1$ into the function, you get...
-
+**Limit 3**  
+Here, we encounter a division by zero. However, we need to know that $\lim_{x\rightarrow 0} \frac{1}{x^2} = \infty$.
 $$
 \begin{align*}
-\lim_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1} &= \lim_{x\rightarrow 1} \frac{1-5+4}{1-1}\\
- &= \frac{0}{0}\\
+\lim_{x\rightarrow 0} \left (\frac{x-3}{x^2}\right )
+ &= \left (\lim_{x\rightarrow 0} \left [ x-3 \right ] \right )\left (\lim_{x\rightarrow 0} \frac{1}{x^2} \right )\\
+ &= (-3)(\infty)\\
+ &= -\infty
 \end{align*}
 $$
 
-...this! Well, this is not how we are supposed to solve this. Instead, this just means that there is a common factor between the numerator and denominator that we can cancel from both sides. In this case, it is $(x - 1)$.
-
+**Limit 4**  
 $$
 \begin{align*}
-\lim_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1} &= \lim_{x\rightarrow 1} \frac{(x-1)(x-4)}{(x-1)(x+1)}\\
- &= \lim_{x\rightarrow 1} \frac{(x-4)}{(x+1)}\\
-  &= -\frac{3}{2}\\
+\lim\limits_{x\rightarrow \infty} \frac{1}{x^2 + 1}
+ &=\frac{1}{\lim\limits_{x\rightarrow \infty} \left [ x^2 + 1 \right ]}\\
+ &=\frac{1}{\infty}\\
+ &=0
 \end{align*}
 $$
 
-Now, we have learnt that **factorization** is one of the method that we can use when we encounter an indeterminate form $\frac{0}{0}$.
-
 ===
 
-# Properties of Limits: Tricky Example #2
+# Calculating Limits: Alternative Methods
 
 <Example>
-Evaluate $\lim\limits_{x\rightarrow \infty} \sqrt{x^2+6x-9}-\sqrt{x^2-8x+16}  = ...$
+Evaluate the following limits:
+1.  $\lim\limits_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1} = ...$
+2.  $\lim\limits_{x\rightarrow \infty} \frac{x^5-x^3} {x^6-2x^3}  = ...$
+3.  $\lim\limits_{x\rightarrow \infty} \sqrt{ax^2+bx+c}-\sqrt{ax^2+qx+r} = ...$
+4.  $\lim\limits_{x\rightarrow 1} \frac{2x-\sqrt{x + 3}}{x - 1}  = ...$
 </Example>
 
-Putting $x=\infty$ will yield an indeterminate form $\infty - \infty$. However, what if there is a way for us to manipulate the equation to avoid getting indeterminate forms? Let's try **rationalizing** it.
+As you have noticed, direct substitution does not work at all here. However, there are methods that we can use.
 
+**Limit 1: Factorize**  
+Directly subtituting yields the indeterminate form $\frac{0}{0}$. Factorize both numerator and denominator, then remove the common factor. 
 $$
 \begin{align*}
-&\lim_{x\rightarrow \infty} \sqrt{x^2+6x-9}-\sqrt{x^2-8x+16}\\
-&=\lim_{x\rightarrow \infty} \sqrt{x^2+6x-9}-\sqrt{x^2-8x+16}\times \frac{\sqrt{x^2+6x-9}+\sqrt{x^2-8x+16}}{\sqrt{x^2+6x-9}+\sqrt{x^2-8x+16}}\\
-&=\lim_{x\rightarrow \infty} \frac{(x^2+6x-9)-(x^2-8x+16)}{\sqrt{x^2+6x-9}+\sqrt{x^2-8x+16}}\\
-&=\lim_{x\rightarrow \infty} \frac{14x-25}{\sqrt{x^2+6x-9}+\sqrt{x^2-8x+16}}\\
-&=\lim_{x\rightarrow \infty} \frac{14-\frac{25}{x}}{\sqrt{1+\frac{6}{x}-\frac{9}{x^2}}+\sqrt{1-\frac{8}{x}+\frac{16}{x^2}}}\\
-&=\frac{14-0}{\sqrt{1+0-0}+\sqrt{1-0+0}}\\
-&=7
+\lim_{x\rightarrow 1} \frac{x^2-5x+4}{x^2-1} &= \lim_{x\rightarrow 1}  \frac{(x-1)(x-4)}{(x-1)(x+1)}\\
+ &= \lim_{x\rightarrow 1} \frac{x-4}{x+1}\\
+ &= -\frac{3}{2}\\
 \end{align*}
 $$
 
-You may have found one step rather confusing, that is, when we **divide both numerator and denominator with $x$**. The reason we do this is that we're dealing with $\infty$. How would we exactly calculate $\frac{\infty - 25}{\infty + \infty}$, if we were to immediately substitute the $x$ value? That is why, we need a trick like the above, so that we do not reach an indeterminate form.
+**Limit 2: Divide to the Largest Power**  
+Directly substituting yields multiple indeterminate forms. Since this is a limit where both numerator and denominator are polynomials, as $x$ approaches infinity, divide both sides with x to the highest power.
+$$
+\begin{align*}
+\lim_{x\rightarrow \infty} \frac{x^5-x^3} {x^6-2x^3} &= \lim_{x\rightarrow \infty} \frac{x^5-x^3} {x^6-2x^3} \times \frac{\frac{1}{x^6}}{\frac{1}{x^6}}\\
+ &= \lim_{x\rightarrow \infty} \frac{\frac{1}{x} - \frac{1}{x^3}}{1-\frac{2}{x^3}}\\
+ &= \frac{0 - 0}{1 - 0}\\
+&= 0\\
+\end{align*}
+$$
 
-Dividing both sides with $x$ for this specific case will help us evaluate the limit, because we know that $\lim\limits_{x\rightarrow a} c \times f(x) = c \lim\limits_{x\rightarrow a} f(x)$ and $\lim\limits_{x\rightarrow \infty} \frac{1}{x} = 0$. Combining these both properties, we know that we will end up with $\frac{14}{2}$.
+**Limit 3: Rationalize and Divide to the Largest Power**  
+Keep in mind that the only variable here is $x$, whereas the other letters are all constants. Directly substituting yields the indeterminate form $\infty - \infty$. Rationalize it.
+$$
+\begin{align*}
+&\lim_{x\rightarrow \infty} \sqrt{ax^2+bx+c}-\sqrt{ax^2+qx+r}\\
+&=\lim_{x\rightarrow \infty} \sqrt{ax^2+bx+c}-\sqrt{ax^2+qx+r}\times \frac{\sqrt{ax^2+bx+c}+\sqrt{ax^2+qx+r}}{\sqrt{ax^2+bx+c}+\sqrt{ax^2+qx+r}}\\
+&=\lim_{x\rightarrow \infty} \frac{(ax^2+bx+c)-(ax^2+qx+r)}{\sqrt{ax^2+bx+c}+\sqrt{ax^2+bx+c}}\\
+&=\lim_{x\rightarrow \infty} \frac{(b-q)x +(c-r)}{\sqrt{ax^2+bx+c}+\sqrt{ax^2+qx+r}}\\
+&=\lim_{x\rightarrow \infty} \frac{(b-q)x +(c-r)}{\sqrt{ax^2+bx+c}+\sqrt{ax^2+qx+r}} \times \frac{\frac{1}{x}}{\frac{1}{x}}\\
+&=\lim_{x\rightarrow \infty} \frac{(b-q) + \frac{c-r}{x}}{\sqrt{a+\frac{b}{x}+\frac{c}{x^2}}+\sqrt{a+\frac{b}{x}+\frac{c}{x^2}}}\\
+&=\frac{(b-q) + 0}{\sqrt{a+0+0}+\sqrt{a+0+0}}\\
+&=\frac{b-q}{2\sqrt{a}}
+\end{align*}
+$$
 
-We can see that once we rationalize it, we can finally avoid getting indeterminate forms, Now, we have learnt that **rationalization** is one of the method that we can use to combat against indeterminate form $\infty - \infty$.
-
-===
-
-# Properties of Limits: Tricky Example #3
-
-<Example>
-Evaluate $\lim\limits_{x\rightarrow 1} \frac{2x-\sqrt{x + 3}}{x - 1}  = ...$
-</Example>
-
-Once again, putting $x=1$ will yield $\frac{0}{0}$. However, trying to factor this directly may be not a simple task. However, let us try **rationalizing** the numerator.
-
+**Limit 4: Rationalize & Factorize**  
+Direct substitution yields the indeterminate form $\frac{0}{0}$. 
 $$
 \begin{align*}
 \lim_{x\rightarrow 1} \frac{2x-\sqrt{x + 3}}{x - 1}
@@ -161,82 +167,18 @@ $$
 \end{align*}
 $$
 
-We can see that once we rationalize the numerator, we are fortunate enough to see a common factor, that we can cancel out. This is an unqiue example that we solved using more than one tricks.
-
-===
-
-# Piecewise Function: An Example
-
-<Example>
-Given the function $f$ that is defined below:
-$$f(x) = \begin{cases} x + 4 & \text{ if } x < -4 \\ x^2 + 5x + 4 & \text{ if } x \geq -4  \end{cases}$$
-Evaluate $\lim\limits_{x\rightarrow -4} f(x)$
-</Example>
-
-Remember the definition of limit? The limit from the left and right side at a point must be equal, for a function to have a limit at that point. Let's calculate the left side. Since we're approaching from the left side, it means that $x < -4$, so we are using $f(x)$ when it is $x < -4$:
-
-$$
-\begin{align*}
-\lim_{x\rightarrow -4^-} f(x)
-&= \lim_{x\rightarrow -4^-} x + 4\\
-&= 0\\
-\end{align*}
-$$
-
-Now, to the right side:
-
-$$
-\begin{align*}
-\lim\limits_{x\rightarrow -4^+} f(x)
-&= \lim\limits_{x\rightarrow -4^+} x^2+5x+4\\
-&= \lim\limits_{x\rightarrow -4^+} (-4)^2+(5\times (-4))-4\\
-&= 0\\
-\end{align*}
-$$
-
-Since both sides are equal, we can conclude that:
-
-$$
-\begin{align*}
-\lim\limits_{x\rightarrow -4} f(x)
-&= \lim\limits_{x\rightarrow -4^-} f(x) = \lim\limits_{x\rightarrow -4^+} f(x)\\
-&= 0\\
-\end{align*}
-$$
-
-We can also see that if one of the limits had different values, then $f(x)$ would not have a limit at that point ($x = -4$).
+Multiple methods may be required to solve a limit, as shown above.
 
 ===
 
 # **Practice:** Calculating Limits
 
-Evaluate $\lim\limits_{x\rightarrow 2} \frac{x^2-4}{x^2+3x+2}  = ...$.  
-If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
+1. Evaluate $\lim\limits_{x\rightarrow 4} \frac{8 - \sqrt{x^3}}{\sqrt{x} - 2}=...$
 
-<Practice id="compute-limit-basic" answer="0" />
-
-<Explanation>
-**Correct!** This requires no special trick whatsoever.
-
-$$
-\begin{align*}
-\lim_{x\rightarrow 2} \frac{x^2-4}{x^2+3x+2}&=\frac{0}{12}\\&=0
-\end{align*}
-$$
-
-</Explanation>
-
-===
-
-# **Practice:** Calculating Limits
-
-Evaluate $\lim\limits_{x\rightarrow 4} \frac{8 - \sqrt{x^3}}{\sqrt{x} - 2}  = ...$.  
-If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
-
-<Practice id="compute-limit-easy-1" answer="-12" />
+<Practice id="calculating-limits-1" answer="-12" indent />
 
 <Explanation>
-**Correct!** This is just another example of limit that we can solve with factorization. The square root might get in our way, but let us create a new variable $v$, such that $v = \sqrt{x}$. Since we're converting from one to another variable, the $x$ we're approaching in the limit also changes accordingly. Even if you do not subsitute, **the result will stay the same**.
+Let $v = \sqrt{x}$. Since we're converting from one to another variable, the $x$ we're approaching in the limit also changes accordingly. Even if you do not subsitute, **the result will stay the same**.
 
 $$
 \begin{align*}
@@ -248,21 +190,13 @@ $$
 &= -12 \\
 \end{align*}
 $$
-
 </Explanation>
 
-===
+2. Evaluate $\lim\limits_{x\rightarrow \infty }(\sqrt{9x^2+6x-3}-3x-4)=...$
 
-# **Practice:** Calculating Limits
-
-Evaluate $\lim\limits_{x\rightarrow \infty }(\sqrt{9x^2+6x-3}-3x-4) $.  
-If it does not exist, type **DNE**. If it is $\infty$, type **infinity**.
-
-<Practice id="compute-limit-easy-2" answer="-3" />
+<Practice id="calculating-limits-2" answer="-3" indent />
 
 <Explanation>
-**Correct!** This is just another example of limit that we can solve with rationalization. However, you may find this one a little bit trickier than the example because you have to manipulate $-3x-4$ part of the equation into its root form, but that is it, the steps remain the same.
-
 $$
 \begin{align*}
 &\lim_{x\rightarrow \infty} [\sqrt{9x^2+6x-3}-3x-4]\\
@@ -277,5 +211,23 @@ $$
 &= -3 \\
 \end{align*}
 $$
+</Explanation>
 
+3. Consider $f(x) = \sqrt{\frac{1}{4}x^{2}+16x+4}$ and $g(x) = \sqrt{\frac{1}{4}x^{2}+16x-4}$. If both $\lim\limits_{x\rightarrow c} f(x)$ and $\lim\limits_{x\rightarrow c} g(x)$ exists, and also $\lim\limits_{x\rightarrow c} \left [ f(x) + g(x) \right ] = 8$. Evaluate $\lim\limits_{x\rightarrow c} \left [ f(x) - g(x) \right ] = ...$  
+
+<Practice id="calculating-limits-3" answer="1" indent />
+
+<Explanation>
+$$
+\begin{align*}
+\lim\limits_{x\rightarrow c} \left [ f(x) + g(x) \right ] &= 8\\
+\lim\limits_{x\rightarrow c} \left [ f(x) + g(x) \right ] \times \left ( \frac{f(x) - g(x)}{f(x) - g(x)} \right ) &= 8\\
+\lim\limits_{x\rightarrow c} \frac{(f(x))^2 - (g(x))^2}{f(x) - g(x)} &= 8\\
+\lim\limits_{x\rightarrow c} \frac{(\frac{1}{4}x^{2}+16x+4) - (\frac{1}{4}x^{2}+16x-4)}{f(x) - g(x)} &= 8\\
+\lim\limits_{x\rightarrow c} \frac{8}{f(x) - g(x)} &= 8\\
+\frac{1}{\lim\limits_{x\rightarrow c} \frac{8}{f(x) - g(x)}} &= \frac{1}{8}\\
+\lim\limits_{x\rightarrow c} \frac{f(x)-g(x)}{8} &= \frac{1}{8}\\
+\lim\limits_{x\rightarrow c} \left [ f(x) - g(x) \right ] &= 1
+\end{align*}
+$$
 </Explanation>

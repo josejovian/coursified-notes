@@ -14,16 +14,18 @@ There are other specific terms to describe continuity:
 
 ===
 
-# Continuity of a Function (2)
+# Continuity of a Function - 2
 
 Suppose $f$ and $g$ are both functions that are continuous at $a$. Then, the following functions are also continuous at $a$:
+
 - $f \pm g$
 - $fg$
 - $\frac{f}{g}$, if $g(a) \neq 0$.
 - $cf$, where $c$ is a constant.
-- $f(g(a))$, if $f$ is continuous at $g(a)$. 
+- $f(g(a))$, if $f$ is continuous at $g(a)$.
 
 The continuity of a few common functions:
+
 - A polynomial is continuous on $(-\infty, \infty)$.
 - A rational function is continuous on its domain.
 - The six trigonometric functions are continuous on their respective domains.
@@ -32,7 +34,7 @@ The above information can be used to determine at which intervals is a function 
 
 ===
 
-# Continuity of a Function: Example
+# Identifying Continuity: Example
 
 <Example>
 Identify at which intervals are the following functions continuous on:
@@ -43,95 +45,42 @@ Identify at which intervals are the following functions continuous on:
 
 The function $f$ is a polynomial, so it's continuous on $(-\infty, \infty)$.
 
-To find where $g$ is continuous on, remember that **square roots cannot be negative**. We have to find at which intervals do the inner polynomial become negative. The inner quadratic polynomial can be broken into $(x+4)(x+1)$, which tells us where the roots are: $-4$ and $-1$. Test any $c$ values for each these intervals (which are obtained by splitting the domain using the roots): $(-\infty, -4)$, $(-4, -1)$, and $(-1, \infty)$. Whichever interval yields a non-negative value will be the answer to this problem. In this case, they are $(-\infty, -4]$ and $[-1, \infty)$.  
+To find where $g$ is continuous on, remember that **square roots cannot be negative**. We have to find at which intervals do the inner polynomial become negative. The inner quadratic polynomial can be broken into $(x+4)(x+1)$, which tells us where the roots are: $-4$ and $-1$. Test any $c$ values for each these intervals (which are obtained by splitting the domain using the roots): $(-\infty, -4)$, $(-4, -1)$, and $(-1, \infty)$. Whichever interval yields a non-negative value will be the answer to this problem. In this case, they are $(-\infty, -4]$ and $[-1, \infty)$.
 
 To find where $h$ is continuous on, remember that **logarithms cannot be zero or negative**. We havve to find at which intervals do the inner rational function become negative or zero. The problematic $x$ values are $3$ and $-2$. Like before, test any $c$ values for each these intervals: $(-\infty, -2)$, $(-2, 3)$ and $(3, \infty)$. Whichever interval yields a positive value will be the answer to this problem. In this case, they are $(-\infty, -2)$ and $(3, \infty)$.
 
 ===
 
-# Discontinuity of a Function
+# Making a Function Continuous: Example
 
-There are three types of discontinuity:
+<Example>
+Determine $c$, such that $f$ below is continuous at $x = 0$.
 
-## Jump Discontinuity
+$$
+f(x)=\begin{cases}
+x^2 + 5x + 4& \text{, } x \neq 0\\
+c& \text{, } x = 0\\
+\end{cases}
+$$
+</Example>
 
-![Jump Discontinuity](/materials/jump_discontinuity.png "Jump Discontinuity")
+Recall that for a function to be continuous at $a$, $f(a) = \lim\limits_{x\rightarrow a} f(x)$.
 
-This happens when $\lim\limits_{x\rightarrow a^-} f(x) \neq \lim_{x\rightarrow a^+} f(x)$
+$$
+\begin{align*}
+f(x)&=\lim\limits_{x\rightarrow 0} f(x) \\
+ c &= \lim\limits_{x\rightarrow 0} \left [ x^2 + 5x + 4 \right ] \\
+ c &= 4
+\end{align*}
+$$
 
----
-
-## Infinite Discontinuity
-
-![Infinite Discontinuity](/materials/infinite_discontinuity.png "Infinite Discontinuity")
-
-This happens when the function approaches infinity or negative infinity, whether from the left side or the right side.
-
----
-
-## Removable Discontinuity
-
-![Removable Discontinuity](/materials/removable_discontinuity.png "Removable Discontinuity")
-
-This happens when $\lim\limits_{x\rightarrow a} f(x) = f(a)$, or $f(a)$ does not exist.
+Therefore, $c$ must be equal $4$, so that $f$ is continuous at $x=0$.
 
 ===
 
-# **Practice:** Identifying Continuity
+# **Practice:** Making a Function Continuous
 
-The functions $f$, $g$, $h$, $p$ and $q$ are defined below, along with some $x$ values.
-
-$$
-f(x)=\frac{1}{x}\text{, at }x=0
-$$
-
-$$
-g(x)=\begin{cases}
-x^2& \text{, } x \leq2\\
-x& \text{, } x > 2\\
-\end{cases}\text{, at }x=2
-$$
-
-$$
-h(x)= \left \lfloor x \right \rfloor\text{, at }x=1
-$$
-
-$$
-p(x)=\begin{cases}
-x& \text{, } x < 4\\
-x^2-4x+3& \text{, } 4 \leq x < 5\\
-7.9& \text{, } x = 5\\
-\sqrt{x+ 59}& \text{, } x  > 5\\
-\end{cases}\text{, at }x=5
-$$
-
-$$
-q(x) = \frac{1}{x^{2}-6x+9} \text{, at }x=3
-$$
-
----
-
-In these input boxes, respectively, name all functions that have Jump, Infinite and Removable discontinuity, at the given $x$ value. Functions should be written alphabetically.
-
-<Practice id="discontinuity-1" answer="g, h" placeholder="Jump Discontinuity" />
-
-<Practice
-  id="discontinuity-2"
-  answer="f, q"
-  placeholder="Infinite Discontinuity"
-/>
-
-<Practice
-  id="discontinuity-3"
-  answer="p"
-  placeholder="Removable Discontinuity"
-/>
-
-===
-
-# **Practice:** Continuity of a Function
-
-Given some functions $f$, $g$, and values of "$a$", determine the value of constants $c$ and $d$, so that both $f$ and $g$ are continuous on each function's value of $a$.
+Given some functions $f$, $g$, and values of $a$, determine the value of constants $c$ and $d$, so that both $f$ and $g$ are continuous on each function's value of $a$.
 
 $$
 f(x)=\begin{cases}

@@ -8,53 +8,46 @@ Derivatives can be used to calculate limits that have indeterminate form. There 
 
 ===
 
-# L'Hôpital's Rule: Examples (1)
+# L'Hôpital's Rule: Examples
 
 <Example>
-Calculate $\lim\limits_{x\rightarrow 0}{\frac{e^{x^2}-1}{\cos{x}-1}}$
+Evaluate the following limits:
+1. $\lim\limits_{x\rightarrow 0}{\frac{e^{x^2}-1}{\cos{x}-1}}$
+2. $\lim\limits_{x\rightarrow \infty} \frac{x^2}{e^{2x}}$
+3. $\lim_{x\rightarrow 0^+}\ln{x}\sin{x}$
+4. $\lim\limits_{x\rightarrow 0} \left ( x + 1\right )^\frac{1}{x}$
 </Example>
 
+**Number 1**  
 Substituting it directly yields an indeterminate form $\frac{0}{0}$. Use the Hôpital's Rule. 
 
 $$
 \begin{align*}
 &\lim_{x\rightarrow 0}{\frac{e^{x^2}-1}{\cos{x}-1}}\\
-&=\lim_{x\rightarrow 0}-{\frac{e^{x^2}2x}{\sin{x}}}\quad\text{Apply Hôpital's Rule}\\
+&=\lim_{x\rightarrow 0}-{\frac{e^{x^2}2x}{\sin{x}}}\quad\text{Applied Hôpital's Rule}\\
 &=\left ( \lim_{x\rightarrow 0}-2e^{x^2} \right ) \left ( \lim_{x\rightarrow 0}\frac{x}{\sin{x}} \right )\\
 &=-2\\
 \end{align*}
 $$
 
----
-
-<Example>
-Calculate $\lim\limits_{x\rightarrow \infty} \frac{x^2}{e^{2x}}$
-</Example>
-
+**Number 2**  
 Substituting it directly yields an indeterminate form $\frac{\infty}{\infty}$. Use the Hôpital's Rule. 
 
 $$
 \begin{align*}
-\lim\limits_{x\rightarrow \infty} \frac{x^2}{e^{2x}} &= \lim\limits_{x\rightarrow \infty} \frac{2x}{2e^{2x}} \quad\text{Apply Hôpital's Rule}\\
-&= \lim\limits_{x\rightarrow \infty} \frac{2}{4e^{2x}} \quad\text{Apply Hôpital's Rule}\\
+\lim\limits_{x\rightarrow \infty} \frac{x^2}{e^{2x}} &= \lim\limits_{x\rightarrow \infty} \frac{2x}{2e^{2x}} \quad\text{Applied Hôpital's Rule}\\
+&= \lim\limits_{x\rightarrow \infty} \frac{2}{4e^{2x}} \quad\text{Applied Hôpital's Rule}\\
 &= 0\\
 \end{align*}
 $$
 
-===
-
-# L'Hôpital's Rule: Examples (2)
-
-<Example>
-Calculate $\lim_{x\rightarrow 0^+}\ln{x}\sin{x}$
-</Example>
-
+**Number 3**  
 Substituting it directly yields an indeterminate form $-\infty \times 0$. Use the Hôpital's Rule. 
 
 $$
 \begin{align*}
 \lim_{x\rightarrow 0^+}\ln{x}\sin{x}&=  \lim_{x\rightarrow 0^+}\frac{\ln{x}}{\csc{x}}\\
-&=  \lim_{x\rightarrow 0^+}\frac{\frac{1}{x}}{-\cot{x}\csc{x}}  \quad\text{Apply Hôpital's Rule}\\
+&=  \lim_{x\rightarrow 0^+}\frac{\frac{1}{x}}{-\cot{x}\csc{x}}  \quad\text{Applied Hôpital's Rule}\\
 &=  \lim_{x\rightarrow 0^+}\frac{1}{-x\cot{x}\csc{x}}\\
 &=  \lim_{x\rightarrow 0^+} \left ( -\tan{x} \times \frac{\sin{x}}{x} \right ) \\
 &=  \left ( \lim_{x\rightarrow 0^+} -\tan{x} \right ) \left ( \lim_{x\rightarrow 0^+} \frac{\sin{x}}{x} \right )\\
@@ -62,12 +55,7 @@ $$
 \end{align*}
 $$
 
----
-
-<Example>
-Calculate $\lim\limits_{x\rightarrow 0} \left ( x + 1\right )^\frac{1}{x}$
-</Example>
-
+**Number 4**  
 Substituting it directly yields an indeterminate form $1^\infty$. The Hôpital's Rule cannot be used yet. Firstly, we need to somehow convert this into a fraction. Recall these laws of logarithms.
 
 $$
@@ -79,7 +67,7 @@ e^{\ln{y}}&=y\\
 &=  e^{\lim_{x\rightarrow 0} \ln{\left ( x + 1\right )^\frac{1}{x}}}\\
 &=  e^{\lim_{x\rightarrow 0} \frac{1}{x} \ln{\left ( x + 1\right )}}\\
 &=  e^{\lim_{x\rightarrow 0} \frac{\ln{\left ( x + 1\right )}}{x}}\\
-&=  e^{\lim_{x\rightarrow 0} \frac{1}{x + 1}}\quad\text{Apply Hôpital's Rule}\\
+&=  e^{\lim_{x\rightarrow 0} \frac{1}{x + 1}}\quad\text{Applied Hôpital's Rule}\\
 &=  e
 \end{align*}
 $$
@@ -103,7 +91,7 @@ $$
 &=e^{\lim_{x\rightarrow 0^+}\ln{(\csc{x}+\cot{x})^{\sin{x}}}}\\
 &=e^{\lim_{x\rightarrow 0^+}\sin{x}\ln{(\csc{x}+\cot{x})}}\\
 &=e^{\lim_{x\rightarrow 0^+}\frac{\ln{(\csc{x}+\cot{x})}}{\csc{x}}}\\
-&=e^{\lim_{x\rightarrow 0^+}\frac{\frac{-\csc{x}\cot{x}-\csc^2{x}}{(\csc{x}+\cot{x})}}{-\csc{x}\cot{x}}}\quad\text{Apply Hôpital's Rule}\\
+&=e^{\lim_{x\rightarrow 0^+}\frac{\frac{-\csc{x}\cot{x}-\csc^2{x}}{(\csc{x}+\cot{x})}}{-\csc{x}\cot{x}}}\quad\text{Applied Hôpital's Rule}\\
 &=e^{\lim_{x\rightarrow 0^+}\frac{\csc{x}\cot{x}+\csc^2{x}}{(\csc{x}+\cot{x})(\csc{x}\cot{x})}}\\
 &=e^{\lim_{x\rightarrow 0^+}\frac{\cot{x}+\csc{x}}{(\csc{x}+\cot{x})(\cot{x})}}\\
 &=e^{\lim_{x\rightarrow 0^+}\frac{\cot{x}+\csc{x}}{(\csc{x}+\cot{x})(\cot{x})}\times \frac{\sin{x}}{\sin{x}}} \\

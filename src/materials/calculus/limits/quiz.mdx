@@ -1,0 +1,123 @@
+<Question id="1" ids="input1" />
+
+$$\lim_{x\rightarrow 2} \left ( \frac{1}{2-x}-\frac{a}{8-x^3} \right )=-\frac{1}{2}$$
+
+Find the $a$ value such that the above limit is true.
+
+<Input id="input1" answer="12" />
+
+<hr />
+
+<Question id="2" ids="input2"/>
+Let $\lim_{x\rightarrow \sqrt{2}} f(x)=4$ and $\lim_{x\rightarrow c} g(x)=\sqrt{2}$. Evaluate $\lim_{x\rightarrow c} f(g(x))$ using the approximation $\sqrt{2}=0.1414$ if needed.
+<Input id="input2" answer="4" />
+
+<hr />
+
+<Question id="3" ids="input3" />
+
+$$\lim_{x\rightarrow \infty} \sqrt{x^2+bx-100}-(x-4)=7$$
+
+Find the b value such that the above limit is true.
+
+<Input id="input3" answer="6" />
+
+<hr />
+
+<Question id="4" ids="input4" />
+
+Evaluate $\lim_{x\rightarrow 0} \frac{\sin{x}-\tan{x}}{x^{3}}=...$
+
+<Input id="input4" answer="-0.5" />
+
+<hr />
+
+<Question id="5" ids="input5" />
+
+Evaluate $\lim_{x\rightarrow 0} \sin{x}\cos{\frac{1}{x}}=...$
+
+<Input id="input5" answer="0" />
+
+<hr />
+
+<Question id="6" ids="input6" />
+
+Evaluate $\lim_{x\rightarrow \infty} \left(\frac{x^{2}+2}{x^{2\ }+1}\right)^{\frac{x^{4}-1}{x^{2}-1}}=...$
+
+<Input id="input6" answer="2.7183" />
+
+<hr />
+
+<Question id="7" ids="input7" />
+
+$$
+f(x)=\begin{cases}
+\frac{\tan^2{x}}{1-\cos{x}}&\text{, } x \neq 0\\
+c& \text{, } x = 0\end{cases}
+$$
+
+Find the $c$ value such that $f$ is continuous on $x = 0$.
+
+<Input id="input7" answer="2" />
+
+<hr />
+
+<Question id="8" ids="input8" />
+
+$$f(x)=-x^2+100\sin{x}+\csc^2{x}$$
+At which following interval(s), if any, is f continuous on?
+
+export const q8_options = [
+	[0, "#-\\infty \\lt x\\lt \\infty#"],
+	[0, "#-\\infty\\lt x \\lt0# and #0\\lt x \\lt\\infty#."],
+	[1, "#-\\infty \\lt x \\lt \\infty# , where #x\\neq n\\pi# and n is an integer."],
+	[0, "#-\\infty \\lt x \\lt \\infty# , where #x\\neq n\\frac{\\pi}{2}# and n is an integer."],
+	[0, "#-\\infty \\lt x \\lt \\infty# , where #x\\neq n\\frac{\\pi}{4}# and n is an integer."]
+];
+
+<Options id="input8" options={q8_options} />
+
+<hr />
+
+<Question id="9" ids="input9" />
+
+<Graph
+  functions="(x-3)*(x-3)/8+1@[3,8];(x-3)*(x-3)/33.5+1@[-8,3]"
+  points="1,3~solid;1.477,-1~outline"
+/>
+
+The function $f(x)$ is shown in the above graph. Select all the TRUE statements about $f$.
+
+export const q9_options = [
+	[0, "The given function is defined at #x=3#."],
+	[0, "The given function is continuous at #x=3#."],
+	[1, "The given function has removable discontinuity #x=3#."],
+	[0, "The given function has jump discontinuity #x=3#."],
+	[0, "The given function has infinite discontinuity #x=3#."],
+	[1, "The limit of the given function, as #x# approaches #3#, exists."],
+	[0, "The given function is defined at #x=1#."],
+	[0, "The given function is continuous at #x=1#."],
+	[1, "The given function has removable discontinuity #x=1#."],
+	[0, "The given function has jump discontinuity #x=1#."],
+	[0, "The given function has infinite discontinuity #x=1#."],
+	[1, "The limit of the given function, as #x# approaches #1#, exists."]
+];
+
+<Options id="input9" options={q9_options} />
+
+<hr />
+
+<Question id="10" ids="input10" />
+
+$$f(x)=\ln{\sin{x}}$$
+At which following interval(s), if any, is f continuous on?
+
+export const q10_options = [
+	[0, "#0\\lt x\\lt\\infty#"],
+	[0, "#n\\pi\\lt x\\lt(n+1)\\pi# , where n is an integer."],
+	[0, "#0\\lt x\\lt\\infty# , where #x\\neq n\\pi# and n is an integer."],
+	[1, "#2n\\pi\\lt x\\lt(2n+1)\\pi# , where n is an integer."],
+	[0, "#0\\lt x\\lt\\infty# ,  where #x\\neq 2n\\pi# and n is an integer."],
+];
+
+<Options id="input10" options={q10_options} />

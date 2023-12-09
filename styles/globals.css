@@ -165,10 +165,10 @@
     list-style-type: disc;
   }
   .CourseMaterial_content :is(ul, ol) {
-		margin-left: 3rem;
+    margin-left: 3rem;
   }
   .CourseMaterial_content > p + :is(ul, ol) {
-		margin-top: -1.5rem;
+    margin-top: -1.5rem;
   }
   .CourseMaterial_content :is(ul, ol) li {
     @apply pl-2 my-4 leading-7;
@@ -190,6 +190,12 @@
   }
   .CourseMaterial_content .Option {
     @apply !mb-4;
+  }
+  .CourseMaterial_content hr {
+    margin-top: 4rem;
+  }
+  .CourseMaterial_content .TwoColumns .Graph {
+    margin: 0;
   }
   .MatchBox div {
     min-width: 12rem;
